@@ -1,2 +1,0 @@
-node-media-server@2.2.8
-react-flv-player@1.0.9
