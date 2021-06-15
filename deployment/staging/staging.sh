@@ -47,9 +47,8 @@ install_tools() {
 
 setup_root_login() {
     sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-    sudo echo "PubkeyAuthentication" >> /etc/ssh/sshd_config
-    sudo systemctl restart sshd.service
-    sudo echo "root:rootroot" | chpasswd
+    # sudo systemctl restart sshd.service
+    # sudo echo "root:rootroot" | chpasswd
 }
 
 setup_welcome_msg() {
