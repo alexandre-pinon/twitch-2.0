@@ -1,6 +1,11 @@
 import express from 'express'
 import cors from 'cors'
+
+import AppError from './errors/AppError.js'
+import * as ErrorHandler from './errors/ErrorHandler.js'
 import userRouter from './routes/user.js'
+import { StatusCodes } from 'http-status-codes'
+
 const app = express()
 
 app.use(cors())
@@ -9,8 +14,7 @@ app.use(express.urlencoded({ extended: true }))
 
 app.use('/user', userRouter)
 
-app.all('*', (req, res, next) => {
-  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404))
-})
+app.use(ErrorHandler.notFound)
+app.use(ErrorHandler.mongooseErrors)
 
 export default app

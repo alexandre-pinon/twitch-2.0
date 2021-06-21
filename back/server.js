@@ -6,6 +6,12 @@ import User from './models/User.js'
 
 dotenv.config({ path: '.back.env' })
 
+process.on('uncaughtException', (error) => {
+  console.log(error.name, error.message)
+  console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...')
+  process.exit(1)
+})
+
 mongoose.connect(process.env.NODE_STAGING, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -22,4 +28,10 @@ db.once('open', () => {
 const port = process.env.NODE_PORT || 8000
 const server = app.listen(port, () => {
   console.log(`Server listening on port ${port}`)
+})
+
+process.on('unhandledRejection', (error) => {
+  console.log(error.name, error.message)
+  console.log('UNHANDLED REJECTION! 💥 Shutting down...')
+  process.exit(1)
 })

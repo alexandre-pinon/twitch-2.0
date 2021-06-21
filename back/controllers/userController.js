@@ -1,19 +1,22 @@
-import User from '../models/User.js'
-import { sha256 } from 'js-sha256'
 import jwt from 'jwt-then'
+import { sha256 } from 'js-sha256'
+import { StatusCodes } from 'http-status-codes'
+
+import User from '../models/User.js'
+import AppError from '../errors/AppError.js'
 
 export const register = async (request, response) => {
   const { username, email, password, description, avatar } = request.body
   const emailRegex = /@gmail.com|@yahoo.com|@hotmail.com|@live.com|outlook.fr/
 
   if (!username) {
-    throw 'Username is required.'
+    throw new AppError('Username is required.')
   }
   if (!emailRegex.test(email)) {
-    throw 'Email is not supported from your domain.'
+    throw new AppError('Email is not supported from your domain.')
   }
   if (password.length < 6) {
-    throw 'Password must be atleast 6 characters long.'
+    throw new AppError('Password must be atleast 6 characters long.')
   }
 
   const userExists = await User.findOne({
@@ -21,7 +24,10 @@ export const register = async (request, response) => {
   })
 
   if (userExists) {
-    throw 'User with same email already exists.'
+    throw new AppError(
+      'User with same email already exists.',
+      StatusCodes.CONFLICT
+    )
   }
 
   const user = new User({
@@ -34,7 +40,7 @@ export const register = async (request, response) => {
 
   await user.save()
 
-  response.json({
+  response.status(StatusCodes.CREATED).json({
     message: `User ${username} registered successfully!`,
   })
 }
@@ -47,7 +53,7 @@ export const login = async (request, response) => {
   })
 
   if (!user) {
-    throw 'Username and Password did not match'
+    throw new AppError('Username and Password did not match')
   }
 
   const token = await jwt.sign({ id: user.id }, process.env.SECRET)
