@@ -1,8 +1,6 @@
-import mongoose from 'mongoose'
+import User from '../models/User.js'
 import { sha256 } from 'js-sha256'
 import jwt from 'jwt-then'
-
-const User = mongoose.model('User')
 
 export const register = async (request, response) => {
   const { username, email, password, description, avatar } = request.body
