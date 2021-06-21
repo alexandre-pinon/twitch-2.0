@@ -10,10 +10,11 @@ import {
 } from "react-router-dom";
 import Home from './components/homepage';
 
+
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
+      <header>
         <Example/>
       </header>
       <Router>

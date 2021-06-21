@@ -36,3 +36,36 @@
     transform: rotate(360deg);
   }
 }
+
+.container {
+  margin-top: -30px;
+}
+
+.Media {
+  height: 100%;
+}
+
+.Banner {
+  height: 400px;
+}
+
+.BannerGrid {
+  height: 100%;
+  position: relative;
+}
+
+.Banner .Media .MediaCaption {
+  text-overflow: ellipsis;
+  position: absolute;
+  bottom: 0;
+  padding: 15px;
+  background-color: #000;
+  color: #fff;
+  opacity: .6;
+  width: 100%;
+  height: 10%;
+  font-size: 25px;
+  font-weight: 200;
+  transition: .3s;
+  cursor: pointer;
+}
