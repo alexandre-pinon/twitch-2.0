@@ -5,24 +5,22 @@ const LoginPage = (props) => {
   const usernameRef = React.createRef()
   const passwordRef = React.createRef()
 
-  const loginUser = () => {
+  const loginUser = async () => {
     const username = usernameRef.current.value
     const password = passwordRef.current.value
 
     console.log({ username, password })
 
-    axios
-      .post('http://localhost:8001/user/login', {
+    try {
+      const response = await axios.post('http://localhost:8001/user/login', {
         username,
         password,
       })
-      .then((response) => {
-        localStorage.setItem('CC_Token', response.data.token)
-        props.history.push('/home')
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+      console.log({ response })
+      props.history.push('/home')
+    } catch (error) {
+      console.log({ err: error.response.data })
+    }
   }
 
   return (

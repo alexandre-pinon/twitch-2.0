@@ -27,6 +27,7 @@ db.once('open', () => {
 
 const port = process.env.NODE_PORT || 8000
 const server = app.listen(port, () => {
+  console.log(`Starting server on ${process.env.NODE_ENV} environment..`)
   console.log(`Server listening on port ${port}`)
 })
 

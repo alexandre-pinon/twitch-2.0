@@ -8,7 +8,7 @@ const RegisterPage = (props) => {
   const descriptionRef = React.createRef()
   const avatarRef = React.createRef()
 
-  const registerUser = () => {
+  const registerUser = async () => {
     const username = usernameRef.current.value
     const email = emailRef.current.value
     const password = passwordRef.current.value
@@ -17,20 +17,19 @@ const RegisterPage = (props) => {
 
     console.log({ username, email, password, description, avatar })
 
-    axios
-      .post('http://localhost:8001/user/register', {
+    try {
+      const response = await axios.post('http://localhost:8001/user/register', {
         username,
         email,
         password,
         description,
         avatar,
       })
-      .then((response) => {
-        props.history.push('/login')
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+      console.log({ response })
+      props.history.push('/login')
+    } catch (error) {
+      console.log({ err: error.response.data })
+    }
   }
 
   return (
