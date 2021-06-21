@@ -1,25 +1,21 @@
-import logo from "./logo.svg";
-import "./App.css";
-import React, { Component } from "react";
-import { ReactFlvPlayer } from "react-flv-player";
+import React from 'react'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import LoginPage from './components/pages/LoginPage'
+import RegisterPage from './components/pages/RegisterPage'
+import IndexPage from './components/pages/IndexPage'
+import HomePage from './components/pages/HomePage'
 
-const App = () => {
+function App() {
   return (
-    <div>
-      <ReactFlvPlayer
-        url="http://10.41.174.148:8000/live/TESTO.flv"
-        heigh="800px"
-        width="800px"
-        isMuted={false}
-      />
-      <ReactFlvPlayer
-        url="http://10.41.174.148:8000/live/POULE.flv"
-        heigh="800px"
-        width="800px"
-        isMuted={false}
-      />
-    </div>
-  );
-};
+    <BrowserRouter>
+      <Switch>
+        <Route path="/" component={IndexPage} exact />
+        <Route path="/home" component={HomePage} exact />
+        <Route path="/login" component={LoginPage} exact />
+        <Route path="/register" component={RegisterPage} exact />
+      </Switch>
+    </BrowserRouter>
+  )
+}
 
-export default App;
+export default App
