@@ -1,9 +1,10 @@
-const mongoose = require('mongoose')
-const User = mongoose.model('User')
-const sha256 = require('js-sha256')
-const jwt = require('jwt-then')
+import mongoose from 'mongoose'
+import { sha256 } from 'js-sha256'
+import jwt from 'jwt-then'
 
-exports.register = async (request, response) => {
+const User = mongoose.model('User')
+
+export const register = async (request, response) => {
   const { username, email, password, description, avatar } = request.body
   const emailRegex = /@gmail.com|@yahoo.com|@hotmail.com|@live.com|outlook.fr/
 
@@ -40,7 +41,7 @@ exports.register = async (request, response) => {
   })
 }
 
-exports.login = async (request, response) => {
+export const login = async (request, response) => {
   const { username, password } = request.body
   const user = await User.findOne({
     username,

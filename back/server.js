@@ -1,5 +1,10 @@
-require('dotenv').config({ path: '.back.env' })
-const mongoose = require('mongoose')
+import dotenv from 'dotenv'
+import mongoose from 'mongoose'
+
+import app from 'app'
+import User from './models/User'
+
+dotenv.config({ path: '.back.env' })
 
 mongoose.connect(process.env.NODE_STAGING, {
   useNewUrlParser: true,
@@ -14,9 +19,6 @@ db.once('open', () => {
   console.log('MongoDB Connected!')
 })
 
-require('./models/User')
-
-const app = require('./app')
 const port = process.env.NODE_PORT || 8000
 const server = app.listen(port, () => {
   console.log(`Server listening on port ${port}`)
