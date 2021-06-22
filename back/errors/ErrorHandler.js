@@ -13,6 +13,14 @@ export const catchAsync = (fn) => {
   }
 }
 
+export const catchAsyncSocket = (fn) => {
+  return (socket, next) => {
+    fn(socket, next).catch((error) => {
+      next(error)
+    })
+  }
+}
+
 export const notFound = (request, response, next) => {
   const error = new AppError('Route not found', StatusCodes.NOT_FOUND)
   sendError(error, request, response, next)

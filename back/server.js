@@ -1,8 +1,12 @@
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
+import jwt from 'jwt-then'
+import { Server } from 'socket.io'
 
 import app from './app.js'
 import User from './models/User.js'
+import { catchAsyncSocket } from './errors/ErrorHandler.js'
+import { authenticateUser } from './io/utils.js'
 
 dotenv.config({ path: '.back.env' })
 
@@ -29,6 +33,22 @@ const port = process.env.NODE_PORT || 8000
 const server = app.listen(port, () => {
   console.log(`Starting server on ${process.env.NODE_ENV} environment..`)
   console.log(`Server listening on port ${port}`)
+})
+
+const io = new Server(server, {
+  cors: {
+    origin: process.env.FRONT_ORIGIN,
+  },
+})
+
+io.use(catchAsyncSocket(authenticateUser))
+
+io.on('connection', (socket) => {
+  console.log('Connected: ' + socket.userId)
+
+  socket.on('disconnect', () => {
+    console.log('Disconnected: ' + socket.userId)
+  })
 })
 
 process.on('unhandledRejection', (error) => {
