@@ -10,7 +10,6 @@ import {
 } from "react-router-dom";
 import Home from './components/homepage';
 
-
 function App() {
   return (
     <div className="App">
