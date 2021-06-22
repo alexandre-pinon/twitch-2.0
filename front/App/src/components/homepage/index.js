@@ -6,7 +6,7 @@ import CarouselCard from '../carouselCard';
 
 function Home() {
   return (
-    <div className="container">
+    <div id="container">
         <Container>
           <Row>
             <Col>

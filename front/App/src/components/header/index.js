@@ -12,7 +12,7 @@ import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import Logo from '../images/icon.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faCog } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faCog, faVideo } from '@fortawesome/free-solid-svg-icons';
 import Avatar from '@material-ui/core/Avatar';
 import { deepOrange, deepPurple } from '@material-ui/core/colors';
 
@@ -75,12 +75,18 @@ export default function TemporaryDrawer() {
       </List>
       <Divider />
       <List>
-        {['Réglages', 'Déconnexion'].map((text, index) => (
-          <ListItem className={classes.listItem} button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <FontAwesomeIcon icon={faCog}/> : <FontAwesomeIcon icon={faBars}/>}</ListItemIcon>
-            <ListItemText primary={text} />
+          <ListItem className={classes.listItem} button key="">
+            <ListItemIcon><FontAwesomeIcon icon={faVideo}/></ListItemIcon>
+            <ListItemText primary="Studio"/>
           </ListItem>
-        ))}
+          <ListItem className={classes.listItem} button key="">
+            <ListItemIcon><FontAwesomeIcon icon={faCog}/></ListItemIcon>
+            <ListItemText primary="Réglages"/>
+          </ListItem>
+          <ListItem className={classes.listItem} button key="">
+            <ListItemIcon><FontAwesomeIcon icon={faBars}/></ListItemIcon>
+            <ListItemText primary="Déconnexion"/>
+          </ListItem>
       </List>
     </div>
   );

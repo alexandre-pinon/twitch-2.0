@@ -35,6 +35,7 @@ function CarouselCard() {
 
   return (
     <div className="containProfilCarousel">
+    <h2 className="titleHP">Recommendations de profil</h2>
         <div className="overflow-X">
         {data.map(item => (
             <div className="card">
@@ -42,7 +43,7 @@ function CarouselCard() {
                     <CardActionArea>
                         <CardMedia
                         className={classes.media}
-                        image="/static/images/cards/contemplative-reptile.jpg"
+                        image="http://via.placeholder.com/640x640"
                         title="Contemplative Reptile"
                         />
                         <CardContent>

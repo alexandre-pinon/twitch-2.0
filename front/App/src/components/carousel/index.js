@@ -38,7 +38,7 @@ function Banner(props) {
                 >
 {/*                     <ReactFlvPlayer
                         url="https://www.youtube.com/watch?v=GF04QkRU4es"
-                        heigh="auto"
+                        height="auto"
                         width="1200px"
                         isMuted={false}
                     /> */}

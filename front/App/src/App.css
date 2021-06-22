@@ -46,7 +46,32 @@ body {
 }
 
 .container {
-  margin-top: -30px;
+  margin-top: 30px;
+}
+
+#container {
+  margin-top: -50px;
+}
+
+.col-sm-3{
+  background-color: rgba(0, 0, 0, 0.076);
+}
+
+.row.test{
+  background-color: rgba(130, 130, 130, 0.179);
+  height: 30vh;
+  border-radius: 30px;
+}
+
+.titleChat{
+  text-transform: uppercase;
+}
+
+@media (min-width: 1400px){
+  .container.xl{
+    max-width: 1420px;
+    height: 100vh;
+  }
 }
 
 .Media {
@@ -91,6 +116,9 @@ body {
   -ms-overflow-style: none;
 }
 
+.containProfilCarousel::-webkit-scrollbar { display: none; }
+.containProfilCarousel::-webkit-scrollbar { display: none; }
+
 .overflow-X {
   width: 200vw;
   height: 100%;
@@ -98,6 +126,35 @@ body {
   flex-direction: row;
 }
 
+.overflow-Y {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.containChat{
+  height: 55vh;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  -ms-overflow-style: none;
+}
+
 .card:not(:first-child){
   margin-left: 10px;
+}
+
+.row{
+  box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.309);
+}
+
+.titleHP{
+  text-align: left;
+}
+
+.messageChat{
+  border-radius: 20px;
+  background-color: white;
 }

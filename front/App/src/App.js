@@ -9,6 +9,7 @@ import {
   Link
 } from "react-router-dom";
 import Home from './components/homepage';
+import Studio from './components/studio';
 
 function App() {
   return (
@@ -18,8 +19,11 @@ function App() {
       </header>
       <Router>
         <Switch>
-          <Route path="/">
+          <Route exact path="/">
             <Home />
+          </Route>
+          <Route path="/studio">
+            <Studio />
           </Route>
         </Switch>
       </Router>
