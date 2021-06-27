@@ -14,7 +14,10 @@ function App() {
 
   const temporaryLogin = async () => {
     try {
-      const response = await axios.post('http://localhost:8001/user/login', {username: "admin", password: "password"})
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACK_ORIGIN}:${process.env.REACT_APP_BACK_PORT}/user/login`,
+        { username: 'admin', password: 'password' }
+      )
       setToken(response.data.token)
     } catch (error) {
       console.log(error)

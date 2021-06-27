@@ -6,13 +6,16 @@ export const useSocket = (token) => {
 
   useEffect(() => {
     if (token) {
-      const newSocket = io('http://localhost:8001', { auth: { token } })
+      const newSocket = io(
+        `${process.env.REACT_APP_BACK_ORIGIN}:${process.env.REACT_APP_BACK_PORT}`,
+        { auth: { token } }
+      )
 
       newSocket.on('disconnect', () => {
         console.log('Socket Disconnected!')
         setSocket(null)
       })
-  
+
       newSocket.on('connect', () => {
         console.log('Socket Connected!')
         setSocket(newSocket)

@@ -36,7 +36,7 @@ const server = app.listen(port, () => {
 
 const io = new Server(server, {
   cors: {
-    origin: process.env.FRONT_ORIGIN,
+    origin: `${process.env.FRONT_ORIGIN}:${process.env.FRONT_PORT}`,
   },
 })
 
