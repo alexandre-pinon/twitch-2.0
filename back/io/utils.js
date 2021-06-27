@@ -1,3 +1,5 @@
+import jwt from 'jwt-then'
+
 export const authenticateUser = async (socket, next) => {
   const token = socket.handshake.auth.token
   const payload = await jwt.verify(token, process.env.SECRET)

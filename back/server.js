@@ -1,6 +1,5 @@
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
-import jwt from 'jwt-then'
 import { Server } from 'socket.io'
 
 import app from './app.js'

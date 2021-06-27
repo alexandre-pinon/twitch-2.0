@@ -21,6 +21,7 @@
     "react-material-ui-carousel": "^2.2.6",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^1.1.5",
+    "socket.io-client": "^4.1.2",
     "sweetalert2": "^11.0.17",
     "web-vitals": "^1.0.1"
   },
