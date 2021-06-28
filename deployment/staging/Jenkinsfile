@@ -24,7 +24,7 @@ pipeline {
 
         stage("Clean-up") {
             steps {
-                echo 'Clean all environment...'
+                echo 'Clean all environments...'
             }
         }
     }
