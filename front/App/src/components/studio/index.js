@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react'
 import { ReactFlvPlayer } from 'react-flv-player'
 import Chat from "../chat";
 import { makeStyles } from '@material-ui/core/styles';
@@ -14,7 +14,7 @@ import Button from '@material-ui/core/Button';
   },
 }));
 
-function Studio() {
+function Studio(props) {
 
     const classes = useStyles();
     const [value, setValue] = React.useState('Controlled');
@@ -22,6 +22,16 @@ function Studio() {
     const handleChange = (event) => {
       setValue(event.target.value);
     };
+
+    useEffect(() => {
+      if (props.socket) {
+        const testChatroomId = '60d99924da81285294d066eb'
+        props.socket.emit('join room', testChatroomId)
+        return () => {
+          props.socket.emit('leave room', testChatroomId)
+        }
+      }
+    }, [props.socket])
 
   return (
     <div className="container xl">
@@ -57,12 +67,8 @@ function Studio() {
                 </div>
             </div>
         </div>
-        <br/>
-        <div className="row test">
-
-        </div>
     </div>
-  );
+  )
 }
 
-export default Studio;
+export default Studio

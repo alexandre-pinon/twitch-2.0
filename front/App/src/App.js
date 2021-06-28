@@ -39,7 +39,7 @@ function App() {
             <Home />
           </Route>
           <Route path="/studio">
-            <Studio />
+            <Studio socket={socket}/>
           </Route>
         </Switch>
       </Router>
