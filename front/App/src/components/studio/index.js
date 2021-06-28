@@ -3,8 +3,9 @@ import { ReactFlvPlayer } from 'react-flv-player'
 import Chat from "../chat";
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 
-/* const useStyles = makeStyles((theme) => ({
+ const useStyles = makeStyles((theme) => ({
   root: {
     '& .MuiTextField-root': {
       margin: theme.spacing(1),
@@ -12,11 +13,11 @@ import TextField from '@material-ui/core/TextField';
     },
   },
 }));
- */
+
 function Studio() {
 
-/*     const classes = useStyles();
- */    const [value, setValue] = React.useState('Controlled');
+    const classes = useStyles();
+    const [value, setValue] = React.useState('Controlled');
   
     const handleChange = (event) => {
       setValue(event.target.value);
@@ -41,7 +42,8 @@ function Studio() {
                     <Chat/>
                 </div>
                 <div className="input-group">
-                    <TextField                        
+                    <TextField
+                        className="input-item"
                         id="standard-multiline-flexible"
                         label="Multiline"
                         multiline
@@ -49,6 +51,9 @@ function Studio() {
                         value={value}
                         onChange={handleChange}
                     />
+                    <Button variant="contained" className="input-item marginTop" color="primary">
+                      Primary
+                    </Button>
                 </div>
             </div>
         </div>
