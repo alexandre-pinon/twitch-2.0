@@ -40,7 +40,7 @@ function Studio(props) {
                 <ReactFlvPlayer
                     url="https://www.youtube.com/watch?v=GF04QkRU4es"
                     height="auto"
-                    width="1025px"
+                    width="100%"
                     isMuted={false}
                 /> 
             </div>
