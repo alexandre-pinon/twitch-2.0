@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react'
 import { ReactFlvPlayer } from 'react-flv-player'
 import Chat from "../chat";
 import { makeStyles } from '@material-ui/core/styles';
@@ -31,6 +31,7 @@ import Modal from '@material-ui/core/Modal';
   },
 }));
 
+<<<<<<< HEAD
 function rand() {
   return Math.round(Math.random() * 20) - 10;
 }
@@ -46,7 +47,20 @@ function getModalStyle() {
   };
 }
 
-function Studio() {
+function Studio(props) {
+=======
+function Studio(props) {
+>>>>>>> 7b4e0533fc813fd456768fc649414b18e897d940
+
+useEffect(() => {
+  if (props.socket) {
+    const testChatroomId = '60d99924da81285294d066eb'
+    props.socket.emit('join room', testChatroomId)
+    return () => {
+      props.socket.emit('leave room', testChatroomId)
+    }
+  }
+}, [props.socket])
 
     const classes = useStyles();
     const [value, setValue] = React.useState('Controlled');
@@ -55,6 +69,7 @@ function Studio() {
       setValue(event.target.value);
     };
 
+<<<<<<< HEAD
     const [modalStyle] = React.useState(getModalStyle);
     const [open, setOpen] = React.useState(false);
   
@@ -74,6 +89,9 @@ function Studio() {
         </p>
       </div>
     );
+=======
+
+>>>>>>> 7b4e0533fc813fd456768fc649414b18e897d940
 
   return (
     <div className="container xl">
@@ -114,6 +132,7 @@ function Studio() {
                 </div>
             </div>
         </div>
+<<<<<<< HEAD
         <br/>
         <div className="row test">
           <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" className={classes.large} />
@@ -133,8 +152,10 @@ function Studio() {
             Suivre
           </Button>
         </div>
+=======
+>>>>>>> 7b4e0533fc813fd456768fc649414b18e897d940
     </div>
-  );
+  )
 }
 
-export default Studio;
+export default Studio

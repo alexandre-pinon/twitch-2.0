@@ -1,0 +1,31 @@
+pipeline {
+
+    agent any 
+
+    stages {
+
+        stage("Test") {
+            steps {
+                echo 'Running Test...'
+            }
+        }
+
+        stage("Build") {
+            steps {
+                echo 'Building apps...'
+            }
+        }
+
+        stage("Deploy") {
+            steps {
+                echo 'Deploy docker images...'
+            }
+        }
+
+        stage("Clean-up") {
+            steps {
+                echo 'Clean all environments...'
+            }
+        }
+    }
+}

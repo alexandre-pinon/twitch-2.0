@@ -3,9 +3,8 @@ import mongoose from 'mongoose'
 import { Server } from 'socket.io'
 
 import app from './app.js'
-import User from './models/User.js'
 import { catchAsyncSocket } from './errors/ErrorHandler.js'
-import { authenticateUser } from './io/utils.js'
+import { handleSocket, authenticateUser } from './socket/io.js'
 
 dotenv.config({ path: '.back.env' })
 
@@ -41,14 +40,7 @@ const io = new Server(server, {
 })
 
 io.use(catchAsyncSocket(authenticateUser))
-
-io.on('connection', (socket) => {
-  console.log('Connected: ' + socket.userId)
-
-  socket.on('disconnect', () => {
-    console.log('Disconnected: ' + socket.userId)
-  })
-})
+io.on('connection', handleSocket)
 
 process.on('unhandledRejection', (error) => {
   console.log(error.name, error.message)

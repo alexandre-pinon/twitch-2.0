@@ -1,4 +1,5 @@
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
+
 import AppError from './AppError.js'
 
 export const catchAsync = (fn) => {
@@ -14,9 +15,9 @@ export const catchAsync = (fn) => {
 }
 
 export const catchAsyncSocket = (fn) => {
-  return (socket, next) => {
-    fn(socket, next).catch((error) => {
-      next(error)
+  return (socket, ...args) => {
+    fn(socket, ...args).catch((error) => {
+      socket.emit('server error', error)
     })
   }
 }

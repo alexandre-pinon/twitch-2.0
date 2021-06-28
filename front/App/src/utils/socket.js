@@ -20,6 +20,10 @@ export const useSocket = (token) => {
         console.log('Socket Connected!')
         setSocket(newSocket)
       })
+
+      newSocket.on('server error', (error) => {
+        console.error('SERVER ERROR 💥', error)
+      })
     }
   }, [token])
 
