@@ -61,6 +61,7 @@ body {
   background-color: rgba(130, 130, 130, 0.179);
   height: 30vh;
   border-radius: 30px;
+  padding: 1% 1%;
 }
 
 .titleChat{
@@ -161,4 +162,32 @@ body {
 
 .input-item {
   width: 100%;
+}
+
+.NameStreamer {
+  color: #000;
+  width: 70%;
+}
+
+.NameStreamer h2 {
+  font-size: xx-large;
+  margin-bottom: 30px;
+}
+
+.NameStreamer p {
+  text-align: left;
+}
+
+.buttonDiv {
+  width: 15%;
+  background-color: blue;
+  float: right;
+  margin-top: -10%;
+}
+
+.playertoolbar {
+  width: 100%;
+  height: 3vh;
+  color: black;
+  text-align: left;
 }
