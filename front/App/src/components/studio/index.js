@@ -14,7 +14,7 @@ import Button from '@material-ui/core/Button';
   },
 }));
 
-function Studio() {
+function Studio(props) {
 
     const classes = useStyles();
     const [value, setValue] = React.useState('Controlled');

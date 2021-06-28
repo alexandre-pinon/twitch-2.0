@@ -30,15 +30,13 @@ export const register = async (request, response) => {
     )
   }
 
-  const user = new User({
+  await new User({
     username,
     email,
     password: sha256(password + process.env.SALT),
     description,
     avatar,
-  })
-
-  await user.save()
+  }).save()
 
   response.status(StatusCodes.CREATED).json({
     message: `User ${username} registered successfully!`,
@@ -51,7 +49,6 @@ export const login = async (request, response) => {
     username,
     password: sha256(password + process.env.SALT),
   })
-
   if (!user) {
     throw new AppError('Username and Password did not match')
   }
