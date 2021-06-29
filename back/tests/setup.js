@@ -1,6 +1,8 @@
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 
+import { seedUser } from './seed'
+
 dotenv.config({ path: '.back.env' })
 mongoose.promise = global.Promise
 

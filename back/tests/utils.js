@@ -11,7 +11,7 @@ export const expectResponseError = (
 
   expect(response.body.error.statusCode).toBe(statusCode)
   expect(response.body.error.status).toBe(status)
-  expect(response.body.message).toBe(errorMessage)
+  expect(response.body.message).toContain(errorMessage)
 }
 
 export const expectResponseSuccess = (
@@ -25,5 +25,5 @@ export const expectResponseSuccess = (
 
   expect(response.statusCode).toBe(statusCode)
   expect(response.res.statusMessage).toBe(statusMessage)
-  expect(response.body.message).toBe(message)
+  expect(response.body.message).toContain(message)
 }

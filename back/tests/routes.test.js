@@ -3,16 +3,19 @@ import supertest from 'supertest'
 import setupDB from './setup.js'
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import { expectResponseError, expectResponseSuccess } from './utils.js'
+import User from '../models/User.js'
+import { seedUser } from './seed.js'
+import Chatroom from '../models/Chatroom.js'
 
 setupDB('endpoint-testing')
 const request = supertest(app)
 
 describe('Testing user auth', () => {
-  const username = 'test_user'
+  const username = 'testUser'
   const password = '123456'
   const email = 'test@gmail.com'
 
-  it('Failed login -> empty DB!', async () => {
+  it('Failed login -> bad credentials', async () => {
     let response = await request.post('/user/login')
     expectResponseError(response, 'Username and Password did not match')
   })
@@ -39,11 +42,32 @@ describe('Testing user auth', () => {
     expectResponseSuccess(
       response,
       `User ${username} registered successfully`,
-      StatusCodes.CREATED,
-      ReasonPhrases.CREATED
+      StatusCodes.CREATED
     )
 
     response = await request.post('/user/login').send({ username, password })
     expectResponseSuccess(response, `User logged in successfully`)
+  })
+})
+
+describe('Testing chatroom routes', () => {
+  it('Failed create -> no users', async () => {
+    let response = await request.post('/chatroom/create')
+    expectResponseError(
+      response,
+      'No user found for id undefined',
+      StatusCodes.NOT_FOUND
+    )
+  })
+  it('Success create', async () => {
+    let chatroom = await Chatroom.find({})
+    expect(chatroom.length).toBe(0)
+
+    const userId = await seedUser()
+    let response = await request.post('/chatroom/create').send({ userId })
+    expectResponseSuccess(response, 'created', StatusCodes.CREATED)
+
+    chatroom = await Chatroom.find({})
+    expect(chatroom.length).toBe(1)
   })
 })
