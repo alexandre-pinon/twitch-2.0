@@ -1,45 +1,23 @@
 import app from '../app.js'
 import supertest from 'supertest'
 import setupDB from './setup.js'
-import { getReasonPhrase, ReasonPhrases, StatusCodes } from 'http-status-codes'
+import { ReasonPhrases, StatusCodes } from 'http-status-codes'
+import { expectResponseError, expectResponseSuccess } from './utils.js'
 
 setupDB('endpoint-testing')
 const request = supertest(app)
-
-const expectResponseError = (response, errorMessage, statusCode, status) => {
-  statusCode = statusCode || StatusCodes.BAD_REQUEST
-  status = status || getReasonPhrase(statusCode)
-
-  expect(response.body.error.statusCode).toBe(statusCode)
-  expect(response.body.error.status).toBe(status)
-  expect(response.body.message).toBe(errorMessage)
-}
-
-const expectResponseSuccess = (
-  response,
-  message,
-  statusCode,
-  statusMessage
-) => {
-  statusCode = statusCode || StatusCodes.OK
-  statusMessage = statusMessage || getReasonPhrase(statusCode)
-
-  expect(response.statusCode).toBe(statusCode)
-  expect(response.res.statusMessage).toBe(statusMessage)
-  expect(response.body.message).toBe(message)
-}
 
 describe('Testing user auth', () => {
   const username = 'test_user'
   const password = '123456'
   const email = 'test@gmail.com'
 
-  it('Failed login user -> empty DB !', async () => {
+  it('Failed login -> empty DB!', async () => {
     let response = await request.post('/user/login')
     expectResponseError(response, 'Username and Password did not match')
   })
 
-  it('Failed register user', async () => {
+  it('Failed register -> bad credentials', async () => {
     let response = await request.post('/user/register')
     expectResponseError(response, 'Username is required')
 
@@ -54,7 +32,7 @@ describe('Testing user auth', () => {
     expectResponseError(response, 'Password must be atleast 6 characters long')
   })
 
-  it('Success register user', async () => {
+  it('Success register & login', async () => {
     let response = await request
       .post('/user/register')
       .send({ username, email, password })
@@ -64,5 +42,8 @@ describe('Testing user auth', () => {
       StatusCodes.CREATED,
       ReasonPhrases.CREATED
     )
+
+    response = await request.post('/user/login').send({ username, password })
+    expectResponseSuccess(response, `User logged in successfully`)
   })
 })
