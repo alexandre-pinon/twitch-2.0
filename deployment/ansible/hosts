@@ -6,7 +6,7 @@
 #   - Blank lines are ignored
 #   - Groups of hosts are delimited by [header] elements
 #   - You can enter hostnames or ip addresses
-#   - A hostname/ip can be a member of multiple groups
+#   - A hostname/ip can be a member of multiple group
 
 [production]
 server1 ansible_host=192.168.1.32 ansible_user=root ansible_python_interpreter=/usr/bin/python3
