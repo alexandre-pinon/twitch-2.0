@@ -1,12 +1,15 @@
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
+import { Server } from 'socket.io'
+import Client from 'socket.io-client'
 
-import { seedUser } from './seed'
+import app from '../app'
 
 dotenv.config({ path: '.back.env' })
 mongoose.promise = global.Promise
 
 export default (databaseName) => {
+  let io, serverSocket, clientSocket
   // Connect to Mongoose
   beforeAll(async () => {
     const url = `${process.env.NODE_TEST}${databaseName}?retryWrites=true&w=majority`
@@ -15,6 +18,10 @@ export default (databaseName) => {
       useUnifiedTopology: true,
       useCreateIndex: true,
     })
+    const socketSetup = await setupSocket(io, serverSocket, clientSocket)
+    io = socketSetup.io
+    serverSocket = socketSetup.serverSocket
+    clientSocket = socketSetup.clientSocket
   })
 
   // Cleans up database between each test
@@ -25,7 +32,9 @@ export default (databaseName) => {
   // Disconnect Mongoose
   afterAll(async () => {
     await dropAllCollections()
-    await mongoose.connection.close()
+    mongoose.connection.close()
+    io.close()
+    clientSocket.close()
   })
 }
 
@@ -53,4 +62,23 @@ const dropAllCollections = async () => {
       console.log(error.message)
     }
   }
+}
+
+const setupSocket = async (io, serverSocket, clientSocket) => {
+  return new Promise((resolve, reject) => {
+    const server = app.listen()
+    const frontOrigin = `${process.env.FRONT_ORIGIN}:${server.address().port}`
+    io = new Server(server, {
+      cors: {
+        origin: frontOrigin,
+      },
+    })
+    clientSocket = new Client(frontOrigin)
+    io.on('connection', (socket) => {
+      serverSocket = socket
+    })
+    clientSocket.on('connect', () => {
+      resolve({ io, clientSocket, serverSocket })
+    })
+  })
 }
