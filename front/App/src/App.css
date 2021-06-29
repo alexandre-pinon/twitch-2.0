@@ -156,6 +156,7 @@ body {
 }
 
 .messageChat{
+  width: 100%;
   border-radius: 20px;
   background-color: white;
 }
@@ -180,14 +181,46 @@ body {
 
 .buttonDiv {
   width: 15%;
-  background-color: blue;
-  float: right;
-  margin-top: -10%;
+  margin-top: 75px;
 }
 
 .playertoolbar {
   width: 100%;
-  height: 3vh;
   color: black;
   text-align: left;
+  position: relative;
+}
+
+.window {
+  height: auto;
+  width: 100%;
+  background-color: red;
+  position: absolute;
+  z-index: 100;
+}
+
+[aria-haspopup=false]{
+  display: none;
+}
+[aria-haspopup=true]{
+  display: block;
+}
+
+.containFullChat{
+  bottom: 18%;
+  background-color: rgba(255, 0, 0, 0);
+  z-index: 3;
+  position: absolute;
+  height: 55vh;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  -ms-overflow-style: none;
+}
+
+.containFullMode{
+  position: relative;
+  height: 96vh;
+  background-color: #000;
 }

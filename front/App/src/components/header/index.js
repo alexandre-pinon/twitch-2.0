@@ -25,7 +25,7 @@ const useStyles = makeStyles({
     width: 'auto',
   },
   menu: {
-    height: '3vh'
+    height: '4vh'
   },
   logo: {
     width: '4vw',
