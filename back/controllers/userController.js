@@ -10,13 +10,13 @@ export const register = async (request, response) => {
   const emailRegex = /@gmail.com|@yahoo.com|@hotmail.com|@live.com|outlook.fr/
 
   if (!username) {
-    throw new AppError('Username is required.')
+    throw new AppError('Username is required')
   }
   if (!emailRegex.test(email)) {
-    throw new AppError('Email is not supported from your domain.')
+    throw new AppError('Email is not supported from your domain')
   }
   if (password.length < 6) {
-    throw new AppError('Password must be atleast 6 characters long.')
+    throw new AppError('Password must be atleast 6 characters long')
   }
 
   const userExists = await User.findOne({
@@ -25,7 +25,7 @@ export const register = async (request, response) => {
 
   if (userExists) {
     throw new AppError(
-      'User with same email already exists.',
+      'User with same email already exists',
       StatusCodes.CONFLICT
     )
   }
@@ -39,7 +39,7 @@ export const register = async (request, response) => {
   }).save()
 
   response.status(StatusCodes.CREATED).json({
-    message: `User ${username} registered successfully!`,
+    message: `User ${username} registered successfully`,
   })
 }
 
@@ -53,10 +53,10 @@ export const login = async (request, response) => {
     throw new AppError('Username and Password did not match')
   }
 
-  const token = await jwt.sign({ id: user.id }, process.env.SECRET)
+  // const token = await jwt.sign({ id: user.id }, process.env.SECRET)
 
   response.json({
-    message: 'User logged in successfully!',
-    token,
+    message: 'User logged in successfully',
+    // token,
   })
 }

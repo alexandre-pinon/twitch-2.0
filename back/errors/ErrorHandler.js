@@ -39,7 +39,7 @@ const sendError = (error, request, response, next) => {
   error.statusCode = error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR
   error.status = error.status || ReasonPhrases.INTERNAL_SERVER_ERROR
 
-  if (process.env.NODE_ENV === 'DEV') {
+  if (['DEV', 'test'].includes(process.env.NODE_ENV)) {
     sendErrorDev(error, response)
   } else if (process.env.NODE_ENV === 'PROD') {
     sendErrorProd(error, response)
@@ -66,7 +66,7 @@ const sendErrorProd = (error, response) => {
 
     response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       status: ReasonPhrases.INTERNAL_SERVER_ERROR,
-      message: 'Something went very wrong!',
+      message: 'Something went very wrong',
     })
   }
 }
