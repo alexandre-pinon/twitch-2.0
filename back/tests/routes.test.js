@@ -1,13 +1,13 @@
-import app from '../app.js'
 import supertest from 'supertest'
-import setupDB from './setup.js'
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
-import { expectResponseError, expectResponseSuccess } from './utils.js'
-import User from '../models/User.js'
-import { seedUser } from './seed.js'
-import Chatroom from '../models/Chatroom.js'
 
-setupDB('endpoint-testing')
+import app from '../app.js'
+import setupDB from './setup.js'
+import Chatroom from '../models/Chatroom.js'
+import { seedUser } from './seed.js'
+import { expectResponseError, expectResponseSuccess } from './utils.js'
+
+setupDB('route-testing')
 const request = supertest(app)
 
 describe('Testing user auth', () => {
@@ -63,8 +63,10 @@ describe('Testing chatroom routes', () => {
     let chatroom = await Chatroom.find({})
     expect(chatroom.length).toBe(0)
 
-    const userId = await seedUser()
-    let response = await request.post('/chatroom/create').send({ userId })
+    const testUser = await seedUser()
+    let response = await request
+      .post('/chatroom/create')
+      .send({ userId: testUser._id })
     expectResponseSuccess(response, 'created', StatusCodes.CREATED)
 
     chatroom = await Chatroom.find({})

@@ -1,5 +1,14 @@
 import { getReasonPhrase, StatusCodes } from 'http-status-codes'
 
+export const expectError = (error, errormessage, statusCode, status) => {
+  statusCode = statusCode || StatusCodes.BAD_REQUEST
+  status = status || getReasonPhrase(statusCode)
+
+  expect(error.message).toBe(errormessage)
+  expect(error.statusCode).toBe(statusCode)
+  expect(error.status).toBe(status)
+}
+
 export const expectResponseError = (
   response,
   errorMessage,

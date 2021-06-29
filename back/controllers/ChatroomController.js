@@ -21,7 +21,13 @@ export const create = async (userId) => {
 }
 
 export const addOrRemoveUser = async (chatroomId, userId, action) => {
-  const chatroom = await Chatroom.findById(chatroomId)
+  const userPromise = User.findById(userId)
+  const chatPromise = Chatroom.findById(chatroomId)
+  const [user, chatroom] = await Promise.all([userPromise, chatPromise])
+
+  if (!user) {
+    throw new AppError(`No user found for id ${userId}`, StatusCodes.NOT_FOUND)
+  }
   if (!chatroom) {
     throw new AppError(
       `No chat found for id ${chatroomId}`,
@@ -33,13 +39,13 @@ export const addOrRemoveUser = async (chatroomId, userId, action) => {
     case 'ADD':
       if (!chatroom.users.includes(userId)) {
         chatroom.users.push(userId)
-        chatroom.save()
+        await chatroom.save()
       }
       break
     case 'REMOVE':
       if (chatroom.users.includes(userId)) {
         chatroom.users.pull(userId)
-        chatroom.save()
+        await chatroom.save()
       }
       break
     default:

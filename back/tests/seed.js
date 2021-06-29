@@ -1,5 +1,6 @@
 import { sha256 } from 'js-sha256'
 
+import Chatroom from '../models/Chatroom'
 import User from '../models/User'
 
 export const seedUser = async () => {
@@ -10,5 +11,14 @@ export const seedUser = async () => {
     description: `I'm the test user number 1!`,
     avatar: null,
   }).save()
-  return testUser1._id
+  return testUser1
+}
+
+export const seedChatroom = async (user) => {
+  const testChatroom1 = await new Chatroom({
+    users: user instanceof User ? user : [],
+    messages: [],
+    private: false,
+  }).save()
+  return testChatroom1
 }
