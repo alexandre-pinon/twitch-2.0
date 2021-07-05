@@ -5,6 +5,7 @@ import * as ChatroomController from '../controllers/ChatroomController.js'
 import * as MessageController from '../controllers/MessageController.js'
 import AppError from '../errors/AppError.js'
 import { catchAsyncSocket } from '../errors/ErrorHandler.js'
+import { whisper } from './commands.js'
 
 export const authenticateUser = async (socket, next) => {
   const token = socket.handshake.auth.token
@@ -29,10 +30,6 @@ export const handleSocket = (socket, io) => {
   })
 
   socket.on('chat message', (chatroomId, message) => {
-    catchAsyncSocket(handleChatMessage)(socket, io, chatroomId, message)
-  })
-
-  socket.on('private message', (chatroomId, message) => {
     catchAsyncSocket(handleChatMessage)(socket, io, chatroomId, message)
   })
 }
@@ -70,16 +67,16 @@ export const handleChatMessage = async (socket, io, chatroomId, message) => {
   })
 
   message[0] === '/'
-    ? await handleCommands(socket, io, chatroomId, message)
+    ? await handleCommands(socket, chatroomId, message)
     : await MessageController.insert(socket, chatroomId, message)
 }
 
-export const handleCommands = async (socket, io, chatroomId, message) => {
+export const handleCommands = async (socket, chatroomId, message) => {
   let [command, ...argument] = message.split(' ')
   argument = argument.join(' ')
 
   let commands = {
-    '/w': whisper(socket, io, chatroomId, message, argument),
+    '/w': whisper(socket, message, argument),
     default: () => {
       throw new AppError('Unknown command')
     },

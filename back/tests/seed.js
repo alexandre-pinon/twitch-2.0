@@ -14,11 +14,11 @@ export const seedUser = async () => {
   return testUser1
 }
 
-export const seedChatroom = async (user) => {
+export const seedChatroom = async (user, priv = false) => {
   const testChatroom1 = await new Chatroom({
     users: user instanceof User ? user : [],
     messages: [],
-    private: false,
+    private: priv,
   }).save()
   return testChatroom1
 }

@@ -12,11 +12,11 @@ import { expectError } from './utils.js'
 setupTest('controller-testing', true)
 
 describe('Testing user methods', () => {
-  it('Test getUser', async () => {
-    const user = await seedUser()
+  it('Test get user', async () => {
+    let userObj = await UserController.getUser({})
+    expect(userObj).toBeNull()
 
-    let userObj = await UserController.getUser({ _id: user._id })
-    expect(userObj._id).toEqual(user._id)
+    const user = await seedUser()
 
     userObj = await UserController.getUser({
       _id: user._id,
@@ -33,6 +33,27 @@ describe('Testing user methods', () => {
 })
 
 describe('Testing chat methods', () => {
+  it('Test get chatroom', async () => {
+    let chatroomObj = await ChatroomController.getChatroom({})
+    expect(chatroomObj).toBeNull()
+
+    let user = await seedUser()
+    const chatroom = await seedChatroom(user, true)
+
+    chatroomObj = await ChatroomController.getChatroom({ _id: chatroom._id })
+    expect(chatroomObj._id).toEqual(chatroom._id)
+
+    chatroomObj = await ChatroomController.getChatroom({
+      users: [null],
+    })
+    expect(chatroomObj).toBeNull()
+
+    chatroomObj = await ChatroomController.getChatroom({
+      users: [user._id],
+    })
+    expect(chatroomObj._id).toEqual(chatroom._id)
+  })
+
   it('Test adding user to chat', async () => {
     let user = await seedUser()
     let chatroom = await seedChatroom()

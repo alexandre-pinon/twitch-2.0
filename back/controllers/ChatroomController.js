@@ -52,3 +52,12 @@ export const addOrRemoveUser = async (chatroomId, userId, action) => {
       throw new AppError(`Unknown action ${action}`)
   }
 }
+
+export const getChatroom = async (params) => {
+  const query = Object.fromEntries(
+    Object.entries(params).filter(([key, value]) =>
+      Object.keys(Chatroom.schema.tree).includes(key)
+    )
+  )
+  return await Chatroom.findOne(query)
+}
