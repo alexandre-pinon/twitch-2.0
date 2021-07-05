@@ -10,7 +10,7 @@ mongoose.promise = global.Promise
 
 export let io, serverSocket, clientSocket
 
-export default (databaseName, withSocket=false) => {
+export default (databaseName, withSocket = false) => {
   // Connect to Mongoose
   beforeAll(async () => {
     const url = `${process.env.NODE_TEST}${databaseName}?retryWrites=true&w=majority`
@@ -30,7 +30,10 @@ export default (databaseName, withSocket=false) => {
   // Cleans up database between each test
   afterEach(async () => {
     await removeAllCollections()
-
+    if (withSocket) {
+      serverSocket.removeAllListeners()
+      clientSocket.removeAllListeners()
+    }
   })
 
   // Disconnect Mongoose

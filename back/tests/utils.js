@@ -9,6 +9,15 @@ export const expectError = (error, errormessage, statusCode, status) => {
   expect(error.status).toBe(status)
 }
 
+export const expectSocketError = (error, errormessage, statusCode, status) => {
+  statusCode = statusCode || StatusCodes.BAD_REQUEST
+  status = status || getReasonPhrase(statusCode)
+
+  expect(error.message).toBe(errormessage)
+  expect(error.error.statusCode).toBe(statusCode)
+  expect(error.error.status).toBe(status)
+}
+
 export const expectResponseError = (
   response,
   errorMessage,

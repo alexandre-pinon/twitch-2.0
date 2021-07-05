@@ -13,7 +13,7 @@ export const authenticateUser = async (socket, next) => {
   next()
 }
 
-export const handleSocket = (socket) => {
+export const handleSocket = (socket, io) => {
   console.log('Connected: ' + socket.userId)
 
   socket.on('disconnect', () => {
@@ -21,15 +21,15 @@ export const handleSocket = (socket) => {
   })
 
   socket.on('join room', (chatroomId) => {
-    catchAsyncSocket(handleJoinRoom(socket, chatroomId))
+    catchAsyncSocket(handleJoinRoom)(socket, chatroomId)
   })
 
   socket.on('leave room', (chatroomId) => {
-    catchAsyncSocket(handleLeaveRoom(socket, chatroomId))
+    catchAsyncSocket(handleLeaveRoom)(socket, chatroomId)
   })
 
   socket.on('chat message', (chatroomId, message) => {
-    catchAsyncSocket(handleChatMessage(socket, chatroomId, message))
+    catchAsyncSocket(handleChatMessage)(socket, io, chatroomId, message)
   })
 
   socket.on('private message', (chatroomId, message) => {
@@ -49,7 +49,7 @@ export const handleLeaveRoom = async (socket, chatroomId) => {
   await ChatroomController.addOrRemoveUser(chatroomId, socket.userId, 'REMOVE')
 }
 
-const handleChatMessage = async (socket, chatroomId, message) => {
+export const handleChatMessage = async (socket, io, chatroomId, message) => {
   message = message.trim()
 
   if (!message) {

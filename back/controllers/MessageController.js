@@ -11,7 +11,10 @@ export const insert = async (socket, io, chatroomId, message) => {
   const [user, chatroom] = await Promise.all([userPromise, chatPromise])
 
   if (!user) {
-    throw new AppError(`No user found for id ${socket.userId}`, StatusCodes.NOT_FOUND)
+    throw new AppError(
+      `No user found for id ${socket.userId}`,
+      StatusCodes.NOT_FOUND
+    )
   }
   if (!chatroom) {
     throw new AppError(
@@ -20,8 +23,8 @@ export const insert = async (socket, io, chatroomId, message) => {
     )
   }
 
-  io.to(chatroomId).emit('message', {
-    name: user.username,
+  io.to(chatroomId).emit('chat message', {
+    username: user.username,
     message,
   })
 
@@ -29,6 +32,7 @@ export const insert = async (socket, io, chatroomId, message) => {
     user: socket.userId,
     message,
   }).save()
+
   chatroom.messages.push(newMessage._id)
   await chatroom.save()
 }

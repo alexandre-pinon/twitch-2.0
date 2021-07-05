@@ -5,8 +5,8 @@
   "description": "Main API",
   "main": "server.js",
   "scripts": {
-    "test": "jest --watch --verbose",
-    "unittest": "jest --verbose",
+    "test": "jest --watch",
+    "unittest": "jest",
     "start": "nodemon"
   },
   "author": "Sutoremon",
@@ -29,5 +29,9 @@
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.14.5"
+  },
+  "jest": {
+    "testTimeout": 20000,
+    "verbose": true
   }
 }

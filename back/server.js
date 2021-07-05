@@ -40,7 +40,7 @@ const io = new Server(server, {
 })
 
 io.use(catchAsyncSocket(authenticateUser))
-io.on('connection', handleSocket)
+io.on('connection', (socket) => handleSocket(socket, io))
 
 process.on('unhandledRejection', (error) => {
   console.log(error.name, error.message)

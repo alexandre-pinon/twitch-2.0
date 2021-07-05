@@ -1,5 +1,5 @@
 import supertest from 'supertest'
-import { ReasonPhrases, StatusCodes } from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 
 import app from '../app.js'
 import setupTest from './setup.js'

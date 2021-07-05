@@ -17,7 +17,22 @@ export const catchAsync = (fn) => {
 export const catchAsyncSocket = (fn) => {
   return (socket, ...args) => {
     fn(socket, ...args).catch((error) => {
-      socket.emit('server error', error)
+      error.statusCode = error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR
+      error.status = error.status || ReasonPhrases.INTERNAL_SERVER_ERROR
+
+      if (['DEV', 'test'].includes(process.env.NODE_ENV)) {
+        socket.emit('server error', {
+          status: error.status,
+          error: error,
+          message: error.message,
+          stack: error.stack,
+        })
+      } else if (process.env.NODE_ENV === 'PROD') {
+        socket.emit('server error', {
+          status: error.status,
+          message: error.message,
+        })
+      }
     })
   }
 }
