@@ -2,12 +2,12 @@ import supertest from 'supertest'
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 
 import app from '../app.js'
-import setupDB from './setup.js'
+import setupTest from './setup.js'
 import Chatroom from '../models/Chatroom.js'
 import { seedUser } from './seed.js'
 import { expectResponseError, expectResponseSuccess } from './utils.js'
 
-setupDB('route-testing')
+setupTest('route-testing')
 const request = supertest(app)
 
 describe('Testing user auth', () => {

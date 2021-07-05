@@ -8,8 +8,9 @@ import app from '../app'
 dotenv.config({ path: '.back.env' })
 mongoose.promise = global.Promise
 
-export default (databaseName) => {
-  let io, serverSocket, clientSocket
+export let io, serverSocket, clientSocket
+
+export default (databaseName, withSocket=false) => {
   // Connect to Mongoose
   beforeAll(async () => {
     const url = `${process.env.NODE_TEST}${databaseName}?retryWrites=true&w=majority`
@@ -18,23 +19,28 @@ export default (databaseName) => {
       useUnifiedTopology: true,
       useCreateIndex: true,
     })
-    const socketSetup = await setupSocket(io, serverSocket, clientSocket)
-    io = socketSetup.io
-    serverSocket = socketSetup.serverSocket
-    clientSocket = socketSetup.clientSocket
+    if (withSocket) {
+      const socketSetup = await setupSocket(io, serverSocket, clientSocket)
+      io = socketSetup.io
+      serverSocket = socketSetup.serverSocket
+      clientSocket = socketSetup.clientSocket
+    }
   })
 
   // Cleans up database between each test
   afterEach(async () => {
     await removeAllCollections()
+
   })
 
   // Disconnect Mongoose
   afterAll(async () => {
     await dropAllCollections()
     mongoose.connection.close()
-    io.close()
-    clientSocket.close()
+    if (withSocket) {
+      io.close()
+      clientSocket.close()
+    }
   })
 }
 

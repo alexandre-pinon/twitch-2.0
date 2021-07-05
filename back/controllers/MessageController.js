@@ -1,3 +1,6 @@
+import { StatusCodes } from 'http-status-codes'
+
+import Chatroom from '../models/Chatroom.js'
 import User from '../models/User.js'
 import Message from '../models/Message.js'
 import AppError from '../errors/AppError.js'
@@ -8,7 +11,7 @@ export const insert = async (socket, io, chatroomId, message) => {
   const [user, chatroom] = await Promise.all([userPromise, chatPromise])
 
   if (!user) {
-    throw new AppError(`No user found for id ${userId}`, StatusCodes.NOT_FOUND)
+    throw new AppError(`No user found for id ${socket.userId}`, StatusCodes.NOT_FOUND)
   }
   if (!chatroom) {
     throw new AppError(
@@ -18,7 +21,7 @@ export const insert = async (socket, io, chatroomId, message) => {
   }
 
   io.to(chatroomId).emit('message', {
-    name: user.name,
+    name: user.username,
     message,
   })
 
@@ -27,4 +30,5 @@ export const insert = async (socket, io, chatroomId, message) => {
     message,
   }).save()
   chatroom.messages.push(newMessage._id)
+  chatroom.save()
 }
