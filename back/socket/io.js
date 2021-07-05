@@ -37,16 +37,16 @@ export const handleSocket = (socket) => {
   })
 }
 
-const handleJoinRoom = async (socket, chatroomId) => {
+export const handleJoinRoom = async (socket, chatroomId) => {
   socket.join(chatroomId)
   console.log(`User ${socket.userId} joined chatroom ${chatroomId}`)
-  ChatroomController.addOrRemoveUser(chatroomId, socket.userId, 'ADD')
+  await ChatroomController.addOrRemoveUser(chatroomId, socket.userId, 'ADD')
 }
 
-const handleLeaveRoom = async (socket, chatroomId) => {
+export const handleLeaveRoom = async (socket, chatroomId) => {
   socket.leave(chatroomId)
   console.log(`User ${socket.userId} left chatroom ${chatroomId}`)
-  ChatroomController.addOrRemoveUser(chatroomId, socket.userId, 'REMOVE')
+  await ChatroomController.addOrRemoveUser(chatroomId, socket.userId, 'REMOVE')
 }
 
 const handleChatMessage = async (socket, chatroomId, message) => {
@@ -58,5 +58,5 @@ const handleChatMessage = async (socket, chatroomId, message) => {
 
   message[0] === '/'
     ? console.log('WIP!')
-    : MessageController.insert(socket, io, chatroomId, message)
+    : await MessageController.insert(socket, io, chatroomId, message)
 }

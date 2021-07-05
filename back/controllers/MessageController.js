@@ -30,5 +30,5 @@ export const insert = async (socket, io, chatroomId, message) => {
     message,
   }).save()
   chatroom.messages.push(newMessage._id)
-  chatroom.save()
+  await chatroom.save()
 }
