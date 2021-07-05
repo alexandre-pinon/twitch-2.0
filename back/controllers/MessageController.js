@@ -5,7 +5,7 @@ import User from '../models/User.js'
 import Message from '../models/Message.js'
 import AppError from '../errors/AppError.js'
 
-export const insert = async (socket, io, chatroomId, message) => {
+export const insert = async (socket, chatroomId, message) => {
   const userPromise = User.findById(socket.userId)
   const chatPromise = Chatroom.findById(chatroomId)
   const [user, chatroom] = await Promise.all([userPromise, chatPromise])
@@ -22,11 +22,6 @@ export const insert = async (socket, io, chatroomId, message) => {
       StatusCodes.NOT_FOUND
     )
   }
-
-  io.to(chatroomId).emit('chat message', {
-    username: user.username,
-    message,
-  })
 
   const newMessage = await new Message({
     user: socket.userId,

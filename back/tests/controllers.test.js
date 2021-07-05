@@ -1,14 +1,36 @@
 import { StatusCodes } from 'http-status-codes'
 
 import * as ChatroomController from '../controllers/ChatroomController.js'
+import * as UserController from '../controllers/UserController.js'
 import * as MessageController from '../controllers/MessageController.js'
-import setupTest, { io, serverSocket } from './setup.js'
+import setupTest, { serverSocket } from './setup.js'
 import Message from '../models/Message.js'
 import Chatroom from '../models/Chatroom.js'
 import { seedChatroom, seedUser } from './seed.js'
 import { expectError } from './utils.js'
 
 setupTest('controller-testing', true)
+
+describe('Testing user methods', () => {
+  it('Test getUser', async () => {
+    const user = await seedUser()
+
+    let userObj = await UserController.getUser({ _id: user._id })
+    expect(userObj._id).toEqual(user._id)
+
+    userObj = await UserController.getUser({
+      _id: user._id,
+      username: user.username,
+    })
+    expect(userObj._id).toEqual(user._id)
+
+    userObj = await UserController.getUser({ pomme: 'pote' })
+    expect(userObj._id).toEqual(user._id)
+
+    userObj = await UserController.getUser({ username: 'jean-benoit' })
+    expect(userObj).toBeNull()
+  })
+})
 
 describe('Testing chat methods', () => {
   it('Test adding user to chat', async () => {
@@ -91,7 +113,7 @@ describe('Testing message methods', () => {
     expect(messages).toHaveLength(0)
     expect(chatroom.messages).toHaveLength(0)
 
-    await MessageController.insert(serverSocket, io, chatroom._id, message)
+    await MessageController.insert(serverSocket, chatroom._id, message)
 
     messages = await Message.find({})
     expect(messages).toHaveLength(1)
@@ -109,7 +131,7 @@ describe('Testing message methods', () => {
     const message = 'EHE TE NANDAYO ?!'
     serverSocket.userId = userId
     try {
-      await MessageController.insert(serverSocket, io, chatroomId, message)
+      await MessageController.insert(serverSocket, chatroomId, message)
     } catch (error) {
       expectError(
         error,
@@ -122,7 +144,7 @@ describe('Testing message methods', () => {
     userId = user._id
     serverSocket.userId = userId
     try {
-      await MessageController.insert(serverSocket, io, chatroomId, message)
+      await MessageController.insert(serverSocket, chatroomId, message)
     } catch (error) {
       expectError(
         error,

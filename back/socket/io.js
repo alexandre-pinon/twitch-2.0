@@ -1,8 +1,8 @@
 import jwt from 'jwt-then'
 
+import * as UserController from '../controllers/UserController.js'
 import * as ChatroomController from '../controllers/ChatroomController.js'
 import * as MessageController from '../controllers/MessageController.js'
-import Chatroom from '../models/Chatroom.js'
 import AppError from '../errors/AppError.js'
 import { catchAsyncSocket } from '../errors/ErrorHandler.js'
 
@@ -33,7 +33,7 @@ export const handleSocket = (socket, io) => {
   })
 
   socket.on('private message', (chatroomId, message) => {
-    console.log('WIP!')
+    catchAsyncSocket(handleChatMessage)(socket, io, chatroomId, message)
   })
 }
 
@@ -56,7 +56,34 @@ export const handleChatMessage = async (socket, io, chatroomId, message) => {
     throw new AppError('Message is empty')
   }
 
+  const user = await UserController.getUser({ _id: socket.userId })
+  if (!user) {
+    throw new AppError(
+      `No user found for id ${socket.userId}`,
+      StatusCodes.NOT_FOUND
+    )
+  }
+
+  io.to(chatroomId).emit('chat message', {
+    username: user.username,
+    message,
+  })
+
   message[0] === '/'
-    ? console.log('WIP!')
-    : await MessageController.insert(socket, io, chatroomId, message)
+    ? await handleCommands(socket, io, chatroomId, message)
+    : await MessageController.insert(socket, chatroomId, message)
+}
+
+export const handleCommands = async (socket, io, chatroomId, message) => {
+  let [command, ...argument] = message.split(' ')
+  argument = argument.join(' ')
+
+  let commands = {
+    '/w': whisper(socket, io, chatroomId, message, argument),
+    default: () => {
+      throw new AppError('Unknown command')
+    },
+  }
+
+  ;(commands[command] || commands['default'])()
 }

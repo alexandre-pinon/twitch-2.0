@@ -60,3 +60,12 @@ export const login = async (request, response) => {
     // token,
   })
 }
+
+export const getUser = async (params) => {
+  const query = Object.fromEntries(
+    Object.entries(params).filter(([key, value]) =>
+      Object.keys(User.schema.tree).includes(key)
+    )
+  )
+  return await User.findOne(query)
+}
