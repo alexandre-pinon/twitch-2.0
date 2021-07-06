@@ -9,6 +9,24 @@ export const createAjax = async (request, response) => {
   response.status(StatusCodes.CREATED).json(res)
 }
 
+export const createPrivate = async (userId, targetUserId) => {
+  const userPromise = User.findById(userId)
+  const targetUserPromise = User.findById(targetUserId)
+  const [user, targetUser] = await Promise.all([userPromise, targetUserPromise])
+
+  if (!user) {
+    throw new AppError(`No user found for id ${userId}`, StatusCodes.NOT_FOUND)
+  }
+  if (!targetUser) {
+    throw new AppError(
+      `No user found for id ${targetUserId}`,
+      StatusCodes.NOT_FOUND
+    )
+  }
+
+  return await new Chatroom({ users: [user, targetUser], private: true }).save()
+}
+
 export const create = async (userId) => {
   const user = await User.findById(userId)
   if (!user) {

@@ -76,7 +76,7 @@ export const handleCommands = async (socket, chatroomId, message) => {
   argument = argument.join(' ')
 
   let commands = {
-    '/w': whisper(socket, message, argument),
+    '/w': whisper(socket, argument),
     default: () => {
       throw new AppError('Unknown command')
     },

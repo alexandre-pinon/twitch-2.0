@@ -3,15 +3,21 @@ import { sha256 } from 'js-sha256'
 import Chatroom from '../models/Chatroom'
 import User from '../models/User'
 
-export const seedUser = async () => {
-  const testUser1 = await new User({
-    username: 'testUser1',
-    email: 'testUser1@gmail.com',
-    password: sha256('password1' + process.env.SALT),
-    description: `I'm the test user number 1!`,
-    avatar: null,
-  }).save()
-  return testUser1
+export const seedUser = async (n = 1) => {
+  let users = [], i = 1
+  while (i <= n) {
+    users.push(
+      await new User({
+        username: `testUser${i}`,
+        email: `testUser${i}@gmail.com`,
+        password: sha256(`password${i}` + process.env.SALT),
+        description: `I'm the test user number ${i}!`,
+        avatar: null,
+      }).save()
+    )
+    i++
+  }
+  return users.length === 1 ? users[0] : users
 }
 
 export const seedChatroom = async (user, priv = false) => {

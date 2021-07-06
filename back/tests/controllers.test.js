@@ -33,7 +33,7 @@ describe('Testing user methods', () => {
 })
 
 describe('Testing chat methods', () => {
-  it('Test get chatroom', async () => {
+  it('Test get chat', async () => {
     let chatroomObj = await ChatroomController.getChatroom({})
     expect(chatroomObj).toBeNull()
 
@@ -52,6 +52,42 @@ describe('Testing chat methods', () => {
       users: [user._id],
     })
     expect(chatroomObj._id).toEqual(chatroom._id)
+  })
+
+  it('Test creating private chat', async () => {
+    let [user1, user2] = await seedUser(2)
+    const chatroom = await ChatroomController.createPrivate(
+      user1._id,
+      user2._id
+    )
+    expect(chatroom.users[0]).toEqual(user1._id)
+    expect(chatroom.users[1]).toEqual(user2._id)
+  })
+
+  it('Test error handling', async () => {
+    let userId1,
+      userId2 = null
+    try {
+      await ChatroomController.createPrivate(userId1, userId2)
+    } catch (error) {
+      expectError(
+        error,
+        `No user found for id ${userId1}`,
+        StatusCodes.NOT_FOUND
+      )
+    }
+
+    const user = await seedUser()
+    userId1 = user._id
+    try {
+      await ChatroomController.createPrivate(userId1, userId2)
+    } catch (error) {
+      expectError(
+        error,
+        `No user found for id ${userId2}`,
+        StatusCodes.NOT_FOUND
+      )
+    }
   })
 
   it('Test adding user to chat', async () => {
