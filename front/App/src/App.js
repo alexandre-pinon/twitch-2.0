@@ -7,6 +7,10 @@ import Home from './components/homepage'
 import Studio from './components/studio'
 import { useSocket } from './utils/socket'
 import axios from 'axios'
+import ListFollowers from "./components/listFollowers";
+import ListFollowings from "./components/listFollowers";
+import Profile from "./components/profile";
+
 
 function App() {
   const [token, setToken] = useState(null)
@@ -40,6 +44,15 @@ function App() {
           </Route>
           <Route path="/studio">
             <Studio socket={socket}/>
+          </Route>
+          <Route exact path="/followings">
+            <ListFollowings />
+          </Route>
+          <Route exact path="/followers">
+            <ListFollowers />
+          </Route>
+          <Route exact path="/profile">
+            <Profile />
           </Route>
         </Switch>
       </Router>

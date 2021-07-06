@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
-function ListFollowers() {
+function ListFollowings() {
 
     const classes = useStyles();
 
@@ -42,7 +42,7 @@ function ListFollowers() {
                 <List className={classes.root}>
                 <ListItem className="messageChat" alignItems="flex-start">
                     <ListItemAvatar>
-                    <Avatar alt={item.email} src="/static/images/avatar/1.jpg" />
+                    <Avatar alt={item.name} src="/static/images/avatar/1.jpg" />
                     </ListItemAvatar>
                     <ListItemText
                     primary={item.name}
@@ -55,4 +55,4 @@ function ListFollowers() {
   )
 }
 
-export default ListFollowers
+export default ListFollowings

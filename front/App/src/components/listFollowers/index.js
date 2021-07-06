@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -42,7 +42,7 @@ function ListFollowers() {
                 <List className={classes.root}>
                 <ListItem className="messageChat" alignItems="flex-start">
                     <ListItemAvatar>
-                    <Avatar alt={item.email} src="/static/images/avatar/1.jpg" />
+                    <Avatar alt={item.name} src="/static/images/avatar/1.jpg" />
                     </ListItemAvatar>
                     <ListItemText
                     primary={item.name}

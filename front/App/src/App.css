@@ -180,7 +180,7 @@ body {
 }
 
 .buttonDiv {
-  width: 15%;
+  width: 10%;
   margin-top: 75px;
 }
 
@@ -223,4 +223,30 @@ body {
   position: relative;
   height: 96vh;
   background-color: #000;
+}
+
+#table{
+  width: 50%;
+}
+
+.noLinkStyle {
+  text-decoration: none;
+}
+
+.containProfile{
+  height: 50vh;
+  background-color: white;
+  position: absolute;
+  margin-top: -5%;
+  width: 100%;
+  height: 50vh;
+  z-index: 100;
+}
+
+.videoProfile{
+  position: relative;
+}
+
+#clipsCard{
+  height: 25vh;
 }

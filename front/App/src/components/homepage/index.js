@@ -6,8 +6,7 @@ import CarouselCard from '../carouselCard';
 
 function Home() {
   return (
-    <div id="container">
-        <Container>
+    <div>
           <Row>
             <Col>
             <ControlledCarousel/>
@@ -16,7 +15,6 @@ function Home() {
             <CarouselCard/>
             </Col>
           </Row>
-        </Container>
     </div>
   );
 }
