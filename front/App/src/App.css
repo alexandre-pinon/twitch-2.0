@@ -147,7 +147,7 @@ body {
   margin-left: 10px;
 }
 
-.row{
+.row--With--Shadow {
   box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.309);
 }
 
@@ -200,10 +200,10 @@ body {
 }
 
 [aria-haspopup=false]{
-  display: none;
+  display: none !important;
 }
 [aria-haspopup=true]{
-  display: block;
+  display: block !important;
 }
 
 .containFullChat{
@@ -249,4 +249,26 @@ body {
 
 #clipsCard{
   height: 25vh;
+}
+
+.inputUsername{
+  width: 100%;
+}
+
+#inputText{
+  background-color: rgba(255, 255, 255, 0);
+}
+
+#buttonUsername {
+  margin-left: 10%;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+#buttonUsername:hover {
+  cursor: pointer;
+}
+
+.containProfil > *{
+  margin: 10px;
 }

@@ -8,13 +8,10 @@ import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
 import Logo from '../images/icon.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faCog, faVideo } from '@fortawesome/free-solid-svg-icons';
 import Avatar from '@material-ui/core/Avatar';
-import { deepOrange, deepPurple } from '@material-ui/core/colors';
 
 
 const useStyles = makeStyles({

@@ -116,7 +116,7 @@ function Studio(props) {
   return (
       <section>
         <div aria-haspopup="true" className="container xl containVideo">
-          <div className="row">
+          <div className="row row--With--Shadow">
               <div className="col-sm-9">
                       {playertoobar}
                   <ReactFlvPlayer
