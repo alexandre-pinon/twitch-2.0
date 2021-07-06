@@ -15,12 +15,12 @@ describe('Testing user auth', () => {
   const password = '123456'
   const email = 'test@gmail.com'
 
-  it('Failed login -> bad credentials', async () => {
+  it('Test error: login error if bad credentials', async () => {
     let response = await request.post('/user/login')
     expectResponseError(response, 'Username and Password did not match')
   })
 
-  it('Failed register -> bad credentials', async () => {
+  it('Test error: register error if bad credentials', async () => {
     let response = await request.post('/user/register')
     expectResponseError(response, 'Username is required')
 
@@ -35,7 +35,7 @@ describe('Testing user auth', () => {
     expectResponseError(response, 'Password must be atleast 6 characters long')
   })
 
-  it('Success register & login', async () => {
+  it('Test feature: register & login', async () => {
     let response = await request
       .post('/user/register')
       .send({ username, email, password })
@@ -51,7 +51,7 @@ describe('Testing user auth', () => {
 })
 
 describe('Testing chatroom routes', () => {
-  it('Failed create -> no users', async () => {
+  it('Test error: chat creation error if no user', async () => {
     let response = await request.post('/chatroom/create')
     expectResponseError(
       response,
@@ -59,7 +59,7 @@ describe('Testing chatroom routes', () => {
       StatusCodes.NOT_FOUND
     )
   })
-  it('Success create', async () => {
+  it('Test feature: create chat', async () => {
     let chatroom = await Chatroom.find({})
     expect(chatroom.length).toBe(0)
 

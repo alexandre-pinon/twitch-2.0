@@ -61,26 +61,29 @@ export const handleChatMessage = async (socket, io, chatroomId, message) => {
     )
   }
 
-  io.to(chatroomId).emit('chat message', {
-    username: user.username,
-    message,
-  })
-
   message[0] === '/'
-    ? await handleCommands(socket, chatroomId, message)
-    : await MessageController.insert(socket, chatroomId, message)
+    ? await handleCommands(socket, io, chatroomId, message)
+    : await (async () => {
+        io.to(chatroomId).emit('chat message', {
+          username: user.username,
+          message,
+        })
+        await MessageController.insert(socket, chatroomId, message)
+      })()
 }
 
-export const handleCommands = async (socket, chatroomId, message) => {
+export const handleCommands = async (socket, io, chatroomId, message) => {
   let [command, ...argument] = message.split(' ')
   argument = argument.join(' ')
 
   let commands = {
-    '/w': whisper(socket, argument),
+    '/w': async () => {
+      await whisper(socket, io, argument)
+    },
     default: () => {
       throw new AppError('Unknown command')
     },
   }
 
-  ;(commands[command] || commands['default'])()
+  await (commands[command] || commands['default'])()
 }

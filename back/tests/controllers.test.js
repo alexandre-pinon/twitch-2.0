@@ -12,7 +12,7 @@ import { expectError } from './utils.js'
 setupTest('controller-testing', true)
 
 describe('Testing user methods', () => {
-  it('Test get user', async () => {
+  it('Test feature: get user', async () => {
     let userObj = await UserController.getUser({})
     expect(userObj).toBeNull()
 
@@ -33,7 +33,7 @@ describe('Testing user methods', () => {
 })
 
 describe('Testing chat methods', () => {
-  it('Test get chat', async () => {
+  it('Test feature: get chat', async () => {
     let chatroomObj = await ChatroomController.getChatroom({})
     expect(chatroomObj).toBeNull()
 
@@ -54,7 +54,7 @@ describe('Testing chat methods', () => {
     expect(chatroomObj._id).toEqual(chatroom._id)
   })
 
-  it('Test creating private chat', async () => {
+  it('Test feature: create private chat', async () => {
     let [user1, user2] = await seedUser(2)
     const chatroom = await ChatroomController.createPrivate(
       user1._id,
@@ -64,7 +64,7 @@ describe('Testing chat methods', () => {
     expect(chatroom.users[1]).toEqual(user2._id)
   })
 
-  it('Test error handling', async () => {
+  it('Test error: private chat creation error if no users', async () => {
     let userId1,
       userId2 = null
     try {
@@ -90,7 +90,7 @@ describe('Testing chat methods', () => {
     }
   })
 
-  it('Test adding user to chat', async () => {
+  it('Test feature: add user to chat', async () => {
     let user = await seedUser()
     let chatroom = await seedChatroom()
 
@@ -106,7 +106,7 @@ describe('Testing chat methods', () => {
     expect(chatroom.users).toHaveLength(1)
   })
 
-  it('Test removing user from chat', async () => {
+  it('Test feature: remove user from chat', async () => {
     let user = await seedUser()
     let chatroom = await seedChatroom(user)
 
@@ -122,7 +122,7 @@ describe('Testing chat methods', () => {
     expect(chatroom.users).toHaveLength(0)
   })
 
-  it('Test error handling', async () => {
+  it('Test error: chat add & remove error if no user/chat/action', async () => {
     let userId = null
     let chatroomId = null
     let action = 'blargh'
@@ -159,7 +159,7 @@ describe('Testing chat methods', () => {
 })
 
 describe('Testing message methods', () => {
-  it('Test insert message', async () => {
+  it('Test feature: insert message', async () => {
     const user = await seedUser()
     let chatroom = await seedChatroom()
     const message = 'EHE TE NANDAYO ?!'
@@ -182,7 +182,7 @@ describe('Testing message methods', () => {
     expect(chatroom.messages[0]).toEqual(messages[0]._id)
   })
 
-  it('Test error handling', async () => {
+  it('Test error: message insertion error if no user/chat', async () => {
     let userId = null
     let chatroomId = null
     const message = 'EHE TE NANDAYO ?!'
