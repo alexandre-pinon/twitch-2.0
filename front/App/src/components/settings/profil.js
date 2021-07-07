@@ -17,13 +17,13 @@ function SettingsProfil() {
                     </Form.Group>
                 </div>
                 <div className="col-md-6">
-                <Form.Group style={{marginTop: "1%"}} controlId="formBasicEmail">
-                    <Form.Control  type="email" placeholder="Prénom" />
+                <Form.Group style={{marginTop: "1%"}} controlId="firstname">
+                    <Form.Control  type="firstname" placeholder="Prénom" />
                 </Form.Group>
                 </div>
                 <div className="col-md-6">
-                    <Form.Group style={{marginTop: "1%"}} controlId="formBasicEmail">
-                        <Form.Control  type="email" placeholder="Prénom" />
+                    <Form.Group style={{marginTop: "1%"}} controlId="lastname">
+                        <Form.Control  type="lastname" placeholder="Nom" />
                     </Form.Group>
                 </div>
             </div>
@@ -31,7 +31,7 @@ function SettingsProfil() {
                 <div className="col-md-12">
                     <InputGroup style={{marginTop: "1%"}}>
                         <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
-                        <FormControl
+                        <Form.Control
                         placeholder="Username"
                         aria-label="Username"
                         aria-describedby="basic-addon1"
