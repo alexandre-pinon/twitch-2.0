@@ -18,9 +18,10 @@ export const ban = async (socket, io, chatroomId, argument) => {
 
   for (let [socketId, socket] of io.sockets.sockets) {
     if (socket.userId.toString() === targetUser._id.toString()) {
-      await handleLeaveRoom(socket, chatroomId)
+      socket.leave(chatroomId)
     }
   }
+  await ChatroomController.addOrRemoveUser(chatroomId, targetUser._id, 'BAN')
 
   io.to(chatroomId).emit('chat message', {
     username: user.username,
@@ -41,9 +42,10 @@ export const unban = async (socket, io, chatroomId, argument) => {
 
   for (let [socketId, socket] of io.sockets.sockets) {
     if (socket.userId.toString() === targetUser._id.toString()) {
-      await handleJoinRoom(socket, chatroomId)
+      socket.join(chatroomId)
     }
   }
+  await ChatroomController.addOrRemoveUser(chatroomId, targetUser._id, 'UNBAN')
 
   io.to(chatroomId).emit('chat message', {
     username: user.username,

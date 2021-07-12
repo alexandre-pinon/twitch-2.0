@@ -49,21 +49,22 @@ export const addOrRemoveUser = async (chatroomId, userId, action) => {
     )
 
   switch (action) {
+    case 'UNBAN':
+      if (chatroom.banned_users.includes(userId))
+        chatroom.banned_users.pull(userId)
     case 'ADD':
-      if (!chatroom.users.includes(userId)) {
-        chatroom.users.push(userId)
-        await chatroom.save()
-      }
+      if (!chatroom.users.includes(userId)) chatroom.users.push(userId)
       break
+    case 'BAN':
+      if (!chatroom.banned_users.includes(userId))
+        chatroom.banned_users.push(userId)
     case 'REMOVE':
-      if (chatroom.users.includes(userId)) {
-        chatroom.users.pull(userId)
-        await chatroom.save()
-      }
+      if (chatroom.users.includes(userId)) chatroom.users.pull(userId)
       break
     default:
       throw new AppError(`Unknown action ${action}`)
   }
+  await chatroom.save()
 }
 
 export const getChatroom = async (params) => {

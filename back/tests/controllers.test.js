@@ -38,7 +38,7 @@ describe('Testing chat methods', () => {
     expect(chatroomObj).toBeNull()
 
     let user = await seedUser()
-    const chatroom = await seedChatroom(user, true)
+    const chatroom = await seedChatroom(user, null, true)
 
     chatroomObj = await ChatroomController.getChatroom({ _id: chatroom._id })
     expect(chatroomObj._id).toEqual(chatroom._id)
@@ -120,6 +120,44 @@ describe('Testing chat methods', () => {
     await ChatroomController.addOrRemoveUser(chatroom._id, user._id, 'REMOVE')
     chatroom = await Chatroom.findById(chatroom._id)
     expect(chatroom.users).toHaveLength(0)
+  })
+
+  it('Test feature: ban user from chat', async () => {
+    let user = await seedUser()
+    let chatroom = await seedChatroom(user)
+
+    expect(chatroom.users).toHaveLength(1)
+    expect(chatroom.banned_users).toHaveLength(0)
+
+    await ChatroomController.addOrRemoveUser(chatroom._id, user._id, 'BAN')
+    chatroom = await Chatroom.findById(chatroom._id)
+    expect(chatroom.users).toHaveLength(0)
+    expect(chatroom.banned_users).toHaveLength(1)
+
+    // Cannot add same user twice!
+    await ChatroomController.addOrRemoveUser(chatroom._id, user._id, 'BAN')
+    chatroom = await Chatroom.findById(chatroom._id)
+    expect(chatroom.users).toHaveLength(0)
+    expect(chatroom.banned_users).toHaveLength(1)
+  })
+
+  it('Test feature: unban user from chat', async () => {
+    let user = await seedUser()
+    let chatroom = await seedChatroom(null, user)
+
+    expect(chatroom.users).toHaveLength(0)
+    expect(chatroom.banned_users).toHaveLength(1)
+
+    await ChatroomController.addOrRemoveUser(chatroom._id, user._id, 'UNBAN')
+    chatroom = await Chatroom.findById(chatroom._id)
+    expect(chatroom.users).toHaveLength(1)
+    expect(chatroom.banned_users).toHaveLength(0)
+
+    // Cannot add same user twice!
+    await ChatroomController.addOrRemoveUser(chatroom._id, user._id, 'UNBAN')
+    chatroom = await Chatroom.findById(chatroom._id)
+    expect(chatroom.users).toHaveLength(1)
+    expect(chatroom.banned_users).toHaveLength(0)
   })
 
   it('Test error: chat add & remove error if no user/chat/action', async () => {
