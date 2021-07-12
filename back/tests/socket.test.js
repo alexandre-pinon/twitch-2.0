@@ -328,4 +328,48 @@ describe('Testing commands', () => {
 
     await errorPromise()
   })
+
+  it('Test command: unban', async () => {
+    const [user1, user2] = await seedUser(2)
+    const commandMessage = `/unban ${user2.username}`
+    const stringMessage = `${user2.username} was unbanned by ${user1.username}`
+    let chatroom = await seedChatroom()
+    const chatroomId = chatroom._id.toString()
+
+    serverSocket.userId = user1._id
+    secondServerSocket.userId = user2._id
+
+    await handleJoinRoom(serverSocket, chatroomId)
+
+    chatroom = await Chatroom.findById(chatroomId)
+    expect(serverSocket.rooms.size).toBe(1)
+    expect(secondServerSocket.rooms.size).toBe(0)
+    expect(chatroom.users).toHaveLength(1)
+
+    const unbanPromise = async () => {
+      const clientPromise = new Promise((resolve, reject) => {
+        clientSocket.on('chat message', ({ username, message }) => {
+          expect(username).toBe(user1.username)
+          expect(message).toBe(stringMessage)
+          resolve()
+        })
+      })
+      const serverPromise = new Promise((resolve, reject) => {
+        serverSocket.on('chat message', async (chatroomId, message) => {
+          await handleChatMessage(serverSocket, io, chatroomId, message)
+          chatroom = await Chatroom.findById(chatroomId)
+
+          expect(serverSocket.rooms.size).toBe(1)
+          expect(secondServerSocket.rooms.size).toBe(1)
+          expect(chatroom.users).toHaveLength(2)
+
+          resolve()
+        })
+      })
+      clientSocket.emit('chat message', chatroomId, commandMessage)
+      return Promise.all([serverPromise, clientPromise])
+    }
+
+    await unbanPromise()
+  })
 })

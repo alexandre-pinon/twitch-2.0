@@ -5,7 +5,7 @@ import * as ChatroomController from '../controllers/ChatroomController.js'
 import * as MessageController from '../controllers/MessageController.js'
 import AppError from '../errors/AppError.js'
 import { catchAsyncSocket } from '../errors/ErrorHandler.js'
-import { ban, whisper } from './commands.js'
+import { ban, unban, whisper } from './commands.js'
 
 export const authenticateUser = async (socket, next) => {
   const token = socket.handshake.auth.token
@@ -79,6 +79,9 @@ export const handleCommands = async (socket, io, chatroomId, message) => {
   let commands = {
     '/ban': async () => {
       await ban(socket, io, chatroomId, argument)
+    },
+    '/unban': async () => {
+      await unban(socket, io, chatroomId, argument)
     },
     '/w': async () => {
       await whisper(socket, io, argument)

@@ -2,7 +2,7 @@ import * as UserController from '../controllers/UserController.js'
 import * as ChatroomController from '../controllers/ChatroomController.js'
 import * as MessageController from '../controllers/MessageController.js'
 import AppError from '../errors/AppError.js'
-import { handleLeaveRoom } from './io.js'
+import { handleJoinRoom, handleLeaveRoom } from './io.js'
 import { checkUserAndTargetUserExists } from './utils.js'
 
 export const ban = async (socket, io, chatroomId, argument) => {
@@ -25,6 +25,29 @@ export const ban = async (socket, io, chatroomId, argument) => {
   io.to(chatroomId).emit('chat message', {
     username: user.username,
     message: `${targetUsername} was banned by ${user.username}`,
+  })
+}
+
+export const unban = async (socket, io, chatroomId, argument) => {
+  let [targetUsername, ...message] = argument.split(' ')
+  message = message.join(' ').trim()
+
+  if (message) throw new AppError('Invalid syntax')
+
+  const { user, targetUser } = await checkUserAndTargetUserExists(
+    socket.userId,
+    targetUsername
+  )
+
+  for (let [socketId, socket] of io.sockets.sockets) {
+    if (socket.userId.toString() === targetUser._id.toString()) {
+      await handleJoinRoom(socket, chatroomId)
+    }
+  }
+
+  io.to(chatroomId).emit('chat message', {
+    username: user.username,
+    message: `${targetUsername} was unbanned by ${user.username}`,
   })
 }
 
