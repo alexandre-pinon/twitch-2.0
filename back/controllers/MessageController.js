@@ -10,18 +10,16 @@ export const insert = async (socket, chatroomId, message) => {
   const chatPromise = Chatroom.findById(chatroomId)
   const [user, chatroom] = await Promise.all([userPromise, chatPromise])
 
-  if (!user) {
+  if (!user)
     throw new AppError(
       `No user found for id ${socket.userId}`,
       StatusCodes.NOT_FOUND
     )
-  }
-  if (!chatroom) {
+  if (!chatroom)
     throw new AppError(
       `No chat found for id ${chatroomId}`,
       StatusCodes.NOT_FOUND
     )
-  }
 
   const newMessage = await new Message({
     user: socket.userId,

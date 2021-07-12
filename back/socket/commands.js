@@ -55,9 +55,7 @@ export const whisper = async (socket, io, argument) => {
   let [targetUsername, ...message] = argument.split(' ')
   message = message.join(' ').trim()
 
-  if (!message) {
-    throw new AppError('Message is empty')
-  }
+  if (!message) throw new AppError('Message is empty')
 
   const { user, targetUser } = await checkUserAndTargetUserExists(
     socket.userId,

@@ -49,17 +49,14 @@ export const handleLeaveRoom = async (socket, chatroomId) => {
 export const handleChatMessage = async (socket, io, chatroomId, message) => {
   message = message.trim()
 
-  if (!message) {
-    throw new AppError('Message is empty')
-  }
+  if (!message) throw new AppError('Message is empty')
 
   const user = await UserController.getUser({ _id: socket.userId })
-  if (!user) {
+  if (!user)
     throw new AppError(
       `No user found for id ${socket.userId}`,
       StatusCodes.NOT_FOUND
     )
-  }
 
   message[0] === '/'
     ? await handleCommands(socket, io, chatroomId, message)

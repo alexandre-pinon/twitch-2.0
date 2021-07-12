@@ -14,24 +14,21 @@ export const createPrivate = async (userId, targetUserId) => {
   const targetUserPromise = User.findById(targetUserId)
   const [user, targetUser] = await Promise.all([userPromise, targetUserPromise])
 
-  if (!user) {
+  if (!user)
     throw new AppError(`No user found for id ${userId}`, StatusCodes.NOT_FOUND)
-  }
-  if (!targetUser) {
+  if (!targetUser)
     throw new AppError(
       `No user found for id ${targetUserId}`,
       StatusCodes.NOT_FOUND
     )
-  }
 
   return await new Chatroom({ users: [user, targetUser], private: true }).save()
 }
 
 export const create = async (userId) => {
   const user = await User.findById(userId)
-  if (!user) {
+  if (!user)
     throw new AppError(`No user found for id ${userId}`, StatusCodes.NOT_FOUND)
-  }
 
   const chatroom = await new Chatroom({ users: [user] }).save()
 
@@ -43,15 +40,13 @@ export const addOrRemoveUser = async (chatroomId, userId, action) => {
   const chatPromise = Chatroom.findById(chatroomId)
   const [user, chatroom] = await Promise.all([userPromise, chatPromise])
 
-  if (!user) {
+  if (!user)
     throw new AppError(`No user found for id ${userId}`, StatusCodes.NOT_FOUND)
-  }
-  if (!chatroom) {
+  if (!chatroom)
     throw new AppError(
       `No chat found for id ${chatroomId}`,
       StatusCodes.NOT_FOUND
     )
-  }
 
   switch (action) {
     case 'ADD':
