@@ -6,6 +6,7 @@ import * as MessageController from '../controllers/MessageController.js'
 import AppError from '../errors/AppError.js'
 import { catchAsyncSocket } from '../errors/ErrorHandler.js'
 import { ban, unban, whisper } from './commands.js'
+import { StatusCodes } from 'http-status-codes'
 
 export const authenticateUser = async (socket, next) => {
   const token = socket.handshake.auth.token
@@ -57,6 +58,8 @@ export const handleChatMessage = async (socket, io, chatroomId, message) => {
       `No chatroom found for id ${chatroomId}`,
       StatusCodes.NOT_FOUND
     )
+  if (chatroom.banned_users.includes(socket.userId))
+    throw new AppError("You're banned from this chat!", StatusCodes.FORBIDDEN)
 
   chatroom.private
     ? await handlePrivateMessage(socket, io, chatroomId, message)
