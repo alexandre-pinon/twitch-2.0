@@ -5,6 +5,10 @@ const chatroomSchema = new mongoose.Schema({
     type: [mongoose.Schema.Types.ObjectId],
     ref: 'User',
   },
+  banned_users: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'User',
+  },
   messages: {
     type: [mongoose.Schema.Types.ObjectId],
     ref: 'Message',
