@@ -1,8 +1,6 @@
-import * as UserController from '../controllers/UserController.js'
 import * as ChatroomController from '../controllers/ChatroomController.js'
 import * as MessageController from '../controllers/MessageController.js'
 import AppError from '../errors/AppError.js'
-import { handleJoinRoom, handleLeaveRoom } from './io.js'
 import { checkUserAndTargetUserExists } from './utils.js'
 
 export const ban = async (socket, io, chatroomId, argument) => {

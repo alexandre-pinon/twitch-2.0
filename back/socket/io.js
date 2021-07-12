@@ -66,7 +66,7 @@ export const handleChatMessage = async (socket, io, chatroomId, message) => {
     : await handlePublicMessage(socket, io, chatroomId, message)
 }
 
-export const handlePrivateMessage = async (socket, io, chatroomId, message) => {
+const handlePrivateMessage = async (socket, io, chatroomId, message) => {
   const user = await UserController.getUser({ _id: socket.userId })
   if (!user)
     throw new AppError(
@@ -81,13 +81,13 @@ export const handlePrivateMessage = async (socket, io, chatroomId, message) => {
   await MessageController.insert(socket, chatroomId, message)
 }
 
-export const handlePublicMessage = async (socket, io, chatroomId, message) => {
+const handlePublicMessage = async (socket, io, chatroomId, message) => {
   message[0] === '/'
     ? await handleCommands(socket, io, chatroomId, message)
     : await handlePrivateMessage(socket, io, chatroomId, message)
 }
 
-export const handleCommands = async (socket, io, chatroomId, message) => {
+const handleCommands = async (socket, io, chatroomId, message) => {
   let [command, ...argument] = message.split(' ')
   argument = argument.join(' ')
 
