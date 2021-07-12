@@ -8,7 +8,11 @@ import app from '../app'
 dotenv.config({ path: '.back.env' })
 mongoose.promise = global.Promise
 
-export let io, serverSocket, clientSocket
+export let io,
+  serverSocket,
+  secondServerSocket,
+  clientSocket,
+  secondClientSocket
 
 export default (databaseName, withSocket = false) => {
   // Connect to Mongoose
@@ -23,7 +27,9 @@ export default (databaseName, withSocket = false) => {
       const socketSetup = await setupSocket(io, serverSocket, clientSocket)
       io = socketSetup.io
       serverSocket = socketSetup.serverSocket
+      secondServerSocket = socketSetup.secondServerSocket
       clientSocket = socketSetup.clientSocket
+      secondClientSocket = socketSetup.secondClientSocket
     }
   })
 
@@ -32,7 +38,11 @@ export default (databaseName, withSocket = false) => {
     await removeAllCollections()
     if (withSocket) {
       serverSocket.removeAllListeners()
+      leaveAllRooms(serverSocket)
+      secondServerSocket.removeAllListeners()
+      leaveAllRooms(secondServerSocket)
       clientSocket.removeAllListeners()
+      secondClientSocket.removeAllListeners()
     }
   })
 
@@ -43,6 +53,7 @@ export default (databaseName, withSocket = false) => {
     if (withSocket) {
       io.close()
       clientSocket.close()
+      secondClientSocket.close()
     }
   })
 }
@@ -73,6 +84,12 @@ const dropAllCollections = async () => {
   }
 }
 
+const leaveAllRooms = (socket) => {
+  socket.rooms.forEach((room) => {
+    socket.leave(room)
+  })
+}
+
 const setupSocket = async (io, serverSocket, clientSocket) => {
   return new Promise((resolve, reject) => {
     const server = app.listen()
@@ -83,11 +100,24 @@ const setupSocket = async (io, serverSocket, clientSocket) => {
       },
     })
     clientSocket = new Client(frontOrigin)
-    io.on('connection', (socket) => {
-      serverSocket = socket
+    io.on('connection', () => {
+      if (io.sockets.sockets.size === 2) {
+        const socketsIterator = io.sockets.sockets.values()
+        serverSocket = socketsIterator.next().value
+        secondServerSocket = socketsIterator.next().value
+      }
     })
     clientSocket.on('connect', () => {
-      resolve({ io, clientSocket, serverSocket })
+      secondClientSocket = new Client(frontOrigin)
+      secondClientSocket.on('connect', () => {
+        resolve({
+          io,
+          serverSocket,
+          secondServerSocket,
+          clientSocket,
+          secondClientSocket,
+        })
+      })
     })
   })
 }
