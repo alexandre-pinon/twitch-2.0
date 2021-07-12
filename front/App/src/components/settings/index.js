@@ -29,12 +29,22 @@ function Settings() {
         <div className="row">
             <List className={classes.root}>
                 <Link className="noLinkStyle" to="/settings/profil">
-                    <ListItem className="messageChat" alignItems="flex-start">
+                    <ListItem className="messageChat" id="listItemParams" alignItems="flex-start">
                         <ListItemAvatar>
                         <Avatar alt="Mon profil" src="/static/images/avatar/1.jpg" />
                         </ListItemAvatar>
                         <ListItemText
                         primary="Mon profil"
+                        />
+                    </ListItem>
+                </Link>
+                <Link className="noLinkStyle" to="/settings/background">
+                    <ListItem className="messageChat" id="listItemParams" alignItems="flex-start">
+                        <ListItemAvatar>
+                        <Avatar alt="Personnalisation" src="/static/images/avatar/1.jpg" />
+                        </ListItemAvatar>
+                        <ListItemText
+                        primary="Personnalisation"
                         />
                     </ListItem>
                 </Link>

@@ -231,6 +231,12 @@ body {
 
 .noLinkStyle {
   text-decoration: none;
+  color: black;
+}
+
+.noLinkStyle:hover {
+  text-decoration: none;
+  color: black;
 }
 
 .containProfile{
@@ -271,4 +277,9 @@ body {
 
 .containProfil > *{
   margin: 10px;
+}
+
+#listItemParams{
+  border: 1px solid rgba(0, 0, 0, 0.33);
+  margin-bottom: 5px;
 }
