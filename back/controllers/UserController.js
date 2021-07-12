@@ -9,26 +9,21 @@ export const register = async (request, response) => {
   const { username, email, password, description, avatar } = request.body
   const emailRegex = /@gmail.com|@yahoo.com|@hotmail.com|@live.com|outlook.fr/
 
-  if (!username) {
-    throw new AppError('Username is required')
-  }
-  if (!emailRegex.test(email)) {
+  if (!username) throw new AppError('Username is required')
+  if (!emailRegex.test(email))
     throw new AppError('Email is not supported from your domain')
-  }
-  if (password.length < 6) {
+  if (password.length < 6)
     throw new AppError('Password must be atleast 6 characters long')
-  }
 
   const userExists = await User.findOne({
     email,
   })
 
-  if (userExists) {
+  if (userExists)
     throw new AppError(
       'User with same email already exists',
       StatusCodes.CONFLICT
     )
-  }
 
   await new User({
     username,
@@ -49,9 +44,7 @@ export const login = async (request, response) => {
     username,
     password: sha256(password + process.env.SALT),
   })
-  if (!user) {
-    throw new AppError('Username and Password did not match')
-  }
+  if (!user) throw new AppError('Username and Password did not match')
 
   // const token = await jwt.sign({ id: user.id }, process.env.SECRET)
 

@@ -5,7 +5,8 @@ import * as ChatroomController from '../controllers/ChatroomController.js'
 import * as MessageController from '../controllers/MessageController.js'
 import AppError from '../errors/AppError.js'
 import { catchAsyncSocket } from '../errors/ErrorHandler.js'
-import { ban, whisper } from './commands.js'
+import { ban, unban, whisper } from './commands.js'
+import { StatusCodes } from 'http-status-codes'
 
 export const authenticateUser = async (socket, next) => {
   const token = socket.handshake.auth.token
@@ -49,36 +50,53 @@ export const handleLeaveRoom = async (socket, chatroomId) => {
 export const handleChatMessage = async (socket, io, chatroomId, message) => {
   message = message.trim()
 
-  if (!message) {
-    throw new AppError('Message is empty')
-  }
+  if (!message) throw new AppError('Message is empty')
 
+  const chatroom = await ChatroomController.getChatroom({ _id: chatroomId })
+  if (!chatroom)
+    throw new AppError(
+      `No chatroom found for id ${chatroomId}`,
+      StatusCodes.NOT_FOUND
+    )
+  if (chatroom.banned_users.includes(socket.userId))
+    throw new AppError("You're banned from this chat!", StatusCodes.FORBIDDEN)
+
+  chatroom.private
+    ? await handlePrivateMessage(socket, io, chatroomId, message)
+    : await handlePublicMessage(socket, io, chatroomId, message)
+}
+
+const handlePrivateMessage = async (socket, io, chatroomId, message) => {
   const user = await UserController.getUser({ _id: socket.userId })
-  if (!user) {
+  if (!user)
     throw new AppError(
       `No user found for id ${socket.userId}`,
       StatusCodes.NOT_FOUND
     )
-  }
 
-  message[0] === '/'
-    ? await handleCommands(socket, io, chatroomId, message)
-    : await (async () => {
-        io.to(chatroomId).emit('chat message', {
-          username: user.username,
-          message,
-        })
-        await MessageController.insert(socket, chatroomId, message)
-      })()
+  io.to(chatroomId).emit('chat message', {
+    username: user.username,
+    message,
+  })
+  await MessageController.insert(socket, chatroomId, message)
 }
 
-export const handleCommands = async (socket, io, chatroomId, message) => {
+const handlePublicMessage = async (socket, io, chatroomId, message) => {
+  message[0] === '/'
+    ? await handleCommands(socket, io, chatroomId, message)
+    : await handlePrivateMessage(socket, io, chatroomId, message)
+}
+
+const handleCommands = async (socket, io, chatroomId, message) => {
   let [command, ...argument] = message.split(' ')
   argument = argument.join(' ')
 
   let commands = {
     '/ban': async () => {
       await ban(socket, io, chatroomId, argument)
+    },
+    '/unban': async () => {
+      await unban(socket, io, chatroomId, argument)
     },
     '/w': async () => {
       await whisper(socket, io, argument)
