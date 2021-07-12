@@ -51,6 +51,19 @@ export const handleChatMessage = async (socket, io, chatroomId, message) => {
 
   if (!message) throw new AppError('Message is empty')
 
+  const chatroom = await ChatroomController.getChatroom({ _id: chatroomId })
+  if (!chatroom)
+    throw new AppError(
+      `No chatroom found for id ${chatroomId}`,
+      StatusCodes.NOT_FOUND
+    )
+
+  chatroom.private
+    ? await handlePrivateMessage(socket, io, chatroomId, message)
+    : await handlePublicMessage(socket, io, chatroomId, message)
+}
+
+export const handlePrivateMessage = async (socket, io, chatroomId, message) => {
   const user = await UserController.getUser({ _id: socket.userId })
   if (!user)
     throw new AppError(
@@ -58,15 +71,17 @@ export const handleChatMessage = async (socket, io, chatroomId, message) => {
       StatusCodes.NOT_FOUND
     )
 
+  io.to(chatroomId).emit('chat message', {
+    username: user.username,
+    message,
+  })
+  await MessageController.insert(socket, chatroomId, message)
+}
+
+export const handlePublicMessage = async (socket, io, chatroomId, message) => {
   message[0] === '/'
     ? await handleCommands(socket, io, chatroomId, message)
-    : await (async () => {
-        io.to(chatroomId).emit('chat message', {
-          username: user.username,
-          message,
-        })
-        await MessageController.insert(socket, chatroomId, message)
-      })()
+    : await handlePrivateMessage(socket, io, chatroomId, message)
 }
 
 export const handleCommands = async (socket, io, chatroomId, message) => {
