@@ -38,7 +38,9 @@ export default (databaseName, withSocket = false) => {
     await removeAllCollections()
     if (withSocket) {
       serverSocket.removeAllListeners()
+      leaveAllRooms(serverSocket)
       secondServerSocket.removeAllListeners()
+      leaveAllRooms(secondServerSocket)
       clientSocket.removeAllListeners()
       secondClientSocket.removeAllListeners()
     }
@@ -80,6 +82,12 @@ const dropAllCollections = async () => {
       console.log(error.message)
     }
   }
+}
+
+const leaveAllRooms = (socket) => {
+  socket.rooms.forEach((room) => {
+    socket.leave(room)
+  })
 }
 
 const setupSocket = async (io, serverSocket, clientSocket) => {

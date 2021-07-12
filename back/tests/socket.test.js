@@ -1,4 +1,9 @@
-import setupTest, { clientSocket, io, serverSocket } from './setup.js'
+import setupTest, {
+  clientSocket,
+  io,
+  secondServerSocket,
+  serverSocket,
+} from './setup.js'
 import Message from '../models/Message.js'
 import Chatroom from '../models/Chatroom.js'
 import { seedChatroom, seedUser } from './seed.js'
@@ -30,7 +35,6 @@ describe('Testing socket events', () => {
           expect(serverSocket.rooms.size).toBe(2)
           expect(chatroom.users).toHaveLength(1)
           expect(chatroom.users[0]).toEqual(user._id)
-
           resolve()
         })
         clientSocket.emit('join room', chatroom._id)
@@ -245,5 +249,83 @@ describe('Testing commands', () => {
     }
 
     await emptyMessagePromise()
+  })
+
+  it('Test command: ban', async () => {
+    const [user1, user2] = await seedUser(2)
+    const commandMessage = `/ban ${user2.username}`
+    const stringMessage = `${user2.username} was banned by ${user1.username}`
+    let chatroom = await seedChatroom()
+    const chatroomId = chatroom._id.toString()
+
+    serverSocket.userId = user1._id
+    secondServerSocket.userId = user2._id
+
+    await handleJoinRoom(serverSocket, chatroomId)
+    await handleJoinRoom(secondServerSocket, chatroomId)
+
+    chatroom = await Chatroom.findById(chatroomId)
+    expect(serverSocket.rooms.size).toBe(1)
+    expect(secondServerSocket.rooms.size).toBe(1)
+    expect(chatroom.users).toHaveLength(2)
+
+    const banPromise = async () => {
+      const clientPromise = new Promise((resolve, reject) => {
+        clientSocket.on('chat message', ({ username, message }) => {
+          expect(username).toBe(user1.username)
+          expect(message).toBe(stringMessage)
+          resolve()
+        })
+      })
+      const serverPromise = new Promise((resolve, reject) => {
+        serverSocket.on('chat message', async (chatroomId, message) => {
+          await handleChatMessage(serverSocket, io, chatroomId, message)
+          chatroom = await Chatroom.findById(chatroomId)
+
+          expect(serverSocket.rooms.size).toBe(1)
+          expect(secondServerSocket.rooms.size).toBe(0)
+          expect(chatroom.users).toHaveLength(1)
+
+          resolve()
+        })
+      })
+      clientSocket.emit('chat message', chatroomId, commandMessage)
+      return Promise.all([serverPromise, clientPromise])
+    }
+
+    await banPromise()
+  })
+
+  it('Test error: incorrect syntax', async () => {
+    const [user1, user2] = await seedUser(2)
+    const commandMessage = `/ban ${user2.username} blaargh`
+    const chatroom = await seedChatroom()
+
+    serverSocket.userId = user1._id
+    secondServerSocket.userId = user2._id
+
+    const errorPromise = async () => {
+      const clientPromise = new Promise((resolve, reject) => {
+        clientSocket.on('server error', (error) => {
+          expectSocketError(error, 'Invalid syntax')
+          resolve()
+        })
+      })
+      const serverPromise = new Promise((resolve, reject) => {
+        serverSocket.on('chat message', (chatroomId, message) => {
+          catchAsyncSocket(handleChatMessage)(
+            serverSocket,
+            io,
+            chatroomId,
+            message
+          )
+          resolve()
+        })
+      })
+      clientSocket.emit('chat message', chatroom._id, commandMessage)
+      return Promise.all([serverPromise, clientPromise])
+    }
+
+    await errorPromise()
   })
 })
