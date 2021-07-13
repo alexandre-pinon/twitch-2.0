@@ -1,6 +1,7 @@
 import React, { useEffect, Component } from 'react'
 import { ReactFlvPlayer } from 'react-flv-player'
 import Chat from "../chat";
+import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
@@ -124,7 +125,59 @@ class CardUser extends Component {
   }
 }
 
+class FormsChat extends React.Component{
+
+  constructor (props) {
+    super(props)
+      this.state = {
+          message:''
+      }
+      this.handleChange = this.handleChange.bind(this)
+      this.handleSubmit = this.handleSubmit.bind(this)
+  }
+
+  handleChange(e) {
+      this.setState({
+          [e.target.name] : e.target.value,
+      })
+  }
+
+  handleSubmit(e) {
+      e.preventDefault();   
+      const {message} = this.state
+
+      const data = {message : message }
+          axios.post('http://localhost:1337/signin', data)
+          .then(response => {
+              this.setState({
+                  message: ''
+              })
+              console.log(response)
+          })
+          .catch(error => {
+              console.log(error)
+          })    
+  }
+
+  render() {
+    const { message } = this.state;
+    return(
+      <div className="input-group">
+        <form style={{ width: '100%' }}>
+          <Form.Group>
+            <Form.Control as="textarea" placeholder="tape your message" rows={2} id='message' name='message' value={message} onChange={this.handleChange} />
+          </Form.Group>
+          <Button type="submit" variant="contained" className="input-item marginTop" color="primary">
+            Envoyer 
+          </Button>
+        </form>
+      </div>
+    )
+  }
+}
+
 function Studio(props) {
+
 
   useEffect(() => {
     if (props.socket) {
@@ -139,6 +192,7 @@ function Studio(props) {
   const classes = useStyles();
 
     function Display(event) {
+      console.log(event.target.parentNode.parentNode.childNodes[1].attributes[0].value)
       if (event.target.parentNode.parentNode.childNodes[1].attributes[0].value == "false") {
         event.target.parentNode.parentNode.childNodes[1].attributes[0].value = 'true'
       } else {
@@ -196,16 +250,7 @@ function Studio(props) {
                   <div className="containChat">
                       <Chat/>
                   </div>
-                  <div className="input-group">
-                  <form style={{ width: '100%' }}>
-                    <Form.Group>
-                      <Form.Control as="textarea" placeholder="tape your message" rows={2} />
-                    </Form.Group>
-                    <Button type="submit" variant="contained" className="input-item marginTop" color="primary">
-                      Envoyer 
-                    </Button>
-                    </form>
-                  </div>
+                  <FormsChat/>
               </div>
           </div>
           <br/>
@@ -228,7 +273,7 @@ function Studio(props) {
             isMuted={false}
           />
           <div className="containFullChat">
-            {/* <Chat/> */}
+             <Chat/> 
           </div>
         </div>
       </section>

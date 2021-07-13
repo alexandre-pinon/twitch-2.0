@@ -55,7 +55,7 @@ function Chat() {
                         className={classes.inline}
                         color="textPrimary"
                     >
-                        SUTOREMOTE PU DU CUL
+                        LOREM IPSUM DOLOR DIT APSEM 
                     </Typography>
                     </React.Fragment>
                 }
