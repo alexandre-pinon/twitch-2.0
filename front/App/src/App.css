@@ -147,7 +147,7 @@ body {
   margin-left: 10px;
 }
 
-.row{
+.row--With--Shadow {
   box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.309);
 }
 
@@ -180,7 +180,7 @@ body {
 }
 
 .buttonDiv {
-  width: 15%;
+  width: 10%;
   margin-top: 75px;
 }
 
@@ -200,10 +200,10 @@ body {
 }
 
 [aria-haspopup=false]{
-  display: none;
+  display: none !important;
 }
 [aria-haspopup=true]{
-  display: block;
+  display: block !important;
 }
 
 .containFullChat{
@@ -223,4 +223,63 @@ body {
   position: relative;
   height: 96vh;
   background-color: #000;
+}
+
+#table{
+  width: 50%;
+}
+
+.noLinkStyle {
+  text-decoration: none;
+  color: black;
+}
+
+.noLinkStyle:hover {
+  text-decoration: none;
+  color: black;
+}
+
+.containProfile{
+  height: 50vh;
+  background-color: white;
+  position: absolute;
+  margin-top: -5%;
+  width: 100%;
+  height: 50vh;
+  z-index: 100;
+}
+
+.videoProfile{
+  position: relative;
+}
+
+#clipsCard{
+  height: 25vh;
+}
+
+.inputUsername{
+  width: 100%;
+}
+
+#inputText{
+  background-color: rgba(255, 255, 255, 0);
+}
+
+#buttonUsername {
+  margin-left: 10%;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+#buttonUsername:hover {
+  cursor: pointer;
+}
+
+.containProfil > *{
+  margin: 10px;
+}
+
+#listItemParams{
+  border: 1px solid rgba(0, 0, 0, 0.33);
+  margin-bottom: 5px;
 }

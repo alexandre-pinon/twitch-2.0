@@ -1,19 +1,21 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, Component } from 'react'
 import { ReactFlvPlayer } from 'react-flv-player'
 import Chat from "../chat";
 import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import StarIcon from '@material-ui/icons/Star';
+import { Form } from 'react-bootstrap';
+import {
+  Link
+} from "react-router-dom";
 
- const useStyles = makeStyles((theme) => ({
+
+const useStyles = makeStyles((theme) => ({
   root: {
     '& .MuiTextField-root': {
       margin: theme.spacing(1),
@@ -23,6 +25,11 @@ import StarIcon from '@material-ui/icons/Star';
   large: {
     width: theme.spacing(26),
     height: theme.spacing(26),
+  },
+  avatar: {
+    width: theme.spacing(30),
+    height: theme.spacing(30),
+    textDecoration: "none",
   },
   paper: {
     position: 'absolute',
@@ -38,19 +45,83 @@ import StarIcon from '@material-ui/icons/Star';
   },
 }));
 
-function rand() {
-  return Math.round(Math.random() * 20) - 10;
-}
+var loc = window.location
+var locToString = loc.toString()
+var id = locToString.substring(locToString.length-1, locToString.length)
+var url = '' + id; // affichage des profil par id
 
-function getModalStyle() {
-  const top = 50 + rand();
-  const left = 50 + rand();
+class CardUser extends Component {
 
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`,
-  };
+  state = {
+     user : {}
+ }
+
+ componentDidMount() {
+     /* console.log(url) */
+     fetch('https://jsonplaceholder.typicode.com/users/1')
+     .then(response => {
+         return response.json()
+     }).then(result => {
+         this.setState({user : result})
+         console.log(result)
+     })
+ }
+
+ render() {
+    return(
+      <div className="row test">
+        <Link to="/profile" style={{    
+          width: '250px',
+          height: '250px',
+          textDecoration: "none" }}
+        >
+          <Avatar alt={this.state.user.name} src="/static/images/avatar/1.jpg" style={{    
+            width: '200px',
+            height: '200px' }} 
+          />
+        </Link>
+        <div className="NameStreamer">
+          <h2>
+            {this.state.user.name}
+          </h2>
+          <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+          magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo 
+          consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+          </p>
+          <table id="table">
+            <thead>
+              <th>
+                Followers
+              </th>
+              <th>
+                Followings
+              </th>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <Link className="noLinkStyle" to="/followers">
+                    1212891
+                  </Link>
+                </td>
+                <td>
+                  <Link className="noLinkStyle" to="/followings">
+                    1212891
+                  </Link>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div className="buttonDiv">
+          <Button variant="contained" className="input-item marginTop" color="primary">
+            Suivre
+          </Button>
+        </div>
+      </div>
+    )
+  }
 }
 
 function Studio(props) {
@@ -65,12 +136,7 @@ function Studio(props) {
     }
   }, [props.socket])
 
-    const classes = useStyles();
-    const [value, setValue] = React.useState('Controlled');
-  
-    const handleChange = (event) => {
-      setValue(event.target.value);
-    };
+  const classes = useStyles();
 
     function Display(event) {
       if (event.target.parentNode.parentNode.childNodes[1].attributes[0].value == "false") {
@@ -103,6 +169,9 @@ function Studio(props) {
                               <ListItem button onClick={DisplayMode}>
                                 <ListItemText inset primary="Mode Studio" />
                               </ListItem>
+                              <ListItem button >
+                                <ListItemText inset primary="paramètres du stream" />
+                              </ListItem>
                             </List>
                             </div>
                           </div>
@@ -110,7 +179,7 @@ function Studio(props) {
   return (
       <section>
         <div aria-haspopup="true" className="container xl containVideo">
-          <div className="row">
+          <div className="row row--With--Shadow">
               <div className="col-sm-9">
                       {playertoobar}
                   <ReactFlvPlayer
@@ -128,40 +197,27 @@ function Studio(props) {
                       <Chat/>
                   </div>
                   <div className="input-group">
-                      <TextField
-                          className="input-item"
-                          id="standard-multiline-flexible"
-                          label="Message"
-                          multiline
-                          rowsMax={2}
-                          value={value}
-                          onChange={handleChange}
-                      />
-                      <Button variant="contained" className="input-item marginTop" color="primary">
-                        Envoyer 
-                      </Button>
+                  <form style={{ width: '100%' }}>
+                    <Form.Group>
+                      <Form.Control as="textarea" placeholder="tape your message" rows={2} />
+                    </Form.Group>
+                    <Button type="submit" variant="contained" className="input-item marginTop" color="primary">
+                      Envoyer 
+                    </Button>
+                    </form>
                   </div>
               </div>
           </div>
           <br/>
-          <div className="row test">
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" className={classes.large} />
-            <div className="NameStreamer">
-              <h2>
-                Remy Sharp
-              </h2>
-              <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-              magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo 
-              consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-              </p>
-            </div>
-            <div className="buttonDiv">
-              <Button variant="contained" className="input-item marginTop" color="primary">
-                Suivre
-              </Button>
-            </div>
+          <div className="row">
+              <div className="col-12">
+                <h2>
+                  Nom du stream
+                </h2>      
+              </div>
           </div>
+          <br/>
+          <CardUser/> 
         </div>
         <div aria-haspopup="false" className="containFullMode containVideo">
         {playertoobar}
@@ -172,7 +228,7 @@ function Studio(props) {
             isMuted={false}
           />
           <div className="containFullChat">
-            <Chat/>
+            {/* <Chat/> */}
           </div>
         </div>
       </section>

@@ -34,34 +34,36 @@ function CarouselCard() {
     }, [])
 
   return (
-    <div className="containProfilCarousel">
-    <h2 className="titleHP">Recommendations de profil</h2>
-        <div className="overflow-X">
-        {data.map(item => (
-            <div className="card">
-                <Card className={classes.root}>
-                    <CardActionArea>
-                        <CardMedia
-                        className={classes.media}
-                        image="http://via.placeholder.com/640x640"
-                        title="Contemplative Reptile"
-                        />
-                        <CardContent>
-                        <Typography>
-                            {item.name}
-                        </Typography>
-                        <Typography variant="body2" color="textSecondary" component="p">
-                            Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging
-                            across all continents except Antarctica
-                        </Typography>
-                        </CardContent>
-                    </CardActionArea>
-                </Card>
-            </div>
-        ))}
+    <section>
+      <h2 className="titleHP">Recommendations de profil</h2>
+      <div className="containProfilCarousel">
+          <div className="overflow-X">
+          {data.map(item => (
+              <div className="card">
+                  <Card className={classes.root}>
+                      <CardActionArea>
+                          <CardMedia
+                          className={classes.media}
+                          image="http://via.placeholder.com/640x640"
+                          title="Contemplative Reptile"
+                          />
+                          <CardContent>
+                          <Typography>
+                              {item.name}
+                          </Typography>
+                          <Typography variant="body2" color="textSecondary" component="p">
+                              Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging
+                              across all continents except Antarctica
+                          </Typography>
+                          </CardContent>
+                      </CardActionArea>
+                  </Card>
+              </div>
+          ))}
+          </div>
+      </div>
+    </section>
 
-        </div>
-    </div>
   );
 }
 

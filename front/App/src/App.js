@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import logo from './logo.svg'
 import './App.css'
 import Example from './components/header'
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import Home from './components/homepage'
 import Studio from './components/studio'
 import { useSocket } from './utils/socket'
 import axios from 'axios'
+import ListFollowers from "./components/listFollowers";
+import ListFollowings from "./components/listFollowing";
+import Profile from "./components/profile";
+import Settings from "./components/settings";
+import SettingsProfil from "./components/settings/profil";
+
 
 function App() {
   const [token, setToken] = useState(null)
@@ -40,6 +45,21 @@ function App() {
           </Route>
           <Route path="/studio">
             <Studio socket={socket}/>
+          </Route>
+          <Route exact path="/followings">
+            <ListFollowings />
+          </Route>
+          <Route exact path="/followers">
+            <ListFollowers />
+          </Route>
+          <Route exact path="/profile">
+            <Profile />
+          </Route>
+          <Route exact path="/settings">
+            <Settings />
+          </Route>
+          <Route exact path="/settings/profil">
+            <SettingsProfil />
           </Route>
         </Switch>
       </Router>

@@ -1,14 +1,12 @@
 import React from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
-import { makeStyles } from '@material-ui/core/styles';
+import { Row, Col } from 'react-bootstrap';
 import ControlledCarousel from '../carousel';
 import CarouselCard from '../carouselCard';
 
 function Home() {
   return (
-    <div id="container">
-        <Container>
-          <Row>
+    <div>
+          <Row className="row--With--Shadow">
             <Col>
             <ControlledCarousel/>
             </Col>
@@ -16,7 +14,6 @@ function Home() {
             <CarouselCard/>
             </Col>
           </Row>
-        </Container>
     </div>
   );
 }
