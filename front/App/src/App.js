@@ -11,6 +11,7 @@ import ListFollowings from "./components/listFollowing";
 import Profile from "./components/profile";
 import Settings from "./components/settings";
 import SettingsProfil from "./components/settings/profil";
+import Background from "./components/settings/background";
 
 
 function App() {
@@ -60,6 +61,9 @@ function App() {
           </Route>
           <Route exact path="/settings/profil">
             <SettingsProfil />
+          </Route>
+          <Route exact path="/settings/background">
+            <Background />
           </Route>
         </Switch>
       </Router>
