@@ -22,15 +22,15 @@ export const seedUser = async (n = 1) => {
 }
 
 export const seedChatroom = async (
-  user,
-  banned_user = null,
-  mods = null,
+  users = [],
+  banned_users = [],
+  mods = [],
   priv = false
 ) => {
   const testChatroom1 = await new Chatroom({
-    users: user instanceof User ? user : [],
-    banned_users: banned_user instanceof User ? banned_user : [],
-    mods: mods instanceof User ? mods : [],
+    users,
+    banned_users,
+    mods,
     messages: [],
     private: priv,
   }).save()

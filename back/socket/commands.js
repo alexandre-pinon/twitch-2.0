@@ -1,6 +1,24 @@
 import * as ChatroomController from '../controllers/ChatroomController.js'
 import * as MessageController from '../controllers/MessageController.js'
+import AppError from '../errors/AppError.js'
 import { checkArgument, checkUserAndTargetUserExists } from './utils.js'
+
+export const mods = async (socket, io, chatroomId, argument) => {
+  if (argument) throw new AppError('Invalid synthax')
+
+  const chatroom = await ChatroomController.getChatroom(
+    { _id: chatroomId },
+    'mods'
+  )
+
+  const modUsernames = chatroom.mods.map((mod) => mod.username)
+  const message = modUsernames.join(' ')
+
+  io.to(chatroomId).emit('chat message', {
+    username: process.env.NODE_SERVERNAME,
+    message,
+  })
+}
 
 export const mod = async (socket, io, chatroomId, argument) => {
   const { targetUsername, message } = checkArgument(argument, false)
@@ -16,7 +34,7 @@ export const mod = async (socket, io, chatroomId, argument) => {
   )
 
   io.to(chatroomId).emit('chat message', {
-    username: user.username,
+    username: process.env.NODE_SERVERNAME,
     message: chatroomWasUpdated
       ? `${targetUsername} was granted mod permissions by ${user.username}`
       : `${targetUsername} was alredy a mod`,
@@ -37,7 +55,7 @@ export const unmod = async (socket, io, chatroomId, argument) => {
   )
 
   io.to(chatroomId).emit('chat message', {
-    username: user.username,
+    username: process.env.NODE_SERVERNAME,
     message: chatroomWasUpdated
       ? `${user.username} removed ${targetUsername}'s mod permissions`
       : `${targetUsername} is not a mod`,
@@ -63,7 +81,7 @@ export const ban = async (socket, io, chatroomId, argument) => {
   )
 
   io.to(chatroomId).emit('chat message', {
-    username: user.username,
+    username: process.env.NODE_SERVERNAME,
     message: chatroomWasUpdated
       ? `${targetUsername} was banned by ${user.username}`
       : `${targetUsername} was already banned`,
@@ -89,7 +107,7 @@ export const unban = async (socket, io, chatroomId, argument) => {
   )
 
   io.to(chatroomId).emit('chat message', {
-    username: user.username,
+    username: process.env.NODE_SERVERNAME,
     message: chatroomWasUpdated
       ? `${targetUsername} was unbanned by ${user.username}`
       : `${targetUsername} was not banned`,

@@ -38,7 +38,10 @@ describe('Testing chat methods', () => {
     expect(chatroomObj).toBeNull()
 
     let user = await seedUser()
-    const chatroom = await seedChatroom(user, null, null, true)
+    const chatroom = await seedChatroom(user, [], [], true)
+
+    chatroomObj = await ChatroomController.getChatroom({})
+    expect(chatroomObj._id).toEqual(chatroom._id)
 
     chatroomObj = await ChatroomController.getChatroom({ _id: chatroom._id })
     expect(chatroomObj._id).toEqual(chatroom._id)
@@ -52,6 +55,19 @@ describe('Testing chat methods', () => {
       users: [user._id],
     })
     expect(chatroomObj._id).toEqual(chatroom._id)
+
+    chatroomObj = await ChatroomController.getChatroom(
+      { _id: chatroom._id },
+      'users'
+    )
+    expect(chatroomObj._id).toEqual(chatroom._id)
+    expect(chatroomObj.users[0].username).toEqual(user.username)
+
+    try {
+      await ChatroomController.getChatroom({ _id: chatroom._id }, 'blaargh')
+    } catch (error) {
+      expectError(error, `Unknown field blaargh`)
+    }
   })
 
   it('Test feature: create private chat', async () => {
@@ -143,7 +159,7 @@ describe('Testing chat methods', () => {
 
   it('Test feature: unban user from chat', async () => {
     let user = await seedUser()
-    let chatroom = await seedChatroom(null, user)
+    let chatroom = await seedChatroom([], user)
 
     expect(chatroom.users).toHaveLength(0)
     expect(chatroom.banned_users).toHaveLength(1)

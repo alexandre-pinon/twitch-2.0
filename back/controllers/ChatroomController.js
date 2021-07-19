@@ -92,11 +92,21 @@ export const addOrRemoveUser = async (chatroomId, userId, action) => {
   return updateChatroom
 }
 
-export const getChatroom = async (params) => {
+export const getChatroom = async (params, populateUsers = null) => {
   const query = Object.fromEntries(
     Object.entries(params).filter(([key, value]) =>
       Object.keys(Chatroom.schema.tree).includes(key)
     )
   )
+  if (populateUsers) {
+    if (!Object.keys(Chatroom.schema.tree).includes(populateUsers)) {
+      throw new AppError(`Unknown field ${populateUsers}`)
+    }
+    return await Chatroom.findOne(query).populate({
+      path: populateUsers,
+      model: 'User',
+    })
+  }
+
   return await Chatroom.findOne(query)
 }
