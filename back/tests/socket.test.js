@@ -276,7 +276,7 @@ describe('Testing commands', () => {
     const banPromise = async () => {
       const clientPromise = new Promise((resolve, reject) => {
         clientSocket.on('chat message', ({ username, message }) => {
-          expect(username).toBe(user1.username)
+          expect(username).toBe(process.env.NODE_SERVERNAME)
           expect(message).toBe(stringMessage)
           resolve()
         })
@@ -374,7 +374,7 @@ describe('Testing commands', () => {
     const [user1, user2] = await seedUser(2)
     const commandMessage = `/unban ${user2.username}`
     const stringMessage = `${user2.username} was unbanned by ${user1.username}`
-    let chatroom = await seedChatroom()
+    let chatroom = await seedChatroom([], user2)
     const chatroomId = chatroom._id.toString()
 
     serverSocket.userId = user1._id
@@ -386,11 +386,12 @@ describe('Testing commands', () => {
     expect(serverSocket.rooms.size).toBe(1)
     expect(secondServerSocket.rooms.size).toBe(0)
     expect(chatroom.users).toHaveLength(1)
+    expect(chatroom.banned_users).toHaveLength(1)
 
     const unbanPromise = async () => {
       const clientPromise = new Promise((resolve, reject) => {
         clientSocket.on('chat message', ({ username, message }) => {
-          expect(username).toBe(user1.username)
+          expect(username).toBe(process.env.NODE_SERVERNAME)
           expect(message).toBe(stringMessage)
           resolve()
         })
@@ -403,6 +404,7 @@ describe('Testing commands', () => {
           expect(serverSocket.rooms.size).toBe(1)
           expect(secondServerSocket.rooms.size).toBe(1)
           expect(chatroom.users).toHaveLength(2)
+          expect(chatroom.banned_users).toHaveLength(0)
 
           resolve()
         })
@@ -412,5 +414,134 @@ describe('Testing commands', () => {
     }
 
     await unbanPromise()
+  })
+
+  it('Test command: mod', async () => {
+    const [user1, user2] = await seedUser(2)
+    const commandMessage = `/mod ${user2.username}`
+    let stringMessage = `${user2.username} was granted mod permissions by ${user1.username}`
+    let chatroom = await seedChatroom()
+    const chatroomId = chatroom._id.toString()
+
+    serverSocket.userId = user1._id
+    await handleJoinRoom(serverSocket, chatroomId)
+    expect(chatroom.mods).toHaveLength(0)
+
+    const modPromise = async () => {
+      const clientPromise = new Promise((resolve, reject) => {
+        clientSocket.on('chat message', ({ username, message }) => {
+          expect(username).toBe(process.env.NODE_SERVERNAME)
+          expect(message).toBe(stringMessage)
+          resolve()
+        })
+      })
+      const serverPromise = new Promise((resolve, reject) => {
+        serverSocket.on('chat message', async (chatroomId, message) => {
+          await handleChatMessage(serverSocket, io, chatroomId, message)
+          chatroom = await Chatroom.findById(chatroomId)
+
+          expect(chatroom.mods).toHaveLength(1)
+
+          resolve()
+        })
+      })
+      clientSocket.emit('chat message', chatroomId, commandMessage)
+      return Promise.all([serverPromise, clientPromise])
+    }
+
+    await modPromise()
+
+    stringMessage = `${user2.username} was alredy a mod`
+    const secondModPromise = async () => {
+      const secondClientPromise = new Promise((resolve, reject) => {
+        clientSocket.on('chat message', ({ username, message }) => {
+          expect(username).toBe(process.env.NODE_SERVERNAME)
+          expect(message).toBe(stringMessage)
+          resolve()
+        })
+      })
+      const secondServerPromise = new Promise((resolve, reject) => {
+        serverSocket.on('chat message', async (chatroomId, message) => {
+          await handleChatMessage(serverSocket, io, chatroomId, message)
+          chatroom = await Chatroom.findById(chatroomId)
+
+          expect(chatroom.mods).toHaveLength(1)
+
+          resolve()
+        })
+      })
+      clientSocket.emit('chat message', chatroomId, commandMessage)
+      return Promise.all([secondServerPromise, secondClientPromise])
+    }
+
+    await secondModPromise()
+  })
+
+  it('Test command: unmod', async () => {
+    const [user1, user2] = await seedUser(2)
+    const commandMessage = `/unmod ${user2.username}`
+    const stringMessage = `${user1.username} removed ${user2.username}'s mod permissions`
+    let chatroom = await seedChatroom([], [], user2)
+    const chatroomId = chatroom._id.toString()
+
+    serverSocket.userId = user1._id
+    await handleJoinRoom(serverSocket, chatroomId)
+    expect(chatroom.mods).toHaveLength(1)
+
+    const unmodPromise = async () => {
+      const clientPromise = new Promise((resolve, reject) => {
+        clientSocket.on('chat message', ({ username, message }) => {
+          expect(username).toBe(process.env.NODE_SERVERNAME)
+          expect(message).toBe(stringMessage)
+          resolve()
+        })
+      })
+      const serverPromise = new Promise((resolve, reject) => {
+        serverSocket.on('chat message', async (chatroomId, message) => {
+          await handleChatMessage(serverSocket, io, chatroomId, message)
+          chatroom = await Chatroom.findById(chatroomId)
+
+          expect(chatroom.mods).toHaveLength(0)
+
+          resolve()
+        })
+      })
+      clientSocket.emit('chat message', chatroomId, commandMessage)
+      return Promise.all([serverPromise, clientPromise])
+    }
+
+    await unmodPromise()
+  })
+
+  it('Test command: mods', async () => {
+    const [user1, user2] = await seedUser(2)
+    const commandMessage = `/mods`
+    const stringMessage = `${user1.username} ${user2.username}`
+    const chatroom = await seedChatroom([], [], [user1, user2])
+    const chatroomId = chatroom._id.toString()
+
+    serverSocket.userId = user1._id
+    await handleJoinRoom(serverSocket, chatroomId)
+    expect(chatroom.mods).toHaveLength(2)
+
+    const modsPromise = async () => {
+      const clientPromise = new Promise((resolve, reject) => {
+        clientSocket.on('chat message', ({ username, message }) => {
+          expect(username).toBe(process.env.NODE_SERVERNAME)
+          expect(message).toBe(stringMessage)
+          resolve()
+        })
+      })
+      const serverPromise = new Promise((resolve, reject) => {
+        serverSocket.on('chat message', async (chatroomId, message) => {
+          await handleChatMessage(serverSocket, io, chatroomId, message)
+          resolve()
+        })
+      })
+      clientSocket.emit('chat message', chatroomId, commandMessage)
+      return Promise.all([serverPromise, clientPromise])
+    }
+
+    await modsPromise()
   })
 })
