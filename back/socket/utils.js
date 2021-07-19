@@ -15,3 +15,13 @@ export const checkUserAndTargetUserExists = async (userId, targetUsername) => {
 
   return { user, targetUser }
 }
+
+export const checkArgument = (argument, checkIfMessageIsEmpty) => {
+  let [targetUsername, ...message] = argument.split(' ')
+  message = message.join(' ').trim()
+
+  if (checkIfMessageIsEmpty && !message) throw new AppError('Message is empty')
+  if (!checkIfMessageIsEmpty && message) throw new AppError('Invalid syntax')
+
+  return { targetUsername, message }
+}

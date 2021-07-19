@@ -1,14 +1,30 @@
 import * as ChatroomController from '../controllers/ChatroomController.js'
 import * as MessageController from '../controllers/MessageController.js'
-import AppError from '../errors/AppError.js'
-import { checkUserAndTargetUserExists } from './utils.js'
+import { checkArgument, checkUserAndTargetUserExists } from './utils.js'
+
+export const mod = async (socket, io, chatroomId, argument) => {
+  const { targetUsername, message } = checkArgument(argument, false)
+  const { user, targetUser } = await checkUserAndTargetUserExists(
+    socket.userId,
+    targetUsername
+  )
+
+  const chatroomWasUpdated = await ChatroomController.addOrRemoveUser(
+    chatroomId,
+    targetUser._id,
+    'MOD'
+  )
+
+  io.to(chatroomId).emit('chat message', {
+    username: user.username,
+    message: chatroomWasUpdated
+      ? `${targetUsername} was granted mod permission by ${user.username}`
+      : `${targetUsername} was alredy a mod`,
+  })
+}
 
 export const ban = async (socket, io, chatroomId, argument) => {
-  let [targetUsername, ...message] = argument.split(' ')
-  message = message.join(' ').trim()
-
-  if (message) throw new AppError('Invalid syntax')
-
+  const { targetUsername, message } = checkArgument(argument, false)
   const { user, targetUser } = await checkUserAndTargetUserExists(
     socket.userId,
     targetUsername
@@ -19,20 +35,22 @@ export const ban = async (socket, io, chatroomId, argument) => {
       socket.leave(chatroomId)
     }
   }
-  await ChatroomController.addOrRemoveUser(chatroomId, targetUser._id, 'BAN')
+  const chatroomWasUpdated = await ChatroomController.addOrRemoveUser(
+    chatroomId,
+    targetUser._id,
+    'BAN'
+  )
 
   io.to(chatroomId).emit('chat message', {
     username: user.username,
-    message: `${targetUsername} was banned by ${user.username}`,
+    message: chatroomWasUpdated
+      ? `${targetUsername} was banned by ${user.username}`
+      : `${targetUsername} was already banned`,
   })
 }
 
 export const unban = async (socket, io, chatroomId, argument) => {
-  let [targetUsername, ...message] = argument.split(' ')
-  message = message.join(' ').trim()
-
-  if (message) throw new AppError('Invalid syntax')
-
+  const { targetUsername, message } = checkArgument(argument, false)
   const { user, targetUser } = await checkUserAndTargetUserExists(
     socket.userId,
     targetUsername
@@ -43,20 +61,22 @@ export const unban = async (socket, io, chatroomId, argument) => {
       socket.join(chatroomId)
     }
   }
-  await ChatroomController.addOrRemoveUser(chatroomId, targetUser._id, 'UNBAN')
+  const chatroomWasUpdated = await ChatroomController.addOrRemoveUser(
+    chatroomId,
+    targetUser._id,
+    'UNBAN'
+  )
 
   io.to(chatroomId).emit('chat message', {
     username: user.username,
-    message: `${targetUsername} was unbanned by ${user.username}`,
+    message: chatroomWasUpdated
+      ? `${targetUsername} was unbanned by ${user.username}`
+      : `${targetUsername} was not banned`,
   })
 }
 
 export const whisper = async (socket, io, argument) => {
-  let [targetUsername, ...message] = argument.split(' ')
-  message = message.join(' ').trim()
-
-  if (!message) throw new AppError('Message is empty')
-
+  const { targetUsername, message } = checkArgument(argument, true)
   const { user, targetUser } = await checkUserAndTargetUserExists(
     socket.userId,
     targetUsername

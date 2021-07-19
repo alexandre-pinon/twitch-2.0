@@ -48,23 +48,42 @@ export const addOrRemoveUser = async (chatroomId, userId, action) => {
       StatusCodes.NOT_FOUND
     )
 
+  let updateChatroom = false
   switch (action) {
+    case 'MOD':
+      if (!chatroom.mods.includes(userId)) {
+        chatroom.mods.push(userId)
+        updateChatroom = true
+      }
+      break
     case 'UNBAN':
-      if (chatroom.banned_users.includes(userId))
+      if (chatroom.banned_users.includes(userId)) {
         chatroom.banned_users.pull(userId)
+        updateChatroom = true
+      }
     case 'ADD':
-      if (!chatroom.users.includes(userId)) chatroom.users.push(userId)
+      if (!chatroom.users.includes(userId)) {
+        chatroom.users.push(userId)
+        updateChatroom = true
+      }
       break
     case 'BAN':
-      if (!chatroom.banned_users.includes(userId))
+      if (!chatroom.banned_users.includes(userId)) {
         chatroom.banned_users.push(userId)
+        updateChatroom = true
+      }
     case 'REMOVE':
-      if (chatroom.users.includes(userId)) chatroom.users.pull(userId)
+      if (chatroom.users.includes(userId)) {
+        chatroom.users.pull(userId)
+        updateChatroom = true
+      }
       break
     default:
       throw new AppError(`Unknown action ${action}`)
   }
-  await chatroom.save()
+
+  if (updateChatroom) await chatroom.save()
+  return updateChatroom
 }
 
 export const getChatroom = async (params) => {
