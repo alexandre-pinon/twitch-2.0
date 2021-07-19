@@ -56,6 +56,12 @@ export const addOrRemoveUser = async (chatroomId, userId, action) => {
         updateChatroom = true
       }
       break
+    case 'UNMOD':
+      if (chatroom.mods.includes(userId)) {
+        chatroom.mods.pull(userId)
+        updateChatroom = true
+      }
+      break
     case 'UNBAN':
       if (chatroom.banned_users.includes(userId)) {
         chatroom.banned_users.pull(userId)

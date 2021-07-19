@@ -18,8 +18,29 @@ export const mod = async (socket, io, chatroomId, argument) => {
   io.to(chatroomId).emit('chat message', {
     username: user.username,
     message: chatroomWasUpdated
-      ? `${targetUsername} was granted mod permission by ${user.username}`
+      ? `${targetUsername} was granted mod permissions by ${user.username}`
       : `${targetUsername} was alredy a mod`,
+  })
+}
+
+export const unmod = async (socket, io, chatroomId, argument) => {
+  const { targetUsername, message } = checkArgument(argument, false)
+  const { user, targetUser } = await checkUserAndTargetUserExists(
+    socket.userId,
+    targetUsername
+  )
+
+  const chatroomWasUpdated = await ChatroomController.addOrRemoveUser(
+    chatroomId,
+    targetUser._id,
+    'UNMOD'
+  )
+
+  io.to(chatroomId).emit('chat message', {
+    username: user.username,
+    message: chatroomWasUpdated
+      ? `${user.username} removed ${targetUsername}'s mod permissions`
+      : `${targetUsername} is not a mod`,
   })
 }
 

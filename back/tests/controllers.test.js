@@ -38,7 +38,7 @@ describe('Testing chat methods', () => {
     expect(chatroomObj).toBeNull()
 
     let user = await seedUser()
-    const chatroom = await seedChatroom(user, null, true)
+    const chatroom = await seedChatroom(user, null, null, true)
 
     chatroomObj = await ChatroomController.getChatroom({ _id: chatroom._id })
     expect(chatroomObj._id).toEqual(chatroom._id)

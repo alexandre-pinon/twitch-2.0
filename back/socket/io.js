@@ -5,7 +5,7 @@ import * as ChatroomController from '../controllers/ChatroomController.js'
 import * as MessageController from '../controllers/MessageController.js'
 import AppError from '../errors/AppError.js'
 import { catchAsyncSocket } from '../errors/ErrorHandler.js'
-import { ban, mod, unban, whisper } from './commands.js'
+import { ban, mod, unmod, unban, whisper } from './commands.js'
 import { StatusCodes } from 'http-status-codes'
 
 export const authenticateUser = async (socket, next) => {
@@ -94,6 +94,9 @@ const handleCommands = async (socket, io, chatroomId, message) => {
   let commands = {
     '/mod': async () => {
       await mod(socket, io, chatroomId, argument)
+    },
+    '/unmod': async () => {
+      await unmod(socket, io, chatroomId, argument)
     },
     '/ban': async () => {
       await ban(socket, io, chatroomId, argument)
