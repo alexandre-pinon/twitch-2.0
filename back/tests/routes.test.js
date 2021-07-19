@@ -1,8 +1,10 @@
 import supertest from 'supertest'
 import { StatusCodes } from 'http-status-codes'
+import jwt from 'jwt-then'
 
 import app from '../app.js'
 import setupTest from './setup.js'
+import User from '../models/User.js'
 import Chatroom from '../models/Chatroom.js'
 import { seedUser } from './seed.js'
 import { expectResponseError, expectResponseSuccess } from './utils.js'
@@ -46,6 +48,10 @@ describe('Testing user auth', () => {
     )
 
     response = await request.post('/user/login').send({ username, password })
+    const payload = await jwt.verify(response.body.token, process.env.SECRET)
+    const user = await User.findOne({ username })
+
+    expect(payload.id).toEqual(user._id.toString())
     expectResponseSuccess(response, `User logged in successfully`)
   })
 })

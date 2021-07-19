@@ -46,11 +46,11 @@ export const login = async (request, response) => {
   })
   if (!user) throw new AppError('Username and Password did not match')
 
-  // const token = await jwt.sign({ id: user.id }, process.env.SECRET)
+  const token = await jwt.sign({ id: user.id }, process.env.SECRET)
 
   response.json({
     message: 'User logged in successfully',
-    // token,
+    token,
   })
 }
 
