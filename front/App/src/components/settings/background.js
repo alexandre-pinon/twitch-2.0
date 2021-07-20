@@ -86,7 +86,20 @@ class FormsBackground extends React.Component {
                     <Form.Control column sm="10" style={{height: "15vh"}} type="color" defaultValue="#fff" title="Choose your color" id='color' name='color' value={color} onChange={this.handleChange}/>
                   </Col>
                 </Form.Group>
-                </div>
+                <Form>
+                  <Form.Switch
+                    type="switch"
+                    id="custom-switch"
+                    label="Check this switch"
+                  />
+                  <Form.Switch
+                    disabled
+                    type="switch"
+                    label="disabled switch"
+                    id="disabled-custom-switch"
+                  />
+                </Form>
+              </div>
             </form>
         )
     }
