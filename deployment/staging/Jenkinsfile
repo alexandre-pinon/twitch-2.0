@@ -14,10 +14,11 @@ pipeline {
             }
             steps {
                 echo 'Running Backend Tests'
-                sh 'cd back/'
-                nodejs('Node-14.17.2') {
-                    sh 'npm install'
-                    sh 'npm run unittest'
+                dir ('back') {
+                    nodejs('Node-14.17.2') {
+                        sh 'npm install'
+                        sh 'npm run unittest'
+                    }
                 }
             }
         }
@@ -25,7 +26,7 @@ pipeline {
         stage("Frontend Tests") {
             steps {
                 echo 'Running Frontend Tests'
-                sh 'cd front/'
+                dir ('front')
                 echo 'Nothing to do actually....'
             }
         }
