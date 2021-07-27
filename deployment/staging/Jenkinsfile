@@ -2,23 +2,55 @@ pipeline {
 
     agent any 
 
+    tools {nodejs "Node-14.17.2"}
+
     stages {
 
-        stage("Test") {
+        stage("Backend Tests") {
+            when {
+                expression {
+                    BRANCH_NAME == 'develop' || BRANCH_NAME == 'master' || BRANCH_NAME == 'feature/infrastructure'
+                }
+            }
             steps {
-                echo 'Running Test...'
+                echo 'Running Backend Tests'
+                sh 'cd back/'
+                nodejs('Node-14.17.2') {
+                    sh 'npm install'
+                    sh 'npm run unittest'
+                }
             }
         }
 
-        stage("Build") {
+        stage("Frontend Tests") {
             steps {
-                echo 'Building apps...'
+                echo 'Running Frontend Tests'
+                sh 'cd front/'
+                echo 'Nothing to do actually....'
             }
         }
 
-        stage("Deploy") {
+        stage("Build Backend Image") {
             steps {
-                echo 'Deploy docker images...'
+                echo 'Building Backend Dockerfile'
+            }
+        }
+
+        stage("Build Frontend Image") {
+            steps {
+                echo 'Building Frontend Dockerfile'
+            }
+        }
+
+        stage("Build player Image") {
+            steps {
+                echo 'Building Player Dockerfile'
+            }
+        }
+
+        stage("Deployment") {
+            steps {
+                echo 'Deploy all images to Docker Registry'
             }
         }
 
