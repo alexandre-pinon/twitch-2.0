@@ -1,8 +1,40 @@
 import React from 'react';
 import { Col, Form, Button, Row} from 'react-bootstrap';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 import axios from 'axios';
 
+function SwitchLabels() {
+  const [state, setState] = React.useState({
+    checkedA: true,
+    checkedB: true,
+  });
 
+  const handleChange = (event) => {
+    setState({ ...state, [event.target.name]: event.target.checked });
+  };
+
+  return (
+    <Form.Group row>
+      <FormControlLabel
+        control={<Switch checked={state.checkedA} onChange={handleChange} name="checkedA" />}
+        label="Secondary"
+      />
+      <FormControlLabel
+        control={
+          <Switch
+            checked={state.checkedB}
+            onChange={handleChange}
+            value={ this.value }
+            name="checkedB"
+            color="primary"
+          />
+        }
+        label="Primary"
+      />
+    </Form.Group>
+  );
+}
 
 class FormsBackground extends React.Component {
 
@@ -73,7 +105,7 @@ class FormsBackground extends React.Component {
 
     render() {
 
-        const {profilPicture,lastName, firstName, color ,description} = this.state
+        const {profilPicture,lastName, firstName, color ,description, darkMode} = this.state
 
         return(
             <form onSubmit={this.handleSubmit}>
@@ -86,19 +118,7 @@ class FormsBackground extends React.Component {
                     <Form.Control column sm="10" style={{height: "15vh"}} type="color" defaultValue="#fff" title="Choose your color" id='color' name='color' value={color} onChange={this.handleChange}/>
                   </Col>
                 </Form.Group>
-                <Form>
-                  <Form.Switch
-                    type="switch"
-                    id="custom-switch"
-                    label="Check this switch"
-                  />
-                  <Form.Switch
-                    disabled
-                    type="switch"
-                    label="disabled switch"
-                    id="disabled-custom-switch"
-                  />
-                </Form>
+                <SwitchLabels value={darkMode} />
               </div>
             </form>
         )
