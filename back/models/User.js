@@ -15,6 +15,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: 'Password is required!',
   },
+  hash2FA: {
+    type: String,
+  },
+  active2FA: {
+    type: Boolean,
+    default: false,
+  },
   description: {
     type: String,
   },

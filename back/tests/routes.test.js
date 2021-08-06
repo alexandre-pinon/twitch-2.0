@@ -1,6 +1,7 @@
 import supertest from 'supertest'
 import { StatusCodes } from 'http-status-codes'
 import jwt from 'jwt-then'
+import base32 from 'thirty-two'
 
 import app from '../app.js'
 import setupTest from './setup.js'
@@ -53,6 +54,29 @@ describe('Testing user auth', () => {
 
     expect(payload.id).toEqual(user._id.toString())
     expectResponseSuccess(response, `User logged in successfully`)
+  })
+
+  it('Test feature: 2FA register', async () => {
+    let user = await seedUser()
+
+    expect(user.hash2FA).toBeUndefined()
+
+    let response = await request
+      .post('/user/login')
+      .send({ username: user.username, password: 'password1' })
+    response = await request
+      .post('/user/register2FA')
+      .send({ token: response.body.token })
+
+    expectResponseSuccess(response, `Successfully added hash for 2FA`)
+
+    user = await User.findById(user._id)
+    const secret = base32.encode(user.hash2FA).toString()
+
+    expect(user.hash2FA).toBeDefined()
+    expect(response.body.otpuri).toBe(
+      `otpauth://totp/${user.username}?secret=${secret}&issuer=${process.env.NODE_SERVERNAME}`
+    )
   })
 })
 
