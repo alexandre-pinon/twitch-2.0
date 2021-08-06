@@ -18,6 +18,10 @@ const userSchema = new mongoose.Schema({
   hash2FA: {
     type: String,
   },
+  active2FA: {
+    type: Boolean,
+    default: false,
+  },
   description: {
     type: String,
   },
