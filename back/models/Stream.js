@@ -24,7 +24,7 @@ const streamSchema = new mongoose.Schema(
     tags: {
       type: [String],
     },
-    game_title: {
+    gameTitle: {
       type: String,
       default: 'Just Chatting',
     },

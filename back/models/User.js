@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema({
     enum: ['USER', 'ADMIN'],
     default: 'USER',
   },
-  stream_key: {
+  streamKey: {
     type: String,
     unique: true,
   },

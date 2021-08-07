@@ -14,7 +14,7 @@ export const seedUser = async (n = 1) => {
         email: `testUser${i}@gmail.com`,
         password: sha256(`password${i}` + process.env.SALT),
         description: `I'm the test user number ${i}!`,
-        stream_key: `streamKey${i}`,
+        streamKey: `streamKey${i}`,
         avatar: null,
       }).save()
     )

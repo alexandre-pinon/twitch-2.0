@@ -105,13 +105,29 @@ describe('Testing chatroom routes', () => {
 })
 
 describe('Testing stream routes', () => {
-  it('Test error: no streams found', async () => {
-    let response = await request.get('/stream/get')
+  it('Test error: get all live streams no streams found', async () => {
+    const response = await request.get('/stream/get')
     expectResponseSuccess(response, '', StatusCodes.NOT_FOUND)
   })
-  it('Test feature: get all streams', async () => {
+  it('Test feature: get all live streams', async () => {
     const stream = await seedStream()
-    let response = await request.get('/stream/get')
+    const response = await request.get('/stream/get')
     expectResponseSuccess(response, '')
+  })
+
+  it('Test error: invalid stream key', async () => {
+    const response = await request.post('/stream/insert')
+    expectResponseError(
+      response,
+      `No user found for streamKey undefined`,
+      StatusCodes.NOT_FOUND
+    )
+  })
+  it('Test feature: insert stream', async () => {
+    const streamer = await seedUser()
+    const response = await request
+      .post('/stream/insert')
+      .send({ streamKey: streamer.streamKey, title: 'Test Stream 1' })
+    expectResponseSuccess(response, 'created', StatusCodes.CREATED)
   })
 })
