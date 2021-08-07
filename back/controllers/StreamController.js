@@ -1,8 +1,8 @@
 import { StatusCodes } from 'http-status-codes'
 import Stream from '../models/Stream'
 
-export const getAllStreams = async (request, response) => {
-  const streams = await getStreams({})
+export const getAllLiveStreams = async (request, response) => {
+  const streams = await getStreams({ live: true })
   streams.length
     ? response.json({ streams })
     : response.status(StatusCodes.NOT_FOUND).json({ streams })

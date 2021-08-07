@@ -12,6 +12,10 @@ const streamSchema = new mongoose.Schema(
       ref: 'Chatroom',
       required: 'Chat is required!',
     },
+    live: {
+      type: Boolean,
+      default: true,
+    },
     type: {
       type: String,
       enum: ['GAME', 'IRL'],
