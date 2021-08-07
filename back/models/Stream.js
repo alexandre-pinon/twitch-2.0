@@ -8,9 +8,10 @@ const streamSchema = new mongoose.Schema(
       required: 'Streamer is required!',
       unique: true,
     },
-    viewers: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: 'User',
+    chatroom: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Chatroom',
+      required: 'Chat is required!'
     },
     type: {
       type: String,

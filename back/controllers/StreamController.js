@@ -8,21 +8,26 @@ export const getAllStreams = async (request, response) => {
     : response.status(StatusCodes.NOT_FOUND).json({ streams })
 }
 
-export const getStreams = async (params, populateUsers = null) => {
+export const getStreams = async (params, populateAll = null) => {
   const query = Object.fromEntries(
     Object.entries(params).filter(([key, value]) =>
       Object.keys(Stream.schema.tree).includes(key)
     )
   )
-  if (populateUsers) {
-    if (!Object.keys(Stream.schema.tree).includes(populateUsers)) {
-      throw new AppError(`Unknown field ${populateUsers}`)
-    }
-    return await Stream.find(query).populate({
-      path: populateUsers,
-      model: 'User',
-    })
-  }
+  if (populateAll)
+    return await Stream.find(query)
+      .populate({
+        path: 'streamer',
+        model: 'User',
+      })
+      .populate({
+        path: 'chatroom',
+        model: 'Chatroom',
+        populate: {
+          path: 'users',
+          model: 'User',
+        },
+      })
 
   return await Stream.find(query)
 }

@@ -38,11 +38,12 @@ export const seedChatroom = async (
   return testChatroom1
 }
 
-export const seedStream = async (user = null, viewers = []) => {
+export const seedStream = async (user = null, chat = null) => {
   const streamer = user ? user : await seedUser()
+  const chatroom = chat ? chat : await seedChatroom(streamer)
   const testStream1 = await new Stream({
     streamer,
-    viewers,
+    chatroom,
     title: `Stream n°1`,
   }).save()
   return testStream1
