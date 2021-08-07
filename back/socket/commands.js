@@ -6,7 +6,7 @@ import { checkArgument, checkUserAndTargetUserExists } from './utils.js'
 export const mods = async (socket, io, chatroomId, argument) => {
   if (argument) throw new AppError('Invalid synthax')
 
-  const chatroom = await ChatroomController.getChatroom(
+  const chatroom = await ChatroomController.getOneChatroom(
     { _id: chatroomId },
     'mods'
   )
@@ -121,7 +121,7 @@ export const whisper = async (socket, io, argument) => {
     targetUsername
   )
 
-  let chatroom = await ChatroomController.getChatroom({
+  let chatroom = await ChatroomController.getOneChatroom({
     users: [socket.userId, targetUser._id],
     private: true,
   })

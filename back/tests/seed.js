@@ -1,6 +1,7 @@
 import { sha256 } from 'js-sha256'
 
 import Chatroom from '../models/Chatroom'
+import Stream from '../models/Stream'
 import User from '../models/User'
 
 export const seedUser = async (n = 1) => {
@@ -35,4 +36,14 @@ export const seedChatroom = async (
     private: priv,
   }).save()
   return testChatroom1
+}
+
+export const seedStream = async (user = null, viewers = []) => {
+  const streamer = user ? user : await seedUser()
+  const testStream1 = await new Stream({
+    streamer,
+    viewers,
+    title: `Stream n°1`,
+  }).save()
+  return testStream1
 }

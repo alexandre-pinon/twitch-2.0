@@ -52,7 +52,7 @@ export const handleChatMessage = async (socket, io, chatroomId, message) => {
 
   if (!message) throw new AppError('Message is empty')
 
-  const chatroom = await ChatroomController.getChatroom({ _id: chatroomId })
+  const chatroom = await ChatroomController.getOneChatroom({ _id: chatroomId })
   if (!chatroom)
     throw new AppError(
       `No chatroom found for id ${chatroomId}`,
@@ -67,7 +67,7 @@ export const handleChatMessage = async (socket, io, chatroomId, message) => {
 }
 
 const handlePrivateMessage = async (socket, io, chatroomId, message) => {
-  const user = await UserController.getUser({ _id: socket.userId })
+  const user = await UserController.getOneUser({ _id: socket.userId })
   if (!user)
     throw new AppError(
       `No user found for id ${socket.userId}`,
