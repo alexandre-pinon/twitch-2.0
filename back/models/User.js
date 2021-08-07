@@ -36,6 +36,7 @@ const userSchema = new mongoose.Schema({
   },
   stream_key: {
     type: String,
+    unique: true,
   },
   followers: {
     type: [mongoose.Schema.Types.ObjectId],
