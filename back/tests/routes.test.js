@@ -7,7 +7,7 @@ import app from '../app.js'
 import setupTest from './setup.js'
 import User from '../models/User.js'
 import Chatroom from '../models/Chatroom.js'
-import { seedUser } from './seed.js'
+import { seedStream, seedUser } from './seed.js'
 import { expectResponseError, expectResponseSuccess } from './utils.js'
 
 setupTest('route-testing')
@@ -101,5 +101,17 @@ describe('Testing chatroom routes', () => {
 
     chatroom = await Chatroom.find({})
     expect(chatroom.length).toBe(1)
+  })
+})
+
+describe('Testing stream routes', () => {
+  it('Test error: no streams found', async () => {
+    let response = await request.get('/stream/get')
+    expectResponseSuccess(response, '', StatusCodes.NOT_FOUND)
+  })
+  it('Test feature: get all streams', async () => {
+    const stream = await seedStream()
+    let response = await request.get('/stream/get')
+    expectResponseSuccess(response, '')
   })
 })

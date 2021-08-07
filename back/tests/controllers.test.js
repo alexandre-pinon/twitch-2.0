@@ -289,5 +289,10 @@ describe('Testing stream methods', () => {
 
     streams = await StreamController.getStreams({ title: 'EHE TE NANDAYO?!' })
     expect(streams).toEqual([])
+
+    streams = await StreamController.getStreams({}, 'streamer')
+    expect(streams).toHaveLength(2)
+    expect(streams[0].streamer._id).toEqual(user1._id)
+    expect(streams[1].streamer._id).toEqual(user2._id)
   })
 })

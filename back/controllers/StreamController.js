@@ -1,4 +1,12 @@
-import Stream from '../models/Stream'   
+import { StatusCodes } from 'http-status-codes'
+import Stream from '../models/Stream'
+
+export const getAllStreams = async (request, response) => {
+  const streams = await getStreams({})
+  streams.length
+    ? response.json({ streams })
+    : response.status(StatusCodes.NOT_FOUND).json({ streams })
+}
 
 export const getStreams = async (params, populateUsers = null) => {
   const query = Object.fromEntries(
