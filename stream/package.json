@@ -1,5 +1,19 @@
 {
+  "name": "sutoremon-tv-stream",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "RTMP server",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon"
+  },
   "dependencies": {
-    "node-media-server": "^2.2.8"
+    "axios": "^0.21.1",
+    "dotenv": "^10.0.0",
+    "node-media-server": "^2.2.8",
+    "nodemon": "^2.0.12"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.14.5"
   }
 }
