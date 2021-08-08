@@ -6,10 +6,7 @@ import { checkArgument, checkUserAndTargetUserExists } from './utils.js'
 export const mods = async (socket, io, chatroomId, argument) => {
   if (argument) throw new AppError('Invalid synthax')
 
-  const chatroom = await ChatroomController.getOneChatroom(
-    { _id: chatroomId },
-    'mods'
-  )
+  const chatroom = await ChatroomController.getOneChatroom({ _id: chatroomId }, 'mods')
 
   const modUsernames = chatroom.mods.map((mod) => mod.username)
   const message = modUsernames.join(' ')
@@ -22,16 +19,9 @@ export const mods = async (socket, io, chatroomId, argument) => {
 
 export const mod = async (socket, io, chatroomId, argument) => {
   const { targetUsername, message } = checkArgument(argument, false)
-  const { user, targetUser } = await checkUserAndTargetUserExists(
-    socket.userId,
-    targetUsername
-  )
+  const { user, targetUser } = await checkUserAndTargetUserExists(socket.userId, targetUsername)
 
-  const chatroomWasUpdated = await ChatroomController.addOrRemoveUser(
-    chatroomId,
-    targetUser._id,
-    'MOD'
-  )
+  const chatroomWasUpdated = await ChatroomController.addOrRemoveUser(chatroomId, targetUser._id, 'MOD')
 
   io.to(chatroomId).emit('chat message', {
     username: process.env.NODE_SERVERNAME,
@@ -43,16 +33,9 @@ export const mod = async (socket, io, chatroomId, argument) => {
 
 export const unmod = async (socket, io, chatroomId, argument) => {
   const { targetUsername, message } = checkArgument(argument, false)
-  const { user, targetUser } = await checkUserAndTargetUserExists(
-    socket.userId,
-    targetUsername
-  )
+  const { user, targetUser } = await checkUserAndTargetUserExists(socket.userId, targetUsername)
 
-  const chatroomWasUpdated = await ChatroomController.addOrRemoveUser(
-    chatroomId,
-    targetUser._id,
-    'UNMOD'
-  )
+  const chatroomWasUpdated = await ChatroomController.addOrRemoveUser(chatroomId, targetUser._id, 'UNMOD')
 
   io.to(chatroomId).emit('chat message', {
     username: process.env.NODE_SERVERNAME,
@@ -64,21 +47,14 @@ export const unmod = async (socket, io, chatroomId, argument) => {
 
 export const ban = async (socket, io, chatroomId, argument) => {
   const { targetUsername, message } = checkArgument(argument, false)
-  const { user, targetUser } = await checkUserAndTargetUserExists(
-    socket.userId,
-    targetUsername
-  )
+  const { user, targetUser } = await checkUserAndTargetUserExists(socket.userId, targetUsername)
 
   for (let [socketId, socket] of io.sockets.sockets) {
     if (socket.userId.toString() === targetUser._id.toString()) {
       socket.leave(chatroomId)
     }
   }
-  const chatroomWasUpdated = await ChatroomController.addOrRemoveUser(
-    chatroomId,
-    targetUser._id,
-    'BAN'
-  )
+  const chatroomWasUpdated = await ChatroomController.addOrRemoveUser(chatroomId, targetUser._id, 'BAN')
 
   io.to(chatroomId).emit('chat message', {
     username: process.env.NODE_SERVERNAME,
@@ -90,21 +66,14 @@ export const ban = async (socket, io, chatroomId, argument) => {
 
 export const unban = async (socket, io, chatroomId, argument) => {
   const { targetUsername, message } = checkArgument(argument, false)
-  const { user, targetUser } = await checkUserAndTargetUserExists(
-    socket.userId,
-    targetUsername
-  )
+  const { user, targetUser } = await checkUserAndTargetUserExists(socket.userId, targetUsername)
 
   for (let [socketId, socket] of io.sockets.sockets) {
     if (socket.userId.toString() === targetUser._id.toString()) {
       socket.join(chatroomId)
     }
   }
-  const chatroomWasUpdated = await ChatroomController.addOrRemoveUser(
-    chatroomId,
-    targetUser._id,
-    'UNBAN'
-  )
+  const chatroomWasUpdated = await ChatroomController.addOrRemoveUser(chatroomId, targetUser._id, 'UNBAN')
 
   io.to(chatroomId).emit('chat message', {
     username: process.env.NODE_SERVERNAME,
@@ -116,20 +85,14 @@ export const unban = async (socket, io, chatroomId, argument) => {
 
 export const whisper = async (socket, io, argument) => {
   const { targetUsername, message } = checkArgument(argument, true)
-  const { user, targetUser } = await checkUserAndTargetUserExists(
-    socket.userId,
-    targetUsername
-  )
+  const { user, targetUser } = await checkUserAndTargetUserExists(socket.userId, targetUsername)
 
   let chatroom = await ChatroomController.getOneChatroom({
     users: [socket.userId, targetUser._id],
     private: true,
   })
   if (!chatroom) {
-    chatroom = await ChatroomController.createPrivate(
-      socket.userId,
-      targetUser._id
-    )
+    chatroom = await ChatroomController.createPrivate(socket.userId, targetUser._id)
   }
 
   const chatroomId = chatroom._id.toString()

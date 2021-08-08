@@ -29,26 +29,16 @@ describe('Testing user auth', () => {
     let response = await request.post('/user/register')
     expectResponseError(response, 'Username is required')
 
-    response = await request
-      .post('/user/register')
-      .send({ username, email: 'test@bademail.com' })
+    response = await request.post('/user/register').send({ username, email: 'test@bademail.com' })
     expectResponseError(response, 'Email is not supported from your domain')
 
-    response = await request
-      .post('/user/register')
-      .send({ username, email, password: '12345' })
+    response = await request.post('/user/register').send({ username, email, password: '12345' })
     expectResponseError(response, 'Password must be atleast 6 characters long')
   })
 
   it('Test feature: register & login', async () => {
-    let response = await request
-      .post('/user/register')
-      .send({ username, email, password })
-    expectResponseSuccess(
-      response,
-      `User ${username} registered successfully`,
-      StatusCodes.CREATED
-    )
+    let response = await request.post('/user/register').send({ username, email, password })
+    expectResponseSuccess(response, `User ${username} registered successfully`, StatusCodes.CREATED)
 
     response = await request.post('/user/login').send({ username, password })
     const payload = await jwt.verify(response.body.token, process.env.SECRET)
@@ -63,12 +53,8 @@ describe('Testing user auth', () => {
 
     expect(user.hash2FA).toBeUndefined()
 
-    let response = await request
-      .post('/user/login')
-      .send({ username: user.username, password: 'password1' })
-    response = await request
-      .post('/user/register2FA')
-      .send({ token: response.body.token })
+    let response = await request.post('/user/login').send({ username: user.username, password: 'password1' })
+    response = await request.post('/user/register2FA').send({ token: response.body.token })
 
     expectResponseSuccess(response, `Successfully added hash for 2FA`)
 
@@ -88,11 +74,7 @@ describe('Testing chatroom routes', () => {
     expect(chatroom).toHaveLength(0)
 
     let response = await request.post('/chatroom/create')
-    expectResponseError(
-      response,
-      'No user found for id undefined',
-      StatusCodes.NOT_FOUND
-    )
+    expectResponseError(response, 'No user found for id undefined', StatusCodes.NOT_FOUND)
 
     chatroom = await Chatroom.find({})
     expect(chatroom).toHaveLength(0)
@@ -102,9 +84,7 @@ describe('Testing chatroom routes', () => {
     expect(chatroom).toHaveLength(0)
 
     const testUser = await seedUser()
-    let response = await request
-      .post('/chatroom/create')
-      .send({ userId: testUser._id })
+    let response = await request.post('/chatroom/create').send({ userId: testUser._id })
     expectResponseSuccess(response, 'created', StatusCodes.CREATED)
 
     chatroom = await Chatroom.find({})
@@ -131,11 +111,7 @@ describe('Testing stream routes', () => {
     expect(stream).toHaveLength(0)
 
     const response = await request.post('/stream/insert')
-    expectResponseError(
-      response,
-      `No user found for streamKey undefined`,
-      StatusCodes.NOT_FOUND
-    )
+    expectResponseError(response, `No user found for streamKey undefined`, StatusCodes.NOT_FOUND)
 
     stream = await Stream.find({})
     expect(stream).toHaveLength(0)
@@ -145,9 +121,7 @@ describe('Testing stream routes', () => {
     expect(stream).toHaveLength(0)
 
     const streamer = await seedUser()
-    const response = await request
-      .post('/stream/insert')
-      .send({ streamKey: streamer.streamKey })
+    const response = await request.post('/stream/insert').send({ streamKey: streamer.streamKey })
     expectResponseSuccess(response, 'created', StatusCodes.CREATED)
 
     stream = await Stream.find({})
@@ -156,40 +130,23 @@ describe('Testing stream routes', () => {
 
   it('Test error: invalid stream id/key', async () => {
     const response = await request.delete('/stream/remove/1')
-    expectResponseError(
-      response,
-      `No stream found for id 1`,
-      StatusCodes.NOT_FOUND
-    )
+    expectResponseError(response, `No stream found for id 1`, StatusCodes.NOT_FOUND)
   })
   it('Test feature: clean remove stream', async () => {
     const [user, chatroom] = await Promise.all([seedUser(), seedChatroom()])
-    const [stream, messages] = await Promise.all([
-      seedStream(user, chatroom),
-      seedMessage(2, user),
-    ])
+    const [stream, messages] = await Promise.all([seedStream(user, chatroom), seedMessage(2, user)])
     chatroom.messages = messages
     await chatroom.save()
 
-    let res = await Promise.all([
-      Stream.find({}),
-      Chatroom.find({}),
-      Message.find({}),
-    ])
+    let res = await Promise.all([Stream.find({}), Chatroom.find({}), Message.find({})])
     expect(res[0]).toHaveLength(1)
     expect(res[1]).toHaveLength(1)
     expect(res[2]).toHaveLength(2)
 
-    const response = await request.delete(
-      `/stream/remove/key/${user.streamKey}`
-    )
+    const response = await request.delete(`/stream/remove/key/${user.streamKey}`)
     expectResponseSuccess(response, `Stream ${stream._id} deleted!`)
 
-    res = await Promise.all([
-      Stream.find({}),
-      Chatroom.find({}),
-      Message.find({}),
-    ])
+    res = await Promise.all([Stream.find({}), Chatroom.find({}), Message.find({})])
     expect(res[0]).toHaveLength(0)
     expect(res[1]).toHaveLength(0)
     expect(res[2]).toHaveLength(0)

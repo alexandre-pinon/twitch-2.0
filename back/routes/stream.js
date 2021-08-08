@@ -1,19 +1,17 @@
 import express from 'express'
 
-import {
-  getAllLiveStreams,
-  getOneStream,
-  insertStream,
-  removeStream,
-} from '../controllers/StreamController.js'
+import * as StreamController from '../controllers/StreamController.js'
+import auth from '../middleware/auth.js'
 import { catchAsync } from '../errors/ErrorHandler.js'
 
 const streamRouter = express.Router()
-streamRouter.get('/get', catchAsync(getAllLiveStreams))
-streamRouter.get('/get/:streamId', catchAsync(getOneStream))
-streamRouter.get('/get/key/:streamKey', catchAsync(getOneStream))
-streamRouter.post('/insert', catchAsync(insertStream))
-streamRouter.delete('/remove/:streamId', catchAsync(removeStream))
-streamRouter.delete('/remove/key/:streamKey', catchAsync(removeStream))
+streamRouter.get('/get', catchAsync(StreamController.getAllLiveStreams))
+streamRouter.get('/get/:streamId', catchAsync(StreamController.getOneStream))
+streamRouter.get('/get/key/:streamKey', catchAsync(StreamController.getOneStream))
+
+streamRouter.post('/insert', auth, catchAsync(StreamController.insertStream))
+
+streamRouter.delete('/remove/:streamId', auth, catchAsync(StreamController.removeStream))
+streamRouter.delete('/remove/key/:streamKey', auth, catchAsync(StreamController.removeStream))
 
 export default streamRouter

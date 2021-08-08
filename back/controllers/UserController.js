@@ -13,20 +13,14 @@ export const register = async (request, response) => {
   const emailRegex = /@gmail.com|@yahoo.com|@hotmail.com|@live.com|outlook.fr/
 
   if (!username) throw new AppError('Username is required')
-  if (!emailRegex.test(email))
-    throw new AppError('Email is not supported from your domain')
-  if (password.length < 6)
-    throw new AppError('Password must be atleast 6 characters long')
+  if (!emailRegex.test(email)) throw new AppError('Email is not supported from your domain')
+  if (password.length < 6) throw new AppError('Password must be atleast 6 characters long')
 
   const userExists = await User.findOne({
     email,
   })
 
-  if (userExists)
-    throw new AppError(
-      'User with same email already exists',
-      StatusCodes.CONFLICT
-    )
+  if (userExists) throw new AppError('User with same email already exists', StatusCodes.CONFLICT)
 
   await new User({
     username,
@@ -42,8 +36,7 @@ export const register = async (request, response) => {
 }
 
 export const register2FA = async (request, response) => {
-  const payload = await jwt.verify(request.body.token, process.env.SECRET)
-  const user = await User.findById(payload.id)
+  const user = await User.findById(request.body.userId)
   if (!user) throw new AppError('Invalid token')
   if (user.hash2FA) throw new AppError('Already registered 2FA')
 
@@ -62,9 +55,8 @@ export const register2FA = async (request, response) => {
 }
 
 export const activate2FA = async (request, response) => {
-  const { token, accessKey } = request.body
-  const payload = await jwt.verify(token, process.env.SECRET)
-  const user = await User.findById(payload.id)
+  const { userId, accessKey } = request.body
+  const user = await User.findById(userId)
   if (!user) throw new AppError('Invalid token')
   if (user.active2FA) throw new AppError('2FA is already active')
 
@@ -97,9 +89,7 @@ export const login = async (request, response) => {
 
 export const getOneUser = async (params) => {
   const query = Object.fromEntries(
-    Object.entries(params).filter(([key, value]) =>
-      Object.keys(User.schema.tree).includes(key)
-    )
+    Object.entries(params).filter(([key, value]) => Object.keys(User.schema.tree).includes(key))
   )
   return await User.findOne(query)
 }

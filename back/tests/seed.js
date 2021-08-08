@@ -24,12 +24,7 @@ export const seedUser = async (n = 1) => {
   return users.length === 1 ? users[0] : users
 }
 
-export const seedChatroom = async (
-  users = [],
-  banned_users = [],
-  mods = [],
-  priv = false
-) => {
+export const seedChatroom = async (users = [], banned_users = [], mods = [], priv = false) => {
   const testChatroom1 = await new Chatroom({
     users,
     banned_users,

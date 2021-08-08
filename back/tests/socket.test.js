@@ -5,18 +5,8 @@ import Chatroom from '../models/Chatroom.js'
 import { seedChatroom, seedUser } from './seed.js'
 import { catchAsyncSocket } from '../errors/ErrorHandler.js'
 import { expectSocketError } from './utils.js'
-import setupTest, {
-  clientSocket,
-  io,
-  secondClientSocket,
-  secondServerSocket,
-  serverSocket,
-} from './setup.js'
-import {
-  handleChatMessage,
-  handleJoinRoom,
-  handleLeaveRoom,
-} from '../socket/io.js'
+import setupTest, { clientSocket, io, secondClientSocket, secondServerSocket, serverSocket } from './setup.js'
+import { handleChatMessage, handleJoinRoom, handleLeaveRoom } from '../socket/io.js'
 
 setupTest('socket-testing', true)
 
@@ -122,12 +112,7 @@ describe('Testing socket events', () => {
       })
       const serverPromise = new Promise((resolve, reject) => {
         serverSocket.on('chat message', (chatroomId, message) => {
-          catchAsyncSocket(handleChatMessage)(
-            serverSocket,
-            io,
-            chatroomId,
-            message
-          )
+          catchAsyncSocket(handleChatMessage)(serverSocket, io, chatroomId, message)
           resolve()
         })
       })
@@ -178,11 +163,7 @@ describe('Testing commands', () => {
           resolve()
         })
       })
-      clientSocket.emit(
-        'chat message',
-        chatroom._id,
-        commandMessage + stringMessage
-      )
+      clientSocket.emit('chat message', chatroom._id, commandMessage + stringMessage)
       return Promise.all([serverPromise, clientPromise])
     }
 
@@ -206,12 +187,7 @@ describe('Testing commands', () => {
       })
       const serverPromise = new Promise((resolve, reject) => {
         serverSocket.on('chat message', (chatroomId, message) => {
-          catchAsyncSocket(handleChatMessage)(
-            serverSocket,
-            io,
-            chatroomId,
-            message
-          )
+          catchAsyncSocket(handleChatMessage)(serverSocket, io, chatroomId, message)
           resolve()
         })
       })
@@ -238,12 +214,7 @@ describe('Testing commands', () => {
       })
       const serverPromise = new Promise((resolve, reject) => {
         serverSocket.on('chat message', (chatroomId, message) => {
-          catchAsyncSocket(handleChatMessage)(
-            serverSocket,
-            io,
-            chatroomId,
-            message
-          )
+          catchAsyncSocket(handleChatMessage)(serverSocket, io, chatroomId, message)
           resolve()
         })
       })
@@ -311,22 +282,13 @@ describe('Testing commands', () => {
     const errorPromise = async () => {
       const clientPromise = new Promise((resolve, reject) => {
         secondClientSocket.on('server error', (error) => {
-          expectSocketError(
-            error,
-            "You're banned from this chat!",
-            StatusCodes.FORBIDDEN
-          )
+          expectSocketError(error, "You're banned from this chat!", StatusCodes.FORBIDDEN)
           resolve()
         })
       })
       const serverPromise = new Promise((resolve, reject) => {
         secondServerSocket.on('chat message', (chatroomId, message) => {
-          catchAsyncSocket(handleChatMessage)(
-            secondServerSocket,
-            io,
-            chatroomId,
-            message
-          )
+          catchAsyncSocket(handleChatMessage)(secondServerSocket, io, chatroomId, message)
           resolve()
         })
       })
@@ -354,12 +316,7 @@ describe('Testing commands', () => {
       })
       const serverPromise = new Promise((resolve, reject) => {
         serverSocket.on('chat message', (chatroomId, message) => {
-          catchAsyncSocket(handleChatMessage)(
-            serverSocket,
-            io,
-            chatroomId,
-            message
-          )
+          catchAsyncSocket(handleChatMessage)(serverSocket, io, chatroomId, message)
           resolve()
         })
       })

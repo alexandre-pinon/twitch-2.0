@@ -18,12 +18,7 @@ export const expectSocketError = (error, errormessage, statusCode, status) => {
   expect(error.error.status).toBe(status)
 }
 
-export const expectResponseError = (
-  response,
-  errorMessage,
-  statusCode,
-  status
-) => {
+export const expectResponseError = (response, errorMessage, statusCode, status) => {
   statusCode = statusCode || StatusCodes.BAD_REQUEST
   status = status || getReasonPhrase(statusCode)
 
@@ -32,12 +27,7 @@ export const expectResponseError = (
   expect(response.body.message).toContain(errorMessage)
 }
 
-export const expectResponseSuccess = (
-  response,
-  message,
-  statusCode,
-  statusMessage
-) => {
+export const expectResponseSuccess = (response, message, statusCode, statusMessage) => {
   statusCode = statusCode || StatusCodes.OK
   statusMessage = statusMessage || getReasonPhrase(statusCode)
 
