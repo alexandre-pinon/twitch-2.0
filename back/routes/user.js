@@ -7,7 +7,7 @@ import { catchAsync } from '../errors/ErrorHandler.js'
 const userRouter = express.Router()
 userRouter.post('/login', catchAsync(UserController.login))
 userRouter.post('/register', catchAsync(UserController.register))
-userRouter.post('/register2FA', auth, catchAsync(UserController.register2FA))
-userRouter.post('/activate2FA', auth, catchAsync(UserController.activate2FA))
+userRouter.post('/register2FA', catchAsync(auth), catchAsync(UserController.register2FA))
+userRouter.post('/activate2FA', catchAsync(auth), catchAsync(UserController.activate2FA))
 
 export default userRouter

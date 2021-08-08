@@ -5,6 +5,6 @@ import auth from '../middleware/auth.js'
 import { catchAsync } from '../errors/ErrorHandler.js'
 
 const chatroomRouter = express.Router()
-chatroomRouter.post('/create', auth, catchAsync(ChatroomController.createAjax))
+chatroomRouter.post('/create', catchAsync(auth), catchAsync(ChatroomController.createAjax))
 
 export default chatroomRouter
