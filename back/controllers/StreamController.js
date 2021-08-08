@@ -8,9 +8,17 @@ import User from '../models/User.js'
 
 export const getAllLiveStreams = async (request, response) => {
   const streams = await getStreams({ live: true })
-  streams.length
-    ? response.json({ streams })
-    : response.status(StatusCodes.NOT_FOUND).json({ streams })
+  if (!streams.length)
+    throw new AppError(`No stream found`, StatusCodes.NOT_FOUND)
+
+  response.json({ streams })
+}
+
+export const getOneStream = async (request, response) => {
+  const { streamId, streamKey } = request.body
+  const stream = await getStreamByIdOrKey(streamId, streamKey)
+
+  response.json({ stream })
 }
 
 export const insertStream = async (request, response) => {
@@ -42,27 +50,9 @@ export const insertStream = async (request, response) => {
 
 export const removeStream = async (request, response) => {
   const { streamId, streamKey } = request.body
-  let stream
-
-  if (streamId) {
-    stream = await Stream.findById(streamId)
-  } else if (streamKey) {
-    const streamer = await User.findOne({ streamKey })
-    if (!streamer)
-      throw new AppError(
-        `No user found for streamKey ${streamKey}`,
-        StatusCodes.NOT_FOUND
-      )
-    stream = await Stream.findOne({ live: true, streamer })
-  }
-
-  if (!stream)
-    throw new AppError(
-      `No stream found for id ${streamId}`,
-      StatusCodes.NOT_FOUND
-    )
-
+  const stream = await getStreamByIdOrKey(streamId, streamKey)
   const chatroom = await Chatroom.findById(stream.chatroom)
+
   for (const messageId of chatroom.messages) {
     await Message.findByIdAndDelete(messageId)
   }
@@ -95,4 +85,28 @@ export const getStreams = async (params, populateAll = null) => {
       })
 
   return await Stream.find(query)
+}
+
+export const getStreamByIdOrKey = async (streamId, streamKey) => {
+  let stream
+
+  if (streamId) {
+    stream = await Stream.findById(streamId)
+  } else if (streamKey) {
+    const streamer = await User.findOne({ streamKey })
+    if (!streamer)
+      throw new AppError(
+        `No user found for streamKey ${streamKey}`,
+        StatusCodes.NOT_FOUND
+      )
+    stream = await Stream.findOne({ live: true, streamer })
+  }
+
+  if (!stream)
+    throw new AppError(
+      `No stream found for id ${streamId}`,
+      StatusCodes.NOT_FOUND
+    )
+
+  return stream
 }

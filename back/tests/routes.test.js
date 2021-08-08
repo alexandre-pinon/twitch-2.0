@@ -115,12 +115,15 @@ describe('Testing chatroom routes', () => {
 describe('Testing stream routes', () => {
   it('Test error: get all live streams no streams found', async () => {
     const response = await request.get('/stream/get')
-    expectResponseSuccess(response, '', StatusCodes.NOT_FOUND)
+    expectResponseError(response, 'No stream found', StatusCodes.NOT_FOUND)
   })
   it('Test feature: get all live streams', async () => {
     const stream = await seedStream()
     const response = await request.get('/stream/get')
     expectResponseSuccess(response, '')
+
+    expect(response.body.streams).toHaveLength(1)
+    expect(response.body.streams[0]._id).toEqual(stream._id.toString())
   })
 
   it('Test error: invalid stream key', async () => {
