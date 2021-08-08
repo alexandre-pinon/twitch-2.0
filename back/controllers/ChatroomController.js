@@ -92,7 +92,7 @@ export const addOrRemoveUser = async (chatroomId, userId, action) => {
   return updateChatroom
 }
 
-export const getChatroom = async (params, populateUsers = null) => {
+export const getOneChatroom = async (params, populateUsers = null) => {
   const query = Object.fromEntries(
     Object.entries(params).filter(([key, value]) =>
       Object.keys(Chatroom.schema.tree).includes(key)

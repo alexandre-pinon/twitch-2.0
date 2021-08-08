@@ -43,5 +43,5 @@ export const expectResponseSuccess = (
 
   expect(response.statusCode).toBe(statusCode)
   expect(response.res.statusMessage).toBe(statusMessage)
-  expect(response.body.message).toContain(message)
+  if (message) expect(response.body.message).toContain(message)
 }

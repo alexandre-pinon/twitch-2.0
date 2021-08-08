@@ -95,7 +95,7 @@ export const login = async (request, response) => {
   })
 }
 
-export const getUser = async (params) => {
+export const getOneUser = async (params) => {
   const query = Object.fromEntries(
     Object.entries(params).filter(([key, value]) =>
       Object.keys(User.schema.tree).includes(key)

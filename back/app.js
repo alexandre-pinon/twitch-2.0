@@ -4,6 +4,7 @@ import cors from 'cors'
 import * as ErrorHandler from './errors/ErrorHandler.js'
 import userRouter from './routes/user.js'
 import chatroomRouter from './routes/chatroom.js'
+import streamRouter from './routes/stream.js'
 
 const app = express()
 
@@ -13,6 +14,7 @@ app.use(express.urlencoded({ extended: true }))
 
 app.use('/user', userRouter)
 app.use('/chatroom', chatroomRouter)
+app.use('/stream', streamRouter)
 
 app.use(ErrorHandler.notFound)
 app.use(ErrorHandler.mongooseErrors)

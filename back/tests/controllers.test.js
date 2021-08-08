@@ -3,60 +3,61 @@ import { StatusCodes } from 'http-status-codes'
 import * as ChatroomController from '../controllers/ChatroomController.js'
 import * as UserController from '../controllers/UserController.js'
 import * as MessageController from '../controllers/MessageController.js'
+import * as StreamController from '../controllers/StreamController.js'
 import Message from '../models/Message.js'
 import Chatroom from '../models/Chatroom.js'
 import setupTest, { serverSocket } from './setup.js'
-import { seedChatroom, seedUser } from './seed.js'
+import { seedChatroom, seedUser, seedStream } from './seed.js'
 import { expectError } from './utils.js'
 
 setupTest('controller-testing', true)
 
 describe('Testing user methods', () => {
   it('Test feature: get user', async () => {
-    let userObj = await UserController.getUser({})
+    let userObj = await UserController.getOneUser({})
     expect(userObj).toBeNull()
 
     const user = await seedUser()
 
-    userObj = await UserController.getUser({
+    userObj = await UserController.getOneUser({
       _id: user._id,
       username: user.username,
     })
     expect(userObj._id).toEqual(user._id)
 
-    userObj = await UserController.getUser({ pomme: 'pote' })
+    userObj = await UserController.getOneUser({ pomme: 'pote' })
     expect(userObj._id).toEqual(user._id)
 
-    userObj = await UserController.getUser({ username: 'jean-benoit' })
+    userObj = await UserController.getOneUser({ username: 'jean-benoit' })
     expect(userObj).toBeNull()
   })
 })
 
 describe('Testing chat methods', () => {
   it('Test feature: get chat', async () => {
-    let chatroomObj = await ChatroomController.getChatroom({})
+    let chatroomObj = await ChatroomController.getOneChatroom({})
     expect(chatroomObj).toBeNull()
 
     let user = await seedUser()
     const chatroom = await seedChatroom(user, [], [], true)
 
-    chatroomObj = await ChatroomController.getChatroom({})
+    chatroomObj = await ChatroomController.getOneChatroom({})
     expect(chatroomObj._id).toEqual(chatroom._id)
 
-    chatroomObj = await ChatroomController.getChatroom({ _id: chatroom._id })
+    chatroomObj = await ChatroomController.getOneChatroom({ _id: chatroom._id })
     expect(chatroomObj._id).toEqual(chatroom._id)
 
-    chatroomObj = await ChatroomController.getChatroom({
+    chatroomObj = await ChatroomController.getOneChatroom({
       users: [null],
     })
     expect(chatroomObj).toBeNull()
 
-    chatroomObj = await ChatroomController.getChatroom({
+    chatroomObj = await ChatroomController.getOneChatroom({
       users: [user._id],
     })
     expect(chatroomObj._id).toEqual(chatroom._id)
 
-    chatroomObj = await ChatroomController.getChatroom(
+    chatroomObj = await ChatroomController.getOneChatroom(
       { _id: chatroom._id },
       'users'
     )
@@ -64,7 +65,7 @@ describe('Testing chat methods', () => {
     expect(chatroomObj.users[0].username).toEqual(user.username)
 
     try {
-      await ChatroomController.getChatroom({ _id: chatroom._id }, 'blaargh')
+      await ChatroomController.getOneChatroom({ _id: chatroom._id }, 'blaargh')
     } catch (error) {
       expectError(error, `Unknown field blaargh`)
     }
@@ -263,5 +264,37 @@ describe('Testing message methods', () => {
         StatusCodes.NOT_FOUND
       )
     }
+  })
+})
+
+describe('Testing stream methods', () => {
+  it('Test feature: get streams', async () => {
+    let streams = await StreamController.getStreams({})
+    expect(streams).toEqual([])
+
+    const [user1, user2] = await seedUser(2)
+    const stream1 = await seedStream(user1)
+    const stream2 = await seedStream(user2)
+
+    streams = await StreamController.getStreams({
+      streamer: user1,
+    })
+    expect(streams).toHaveLength(1)
+    expect(streams[0]._id).toEqual(stream1._id)
+
+    streams = await StreamController.getStreams({ pomme: 'pote' })
+    expect(streams).toHaveLength(2)
+    expect(streams[0]._id).toEqual(stream1._id)
+    expect(streams[1]._id).toEqual(stream2._id)
+
+    streams = await StreamController.getStreams({ title: 'EHE TE NANDAYO?!' })
+    expect(streams).toEqual([])
+
+    streams = await StreamController.getStreams({}, true)
+    expect(streams).toHaveLength(2)
+    expect(streams[0].streamer._id).toEqual(user1._id)
+    expect(streams[1].streamer._id).toEqual(user2._id)
+    expect(streams[0].chatroom.users[0]._id).toEqual(user1._id)
+    expect(streams[1].chatroom.users[0]._id).toEqual(user2._id)
   })
 })
