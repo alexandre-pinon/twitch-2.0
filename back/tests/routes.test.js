@@ -155,10 +155,10 @@ describe('Testing stream routes', () => {
   })
 
   it('Test error: invalid stream id/key', async () => {
-    const response = await request.delete('/stream/remove')
+    const response = await request.delete('/stream/remove/1')
     expectResponseError(
       response,
-      `No stream found for id undefined`,
+      `No stream found for id 1`,
       StatusCodes.NOT_FOUND
     )
   })
@@ -180,9 +180,9 @@ describe('Testing stream routes', () => {
     expect(res[1]).toHaveLength(1)
     expect(res[2]).toHaveLength(2)
 
-    const response = await request
-      .delete('/stream/remove')
-      .send({ streamKey: user.streamKey })
+    const response = await request.delete(
+      `/stream/remove/key/${user.streamKey}`
+    )
     expectResponseSuccess(response, `Stream ${stream._id} deleted!`)
 
     res = await Promise.all([

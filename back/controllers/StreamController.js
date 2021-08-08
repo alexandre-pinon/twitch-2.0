@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongoose'
 import { StatusCodes } from 'http-status-codes'
 
 import AppError from '../errors/AppError.js'
@@ -15,7 +16,7 @@ export const getAllLiveStreams = async (request, response) => {
 }
 
 export const getOneStream = async (request, response) => {
-  const { streamId, streamKey } = request.body
+  const { streamId, streamKey } = request.params
   const stream = await getStreamByIdOrKey(streamId, streamKey)
 
   response.json({ stream })
@@ -49,7 +50,7 @@ export const insertStream = async (request, response) => {
 }
 
 export const removeStream = async (request, response) => {
-  const { streamId, streamKey } = request.body
+  const { streamId, streamKey } = request.params
   const stream = await getStreamByIdOrKey(streamId, streamKey)
   const chatroom = await Chatroom.findById(stream.chatroom)
 
@@ -90,7 +91,7 @@ export const getStreams = async (params, populateAll = null) => {
 export const getStreamByIdOrKey = async (streamId, streamKey) => {
   let stream
 
-  if (streamId) {
+  if (streamId instanceof ObjectId) {
     stream = await Stream.findById(streamId)
   } else if (streamKey) {
     const streamer = await User.findOne({ streamKey })

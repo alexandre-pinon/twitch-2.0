@@ -46,8 +46,7 @@ nms.on('donePublish', async (id, StreamPath, args) => {
   const streamKey = StreamPath.substring(6)
   try {
     const response = await axios.delete(
-      `${process.env.BACK_ORIGIN}:${process.env.BACK_PORT}/stream/remove`,
-      { data: { streamKey } }
+      `${process.env.BACK_ORIGIN}:${process.env.BACK_PORT}/stream/remove/key/${streamKey}`
     )
     console.log({ response })
   } catch (error) {
