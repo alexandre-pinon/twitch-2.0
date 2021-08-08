@@ -6,8 +6,10 @@ import base32 from 'thirty-two'
 import app from '../app.js'
 import setupTest from './setup.js'
 import User from '../models/User.js'
+import Message from '../models/Message.js'
+import Stream from '../models/Stream.js'
 import Chatroom from '../models/Chatroom.js'
-import { seedStream, seedUser } from './seed.js'
+import { seedChatroom, seedMessage, seedStream, seedUser } from './seed.js'
 import { expectResponseError, expectResponseSuccess } from './utils.js'
 
 setupTest('route-testing')
@@ -82,16 +84,22 @@ describe('Testing user auth', () => {
 
 describe('Testing chatroom routes', () => {
   it('Test error: chat creation error if no user', async () => {
+    let chatroom = await Chatroom.find({})
+    expect(chatroom).toHaveLength(0)
+
     let response = await request.post('/chatroom/create')
     expectResponseError(
       response,
       'No user found for id undefined',
       StatusCodes.NOT_FOUND
     )
+
+    chatroom = await Chatroom.find({})
+    expect(chatroom).toHaveLength(0)
   })
   it('Test feature: create chat', async () => {
     let chatroom = await Chatroom.find({})
-    expect(chatroom.length).toBe(0)
+    expect(chatroom).toHaveLength(0)
 
     const testUser = await seedUser()
     let response = await request
@@ -100,7 +108,7 @@ describe('Testing chatroom routes', () => {
     expectResponseSuccess(response, 'created', StatusCodes.CREATED)
 
     chatroom = await Chatroom.find({})
-    expect(chatroom.length).toBe(1)
+    expect(chatroom).toHaveLength(1)
   })
 })
 
@@ -116,18 +124,71 @@ describe('Testing stream routes', () => {
   })
 
   it('Test error: invalid stream key', async () => {
+    let stream = await Stream.find({})
+    expect(stream).toHaveLength(0)
+
     const response = await request.post('/stream/insert')
     expectResponseError(
       response,
       `No user found for streamKey undefined`,
       StatusCodes.NOT_FOUND
     )
+
+    stream = await Stream.find({})
+    expect(stream).toHaveLength(0)
   })
   it('Test feature: insert stream', async () => {
+    let stream = await Stream.find({})
+    expect(stream).toHaveLength(0)
+
     const streamer = await seedUser()
     const response = await request
       .post('/stream/insert')
       .send({ streamKey: streamer.streamKey })
     expectResponseSuccess(response, 'created', StatusCodes.CREATED)
+
+    stream = await Stream.find({})
+    expect(stream).toHaveLength(1)
+  })
+
+  it('Test error: invalid stream id/key', async () => {
+    const response = await request.delete('/stream/remove')
+    expectResponseError(
+      response,
+      `No stream found for id undefined`,
+      StatusCodes.NOT_FOUND
+    )
+  })
+  it('Test feature: clean remove stream', async () => {
+    const [user, chatroom] = await Promise.all([seedUser(), seedChatroom()])
+    const [stream, messages] = await Promise.all([
+      seedStream(user, chatroom),
+      seedMessage(2, user),
+    ])
+    chatroom.messages = messages
+    await chatroom.save()
+
+    let res = await Promise.all([
+      Stream.find({}),
+      Chatroom.find({}),
+      Message.find({}),
+    ])
+    expect(res[0]).toHaveLength(1)
+    expect(res[1]).toHaveLength(1)
+    expect(res[2]).toHaveLength(2)
+
+    const response = await request
+      .delete('/stream/remove')
+      .send({ streamKey: user.streamKey })
+    expectResponseSuccess(response, `Stream ${stream._id} deleted!`)
+
+    res = await Promise.all([
+      Stream.find({}),
+      Chatroom.find({}),
+      Message.find({}),
+    ])
+    expect(res[0]).toHaveLength(0)
+    expect(res[1]).toHaveLength(0)
+    expect(res[2]).toHaveLength(0)
   })
 })

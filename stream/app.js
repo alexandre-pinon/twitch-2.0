@@ -30,7 +30,7 @@ nms.on('postPublish', async (id, StreamPath, args) => {
   try {
     const response = await axios.post(
       `${process.env.BACK_ORIGIN}:${process.env.BACK_PORT}/stream/insert`,
-      {streamKey}
+      { streamKey, live: true } // TODO: live false -> update stream params -> live true !
     )
     console.log({ response })
   } catch (error) {
@@ -38,11 +38,21 @@ nms.on('postPublish', async (id, StreamPath, args) => {
   }
 })
 
-nms.on('donePublish', (id, StreamPath, args) => {
+nms.on('donePublish', async (id, StreamPath, args) => {
   console.log(
     '[NodeEvent on donePublish]',
     `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`
   )
+  const streamKey = StreamPath.substring(6)
+  try {
+    const response = await axios.delete(
+      `${process.env.BACK_ORIGIN}:${process.env.BACK_PORT}/stream/remove`,
+      { data: { streamKey } }
+    )
+    console.log({ response })
+  } catch (error) {
+    console.log({ error })
+  }
 })
 
 nms.on('prePlay', (id, StreamPath, args) => {
