@@ -43,6 +43,7 @@ export const seedStream = async (user = null, chat = null) => {
   const streamer = user ? user : await seedUser()
   const chatroom = chat ? chat : await seedChatroom(streamer)
   const testStream1 = await new Stream({
+    live: true,
     streamer,
     chatroom,
     title: `Stream n°1`,

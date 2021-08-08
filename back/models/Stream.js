@@ -14,7 +14,7 @@ const streamSchema = new mongoose.Schema(
     },
     live: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     type: {
       type: String,
@@ -30,7 +30,7 @@ const streamSchema = new mongoose.Schema(
     },
     title: {
       type: String,
-      required: 'Title is required!',
+      default: 'Stream Title',
     },
     description: {
       type: String,

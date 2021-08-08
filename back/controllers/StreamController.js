@@ -1,9 +1,9 @@
 import { StatusCodes } from 'http-status-codes'
 
-import AppError from '../errors/AppError'
-import Chatroom from '../models/Chatroom'
-import Stream from '../models/Stream'
-import User from '../models/User'
+import AppError from '../errors/AppError.js'
+import Chatroom from '../models/Chatroom.js'
+import Stream from '../models/Stream.js'
+import User from '../models/User.js'
 
 export const getAllLiveStreams = async (request, response) => {
   const streams = await getStreams({ live: true })
@@ -13,7 +13,7 @@ export const getAllLiveStreams = async (request, response) => {
 }
 
 export const insertStream = async (request, response) => {
-  const { streamKey, type, tags, gameTitle, title, description } = request.body
+  const { live, streamKey, type, tags, gameTitle, title, description } = request.body
   const streamer = await User.findOne({ streamKey })
   if (!streamer)
     throw new AppError(
@@ -25,6 +25,7 @@ export const insertStream = async (request, response) => {
   const stream = await new Stream({
     streamer,
     chatroom,
+    live,
     type,
     tags,
     gameTitle,

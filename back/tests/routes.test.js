@@ -127,7 +127,7 @@ describe('Testing stream routes', () => {
     const streamer = await seedUser()
     const response = await request
       .post('/stream/insert')
-      .send({ streamKey: streamer.streamKey, title: 'Test Stream 1' })
+      .send({ streamKey: streamer.streamKey })
     expectResponseSuccess(response, 'created', StatusCodes.CREATED)
   })
 })
