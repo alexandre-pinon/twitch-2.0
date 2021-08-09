@@ -36,12 +36,12 @@ function Banner(props) {
                     image={item.Image}
                     title={item.Name}
                 >
-{/*                     <ReactFlvPlayer
+                    <ReactFlvPlayer
                         url="https://www.youtube.com/watch?v=GF04QkRU4es"
                         height="auto"
-                        width="1200px"
+                        width="100%"
                         isMuted={false}
-                    /> */}
+                    />
                     <Typography hidden className="MediaCaption">
                         {item.Name}
                     </Typography>
