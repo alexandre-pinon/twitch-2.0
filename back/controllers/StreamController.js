@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongoose'
 import { StatusCodes } from 'http-status-codes'
 
 import AppError from '../errors/AppError.js'
@@ -8,20 +9,22 @@ import User from '../models/User.js'
 
 export const getAllLiveStreams = async (request, response) => {
   const streams = await getStreams({ live: true })
-  streams.length
-    ? response.json({ streams })
-    : response.status(StatusCodes.NOT_FOUND).json({ streams })
+  if (!streams.length) throw new AppError(`No stream found`, StatusCodes.NOT_FOUND)
+
+  response.json({ streams })
+}
+
+export const getOneStream = async (request, response) => {
+  const { streamId, streamKey } = request.params
+  const stream = await getStreamByIdOrKey(streamId, streamKey)
+
+  response.json({ stream })
 }
 
 export const insertStream = async (request, response) => {
-  const { live, streamKey, type, tags, gameTitle, title, description } =
-    request.body
+  const { live, streamKey, type, tags, gameTitle, title, description } = request.body
   const streamer = await User.findOne({ streamKey })
-  if (!streamer)
-    throw new AppError(
-      `No user found for streamKey ${streamKey}`,
-      StatusCodes.NOT_FOUND
-    )
+  if (!streamer) throw new AppError(`No user found for streamKey ${streamKey}`, StatusCodes.NOT_FOUND)
 
   const chatroom = await new Chatroom({ users: [streamer] }).save()
   const stream = await new Stream({
@@ -35,34 +38,14 @@ export const insertStream = async (request, response) => {
     description,
   }).save()
 
-  response
-    .status(StatusCodes.CREATED)
-    .json({ message: `Stream ${stream._id} created` })
+  response.status(StatusCodes.CREATED).json({ message: `Stream ${stream._id} created` })
 }
 
 export const removeStream = async (request, response) => {
-  const { streamId, streamKey } = request.body
-  let stream
-
-  if (streamId) {
-    stream = await Stream.findById(streamId)
-  } else if (streamKey) {
-    const streamer = await User.findOne({ streamKey })
-    if (!streamer)
-      throw new AppError(
-        `No user found for streamKey ${streamKey}`,
-        StatusCodes.NOT_FOUND
-      )
-    stream = await Stream.findOne({ live: true, streamer })
-  }
-
-  if (!stream)
-    throw new AppError(
-      `No stream found for id ${streamId}`,
-      StatusCodes.NOT_FOUND
-    )
-
+  const { streamId, streamKey } = request.params
+  const stream = await getStreamByIdOrKey(streamId, streamKey)
   const chatroom = await Chatroom.findById(stream.chatroom)
+
   for (const messageId of chatroom.messages) {
     await Message.findByIdAndDelete(messageId)
   }
@@ -75,9 +58,7 @@ export const removeStream = async (request, response) => {
 
 export const getStreams = async (params, populateAll = null) => {
   const query = Object.fromEntries(
-    Object.entries(params).filter(([key, value]) =>
-      Object.keys(Stream.schema.tree).includes(key)
-    )
+    Object.entries(params).filter(([key, value]) => Object.keys(Stream.schema.tree).includes(key))
   )
   if (populateAll)
     return await Stream.find(query)
@@ -95,4 +76,20 @@ export const getStreams = async (params, populateAll = null) => {
       })
 
   return await Stream.find(query)
+}
+
+export const getStreamByIdOrKey = async (streamId, streamKey) => {
+  let stream
+
+  if (streamId instanceof ObjectId) {
+    stream = await Stream.findById(streamId)
+  } else if (streamKey) {
+    const streamer = await User.findOne({ streamKey })
+    if (!streamer) throw new AppError(`No user found for streamKey ${streamKey}`, StatusCodes.NOT_FOUND)
+    stream = await Stream.findOne({ live: true, streamer })
+  }
+
+  if (!stream) throw new AppError(`No stream found for id ${streamId}`, StatusCodes.NOT_FOUND)
+
+  return stream
 }

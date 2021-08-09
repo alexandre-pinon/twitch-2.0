@@ -22,10 +22,7 @@ var nms = new NodeMediaServer(config)
 nms.run()
 
 nms.on('postPublish', async (id, StreamPath, args) => {
-  console.log(
-    '[NodeEvent on postPublish]',
-    `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`
-  )
+  console.log('[NodeEvent on postPublish]', `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`)
   const streamKey = StreamPath.substring(6)
   try {
     const response = await axios.post(
@@ -39,15 +36,11 @@ nms.on('postPublish', async (id, StreamPath, args) => {
 })
 
 nms.on('donePublish', async (id, StreamPath, args) => {
-  console.log(
-    '[NodeEvent on donePublish]',
-    `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`
-  )
+  console.log('[NodeEvent on donePublish]', `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`)
   const streamKey = StreamPath.substring(6)
   try {
     const response = await axios.delete(
-      `${process.env.BACK_ORIGIN}:${process.env.BACK_PORT}/stream/remove`,
-      { data: { streamKey } }
+      `${process.env.BACK_ORIGIN}:${process.env.BACK_PORT}/stream/remove/key/${streamKey}`
     )
     console.log({ response })
   } catch (error) {
@@ -56,24 +49,15 @@ nms.on('donePublish', async (id, StreamPath, args) => {
 })
 
 nms.on('prePlay', (id, StreamPath, args) => {
-  console.log(
-    '[NodeEvent on prePlay]',
-    `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`
-  )
+  console.log('[NodeEvent on prePlay]', `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`)
   // let session = nms.getSession(id);
   // session.reject();
 })
 
 nms.on('postPlay', (id, StreamPath, args) => {
-  console.log(
-    '[NodeEvent on postPlay]',
-    `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`
-  )
+  console.log('[NodeEvent on postPlay]', `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`)
 })
 
 nms.on('donePlay', (id, StreamPath, args) => {
-  console.log(
-    '[NodeEvent on donePlay]',
-    `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`
-  )
+  console.log('[NodeEvent on donePlay]', `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`)
 })

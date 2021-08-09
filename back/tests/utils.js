@@ -1,4 +1,5 @@
 import { getReasonPhrase, StatusCodes } from 'http-status-codes'
+import { seedUser } from './seed'
 
 export const expectError = (error, errormessage, statusCode, status) => {
   statusCode = statusCode || StatusCodes.BAD_REQUEST
@@ -18,12 +19,7 @@ export const expectSocketError = (error, errormessage, statusCode, status) => {
   expect(error.error.status).toBe(status)
 }
 
-export const expectResponseError = (
-  response,
-  errorMessage,
-  statusCode,
-  status
-) => {
+export const expectResponseError = (response, errorMessage, statusCode, status) => {
   statusCode = statusCode || StatusCodes.BAD_REQUEST
   status = status || getReasonPhrase(statusCode)
 
@@ -32,16 +28,18 @@ export const expectResponseError = (
   expect(response.body.message).toContain(errorMessage)
 }
 
-export const expectResponseSuccess = (
-  response,
-  message,
-  statusCode,
-  statusMessage
-) => {
+export const expectResponseSuccess = (response, message, statusCode, statusMessage) => {
   statusCode = statusCode || StatusCodes.OK
   statusMessage = statusMessage || getReasonPhrase(statusCode)
 
   expect(response.statusCode).toBe(statusCode)
   expect(response.res.statusMessage).toBe(statusMessage)
   if (message) expect(response.body.message).toContain(message)
+}
+
+export const authenticateUserAndGetToken = async (request, user) => {
+  if (!user) user = await seedUser()
+  let response = await request.post('/user/login').send({ username: user.username, password: 'password1' })
+
+  return response.body.token
 }

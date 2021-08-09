@@ -53,11 +53,7 @@ export const handleChatMessage = async (socket, io, chatroomId, message) => {
   if (!message) throw new AppError('Message is empty')
 
   const chatroom = await ChatroomController.getOneChatroom({ _id: chatroomId })
-  if (!chatroom)
-    throw new AppError(
-      `No chatroom found for id ${chatroomId}`,
-      StatusCodes.NOT_FOUND
-    )
+  if (!chatroom) throw new AppError(`No chatroom found for id ${chatroomId}`, StatusCodes.NOT_FOUND)
   if (chatroom.banned_users.includes(socket.userId))
     throw new AppError("You're banned from this chat!", StatusCodes.FORBIDDEN)
 
@@ -68,11 +64,7 @@ export const handleChatMessage = async (socket, io, chatroomId, message) => {
 
 const handlePrivateMessage = async (socket, io, chatroomId, message) => {
   const user = await UserController.getOneUser({ _id: socket.userId })
-  if (!user)
-    throw new AppError(
-      `No user found for id ${socket.userId}`,
-      StatusCodes.NOT_FOUND
-    )
+  if (!user) throw new AppError(`No user found for id ${socket.userId}`, StatusCodes.NOT_FOUND)
 
   io.to(chatroomId).emit('chat message', {
     username: user.username,

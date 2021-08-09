@@ -1,5 +1,6 @@
 ## What
-* Describe **what** was changed in the pull request.
+
+- Describe **what** was changed in the pull request.
 
 ## Type of change
 
@@ -16,4 +17,3 @@ Did you ran test for this changes ?
 
 - [ ] Yes
 - [ ] No
-

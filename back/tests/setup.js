@@ -8,11 +8,7 @@ import app from '../app'
 dotenv.config({ path: '.back.env' })
 mongoose.promise = global.Promise
 
-export let io,
-  serverSocket,
-  secondServerSocket,
-  clientSocket,
-  secondClientSocket
+export let io, serverSocket, secondServerSocket, clientSocket, secondClientSocket
 
 export default (databaseName, withSocket = false) => {
   // Connect to Mongoose
@@ -77,8 +73,7 @@ const dropAllCollections = async () => {
       if (error.message === 'ns not found') return
       // This error occurs when you use it.todo. You can
       // safely ignore this error too
-      if (error.message.includes('a background operation is currently running'))
-        return
+      if (error.message.includes('a background operation is currently running')) return
       console.log(error.message)
     }
   }

@@ -44,7 +44,9 @@ describe('Testing chat methods', () => {
     chatroomObj = await ChatroomController.getOneChatroom({})
     expect(chatroomObj._id).toEqual(chatroom._id)
 
-    chatroomObj = await ChatroomController.getOneChatroom({ _id: chatroom._id })
+    chatroomObj = await ChatroomController.getOneChatroom({
+      _id: chatroom._id,
+    })
     expect(chatroomObj._id).toEqual(chatroom._id)
 
     chatroomObj = await ChatroomController.getOneChatroom({
@@ -57,10 +59,7 @@ describe('Testing chat methods', () => {
     })
     expect(chatroomObj._id).toEqual(chatroom._id)
 
-    chatroomObj = await ChatroomController.getOneChatroom(
-      { _id: chatroom._id },
-      'users'
-    )
+    chatroomObj = await ChatroomController.getOneChatroom({ _id: chatroom._id }, 'users')
     expect(chatroomObj._id).toEqual(chatroom._id)
     expect(chatroomObj.users[0].username).toEqual(user.username)
 
@@ -73,10 +72,7 @@ describe('Testing chat methods', () => {
 
   it('Test feature: create private chat', async () => {
     let [user1, user2] = await seedUser(2)
-    const chatroom = await ChatroomController.createPrivate(
-      user1._id,
-      user2._id
-    )
+    const chatroom = await ChatroomController.createPrivate(user1._id, user2._id)
     expect(chatroom.users[0]).toEqual(user1._id)
     expect(chatroom.users[1]).toEqual(user2._id)
   })
@@ -87,11 +83,7 @@ describe('Testing chat methods', () => {
     try {
       await ChatroomController.createPrivate(userId1, userId2)
     } catch (error) {
-      expectError(
-        error,
-        `No user found for id ${userId1}`,
-        StatusCodes.NOT_FOUND
-      )
+      expectError(error, `No user found for id ${userId1}`, StatusCodes.NOT_FOUND)
     }
 
     const user = await seedUser()
@@ -99,11 +91,7 @@ describe('Testing chat methods', () => {
     try {
       await ChatroomController.createPrivate(userId1, userId2)
     } catch (error) {
-      expectError(
-        error,
-        `No user found for id ${userId2}`,
-        StatusCodes.NOT_FOUND
-      )
+      expectError(error, `No user found for id ${userId2}`, StatusCodes.NOT_FOUND)
     }
   })
 
@@ -184,11 +172,7 @@ describe('Testing chat methods', () => {
     try {
       await ChatroomController.addOrRemoveUser(chatroomId, userId, action)
     } catch (error) {
-      expectError(
-        error,
-        `No user found for id ${userId}`,
-        StatusCodes.NOT_FOUND
-      )
+      expectError(error, `No user found for id ${userId}`, StatusCodes.NOT_FOUND)
     }
 
     const user = await seedUser()
@@ -196,11 +180,7 @@ describe('Testing chat methods', () => {
     try {
       await ChatroomController.addOrRemoveUser(chatroomId, userId, action)
     } catch (error) {
-      expectError(
-        error,
-        `No chat found for id ${chatroomId}`,
-        StatusCodes.NOT_FOUND
-      )
+      expectError(error, `No chat found for id ${chatroomId}`, StatusCodes.NOT_FOUND)
     }
 
     const chatroom = await seedChatroom()
@@ -245,11 +225,7 @@ describe('Testing message methods', () => {
     try {
       await MessageController.insert(serverSocket, chatroomId, message)
     } catch (error) {
-      expectError(
-        error,
-        `No user found for id ${userId}`,
-        StatusCodes.NOT_FOUND
-      )
+      expectError(error, `No user found for id ${userId}`, StatusCodes.NOT_FOUND)
     }
 
     const user = await seedUser()
@@ -258,11 +234,7 @@ describe('Testing message methods', () => {
     try {
       await MessageController.insert(serverSocket, chatroomId, message)
     } catch (error) {
-      expectError(
-        error,
-        `No chat found for id ${chatroomId}`,
-        StatusCodes.NOT_FOUND
-      )
+      expectError(error, `No chat found for id ${chatroomId}`, StatusCodes.NOT_FOUND)
     }
   })
 })
