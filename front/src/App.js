@@ -4,6 +4,8 @@ import Example from "./components/header";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Home from "./components/homepage";
 import Studio from "./components/studio";
+import Login from './components/auth/Login'
+import Register from './components/auth/Register'
 import { useSocket } from "./utils/socket";
 import axios from "axios";
 import ListFollowers from "./components/listFollowers";
@@ -45,6 +47,14 @@ function App() {
           </Route>
           <Route path="/studio">
             <Studio socket={socket} />
+          </Route>
+          {/* START: Authentification Routes */}
+          <Route path='/login'>
+            <Login />
+          </Route>
+          {/* END: Authentification Routes */}
+          <Route path='/register'>
+            <Register />
           </Route>
           <Route exact path="/followings">
             <ListFollowings />
