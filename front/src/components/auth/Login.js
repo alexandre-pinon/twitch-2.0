@@ -1,29 +1,52 @@
-import Axios from "axios";
+import axios from "axios";
 import React, { useContext, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 
 function Login() {
-    const [formEmail, setFormEmail] = useState("");
-    const [formPassword, setFormPassword] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+
+    // Axios Call for Login
+    function login(e) {
+        e.preventDefault();
+        const retrieveData = {
+            username,
+            password,
+        };
+
+        axios
+            .post('http://localhost:8001/user/login', 
+                retrieveData,
+            )
+            .then((response) => {
+                console.log(response);
+                if (response.status == 200) {
+                    window.location = "http://localhost:3000/" 
+            }
+            })
+            .catch(e => {
+                console.error(e);
+            });
+    }
 
     return (
     <div className="auth-form">
         <h2>Log in</h2>
-        <form className="form" onSubmit={"Login Test"}>
-        <label htmlFor="form-email">Email</label>
+        <form className="form" onSubmit={login}>
+        <label htmlFor="form-username">username</label>
         <input
-            id="form-email"
-            type="email"
-            value={formEmail}
-            onChange={(e) => setFormEmail(e.target.value)}
+            id="form-username"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
         />
 
         <label htmlFor="form-password">Password</label>
         <input
             id="form-password"
             type="password"
-            value={formPassword}
-            onChange={(e) => setFormPassword(e.target.value)}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
         />
 
         <button className="btn-submit" type="submit">
