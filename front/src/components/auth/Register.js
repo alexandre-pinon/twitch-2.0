@@ -1,38 +1,62 @@
-import Axios from "axios";
+import axios from "axios";
 import React, { useContext, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 
 function Register() {
-    const [formEmail, setFormEmail] = useState("");
-    const [formPassword, setFormPassword] = useState("");
-    const [formPasswordVerify, setFormPasswordVerify] = useState("");
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    // Axios Call for Register
+    function register(e) {
+        e.preventDefault();
+        const retrieveData = {
+            username,
+            email,
+            password,
+        };
+
+        axios
+            .post('http://localhost:8001/user/register', 
+                retrieveData,
+            )
+            .then((response) => {
+                console.log(response);
+                if (response.status == 200) {
+                    window.location = "http://localhost:3000/login" 
+            }
+            })
+            .catch(e => {
+                console.error(e);
+            });
+    }
 
     return (
     <div className="auth-form">
         <h2>Register a new account</h2>
-        <form className="form" onSubmit={"Register Test"}>
+        <form className="form" onSubmit={register}>
+        <label htmlFor="form-username">Username</label>
+        <input
+            id="form-username"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+        />
+
         <label htmlFor="form-email">Email</label>
         <input
             id="form-email"
             type="email"
-            value={formEmail}
-            onChange={(e) => setFormEmail(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
         />
 
         <label htmlFor="form-password">Password</label>
         <input
             id="form-password"
             type="password"
-            value={formPassword}
-            onChange={(e) => setFormPassword(e.target.value)}
-        />
-
-        <label htmlFor="form-passwordVerify">Verify password</label>
-        <input
-            id="form-passwordVerify"
-            type="password"
-            value={formPasswordVerify}
-            onChange={(e) => setFormPasswordVerify(e.target.value)}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
         />
 
         <button className="btn-submit" type="submit">
