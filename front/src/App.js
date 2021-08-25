@@ -1,83 +1,81 @@
-import React, { useEffect, useState } from "react";
-import "./App.css";
-import Example from "./components/header";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import Home from "./components/homepage";
-import Studio from "./components/studio";
+import React, { useEffect, useState } from 'react'
+import './App.css'
+import Example from './components/header'
+import { Switch, Route, useLocation, useHistory } from 'react-router-dom'
+import { useSocket } from './utils/socket'
+import Home from './components/homepage'
+import Studio from './components/studio'
 import Login from './components/auth/Login'
 import Register from './components/auth/Register'
-import { useSocket } from "./utils/socket";
-import axios from "axios";
-import ListFollowers from "./components/listFollowers";
-import ListFollowings from "./components/listFollowing";
-import Profile from "./components/profile";
-import Settings from "./components/settings";
-import SettingsProfil from "./components/settings/profil";
-import Background from "./components/settings/background";
+import ListFollowers from './components/listFollowers'
+import ListFollowings from './components/listFollowing'
+import Profile from './components/profile'
+import Settings from './components/settings'
+import SettingsProfil from './components/settings/profil'
+import Background from './components/settings/background'
 
-function App() {
-  const [token, setToken] = useState(null);
-  const socket = useSocket(token);
+const authRoutes = { login: '/login', register: '/register' }
 
-  const temporaryLogin = async () => {
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_BACK_ORIGIN}:${process.env.REACT_APP_BACK_PORT}/user/login`,
-        { username: "admin", password: "password" }
-      );
-      setToken(response.data.token);
-    } catch (error) {
-      console.log(error);
+const App = () => {
+  const [token, setToken] = useState(null)
+  const socket = useSocket(token)
+  const history = useHistory()
+  const location = useLocation()
+
+  const checkUserToken = async () => {
+    const sessionToken = sessionStorage.getItem('TOKEN')
+    if (sessionToken) {
+      setToken(token)
+    } else if (!Object.values(authRoutes).includes(location.pathname)) {
+      history.push(authRoutes.login)
     }
-  };
+  }
 
   useEffect(() => {
-    temporaryLogin();
-  }, []);
+    checkUserToken()
+  }, [location])
 
   return (
     <div className="App">
       <header>
         <Example />
       </header>
-      <Router>
-        <Switch>
-          <Route exact path="/">
-            <Home />
-          </Route>
-          <Route path="/studio">
-            <Studio socket={socket} />
-          </Route>
-          {/* START: Authentification Routes */}
-          <Route path='/login'>
-            <Login />
-          </Route>
-          {/* END: Authentification Routes */}
-          <Route path='/register'>
-            <Register />
-          </Route>
-          <Route exact path="/followings">
-            <ListFollowings />
-          </Route>
-          <Route exact path="/followers">
-            <ListFollowers />
-          </Route>
-          <Route exact path="/profile">
-            <Profile />
-          </Route>
-          <Route exact path="/settings">
-            <Settings />
-          </Route>
-          <Route exact path="/settings/profil">
-            <SettingsProfil />
-          </Route>
-          <Route exact path="/settings/background">
-            <Background />
-          </Route>
-        </Switch>
-      </Router>
+      <Switch>
+        <Route exact path="/">
+          <Home />
+        </Route>
+        <Route path="/studio">
+          <Studio socket={socket} />
+        </Route>
+        {/* START: Authentification Routes */}
+        <Route path={authRoutes.login}>
+          <Login />
+        </Route>
+        <Route path={authRoutes.register}>
+          <Register />
+        </Route>
+        {/* END: Authentification Routes */}
+        <Route exact path="/followings">
+          <ListFollowings />
+        </Route>
+        <Route exact path="/followers">
+          <ListFollowers />
+        </Route>
+        <Route exact path="/profile">
+          <Profile />
+        </Route>
+        <Route exact path="/settings">
+          <Settings />
+        </Route>
+        <Route exact path="/settings/profil">
+          <SettingsProfil />
+        </Route>
+        <Route exact path="/settings/background">
+          <Background />
+        </Route>
+      </Switch>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
