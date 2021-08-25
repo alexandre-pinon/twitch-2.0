@@ -22,10 +22,10 @@ const App = () => {
   const history = useHistory()
   const location = useLocation()
 
-  const checkUserToken = async () => {
+  const checkUserToken = () => {
     const sessionToken = sessionStorage.getItem('TOKEN')
     if (sessionToken) {
-      setToken(token)
+      setToken(sessionToken)
     } else if (!Object.values(authRoutes).includes(location.pathname)) {
       history.push(authRoutes.login)
     }
@@ -48,12 +48,8 @@ const App = () => {
           <Studio socket={socket} />
         </Route>
         {/* START: Authentification Routes */}
-        <Route path={authRoutes.login}>
-          <Login />
-        </Route>
-        <Route path={authRoutes.register}>
-          <Register />
-        </Route>
+        <Route path={authRoutes.login} component={Login} />
+        <Route path={authRoutes.register} component={Register} />
         {/* END: Authentification Routes */}
         <Route exact path="/followings">
           <ListFollowings />
