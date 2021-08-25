@@ -1,7 +1,7 @@
 import jwt from 'jwt-then'
 import { StatusCodes } from 'http-status-codes'
 
-import AppError from '../errors/AppError'
+import AppError from '../errors/AppError.js'
 
 export default async (request, response, next) => {
   try {

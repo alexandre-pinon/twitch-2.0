@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongoose'
+import mongoose from 'mongoose'
 import { StatusCodes } from 'http-status-codes'
 
 import AppError from '../errors/AppError.js'
@@ -81,7 +81,7 @@ export const getStreams = async (params, populateAll = null) => {
 export const getStreamByIdOrKey = async (streamId, streamKey) => {
   let stream
 
-  if (streamId instanceof ObjectId) {
+  if (streamId instanceof mongoose.Types.ObjectId) {
     stream = await Stream.findById(streamId)
   } else if (streamKey) {
     const streamer = await User.findOne({ streamKey })
