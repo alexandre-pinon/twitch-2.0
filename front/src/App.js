@@ -44,9 +44,7 @@ const App = () => {
         <Route exact path="/">
           <Home />
         </Route>
-        <Route path="/studio">
-          <Studio socket={socket} />
-        </Route>
+        <Route path="/studio/:streamerName" render={() => <Studio socket={socket} />} />
         {/* START: Authentification Routes */}
         <Route path={authRoutes.login} component={Login} />
         <Route path={authRoutes.register} component={Register} />

@@ -9,6 +9,28 @@ import User from '../models/User.js'
 import Chatroom from '../models/Chatroom.js'
 import AppError from '../errors/AppError.js'
 
+export const getByUsername = async (request, response) => {
+  const { username } = request.params
+
+  const user = await User.findOne({ username }).populate({
+    path: 'streamChat',
+    model: 'Chatroom',
+    populate: {
+      path: 'messages',
+      model: 'Message',
+      populate: {
+        path: 'user',
+        model: 'User',
+      },
+    },
+  })
+  if (!user) throw new AppError(`No user found for username ${username}`, StatusCodes.NOT_FOUND)
+
+  response.json({
+    user,
+  })
+}
+
 export const register = async (request, response) => {
   const { username, email, password, description, avatar } = request.body
   const emailRegex = /@gmail.com|@yahoo.com|@hotmail.com|@live.com|outlook.fr/
@@ -50,7 +72,7 @@ export const registerStreamKey = async (request, response) => {
 
   response.json({
     streamKey,
-    message: `Successfully generated stream key, don't share it with anyone!`
+    message: `Successfully generated stream key, don't share it with anyone!`,
   })
 }
 
