@@ -25,8 +25,9 @@ export const insertStream = async (request, response) => {
   const { live, streamKey, type, tags, gameTitle, title, description } = request.body
   const streamer = await User.findOne({ streamKey })
   if (!streamer) throw new AppError(`No user found for streamKey ${streamKey}`, StatusCodes.NOT_FOUND)
+  const chatroom = streamer.streamChat
+  if (!chatroom) throw new AppError(`No chat found for this user`, StatusCodes.NOT_FOUND)
 
-  const chatroom = await new Chatroom({ users: [streamer] }).save()
   const stream = await new Stream({
     streamer,
     chatroom,

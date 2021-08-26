@@ -6,6 +6,7 @@ import crypto from 'crypto'
 import notp from 'notp'
 
 import User from '../models/User.js'
+import Chatroom from '../models/Chatroom.js'
 import AppError from '../errors/AppError.js'
 
 export const register = async (request, response) => {
@@ -32,6 +33,24 @@ export const register = async (request, response) => {
 
   response.status(StatusCodes.CREATED).json({
     message: `User ${username} registered successfully`,
+  })
+}
+
+export const registerStreamKey = async (request, response) => {
+  const user = await User.findById(request.body.userId)
+  if (!user) throw new AppError('Invalid token')
+
+  const chatroom = await new Chatroom({ users: [user] }).save()
+  const streamKey = crypto.randomBytes(16).toString('hex')
+
+  user.streamKey = streamKey
+  user.streamChat = chatroom
+
+  await user.save()
+
+  response.json({
+    streamKey,
+    message: `Successfully generated stream key, don't share it with anyone!`
   })
 }
 

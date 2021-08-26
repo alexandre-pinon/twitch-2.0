@@ -38,6 +38,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     unique: true,
   },
+  streamChat: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Chatroom',
+  },
   followers: {
     type: [mongoose.Schema.Types.ObjectId],
     ref: 'User',
