@@ -121,9 +121,13 @@ describe('Testing stream routes', () => {
     let stream = await Stream.find({})
     expect(stream).toHaveLength(0)
 
-    const streamer = await seedUser()
+    let streamer = await seedUser()
     const token = await authenticateUserAndGetToken(request, streamer)
-    const response = await request
+    let response = await request.post('/user/registerStreamKey').set('Authorization', `Bearer ${token}`)
+    expectResponseSuccess(response, 'Successfully generated stream key')
+
+    streamer = await User.findById(streamer._id)
+    response = await request
       .post('/stream/insert')
       .set('Authorization', `Bearer ${token}`)
       .send({ streamKey: streamer.streamKey })
