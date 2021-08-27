@@ -6,6 +6,7 @@
 #   - Groups of hosts are delimited by [header] elements
 #   - You can enter hostnames or ip addresses
 #   - A hostname/ip can be a member of multiple groups
+#   - ansible-playbook deployment/ansible/prod/user.yml  -i deployment/ansible/prod/hosts
 
 [production]
 server1 ansible_host=37.187.38.68 ansible_user=root ansible_python_interpreter=/usr/bin/python3

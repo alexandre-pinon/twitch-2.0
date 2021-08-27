@@ -30,12 +30,4 @@
       update_cache: yes
       name: rsync
       state: present
-  # - include_role:
-  #     name: role/tools
-  # - include_role:
-  #     name: role/php
-  # - include_role:
-  #     name: role/apache
-  # - include_role:
-  #     name: role/nodejs
 - import_playbook: deploy.yml
