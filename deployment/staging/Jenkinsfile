@@ -1,89 +1,14 @@
-pipeline {
-
-    agent any 
-    // agent {
-    //     docker {
-    //         image 'myusername/mongonode:latest'
-    //         args '-p 3000:3000'
-    //     }
-    // }
-
-    tools {nodejs "Node-14.17.2"}
-
-    stages {
-
-        stage("Backend Tests") {
-            when {
-                expression {
-                    BRANCH_NAME == 'develop' || BRANCH_NAME == 'master' || BRANCH_NAME == 'feature/jenkins'
-                }
-            }
-            environment {
-                BACK_ENV_FILE = credentials('BACK_ENV_FILE')	
-            }
-            steps {
-                echo 'Running Backend Tests'
-                dir ('back') {
-                    nodejs('Node-14.17.2') {
-                        sh 'npm install'
-                        sh 'npm run unittest'
-                    }
-                }
-            }
-        }
-
-        stage("Build Backend Image") {
-            steps {
-                echo 'Building Backend Dockerfile'
-                dir ('back') {
-                    echo 'Nothing to do actually....'
-                }
-            }
-        }
-
-        stage("Build Frontend Image") {
-            steps {
-                echo 'Building Frontend Dockerfile'
-                dir ('back') {
-                    echo 'Nothing to do actually....'
-                }
-            }
-        }
-
-        stage("Build player Image") {
-            steps {
-                echo 'Building Player Dockerfile'
-                dir ('back') {
-                    echo 'Nothing to do actually....'
-                }
-            }
-        }
-
-        stage("Deployment") {
-            steps {
-                echo 'Deploy all images to Docker Registry'
-                dir ('back') {
-                    echo 'Nothing to do actually....'
-                }
-            }
-        }
-
-        // stage("Clean-up") {
-        //     steps {
-        //         echo 'Clean all environments...'
-        //     }
-        // }
-    }
-}
-
 // pipeline {
 
-//     agent {
-//         docker {
-//             image 'wbarmis/sutoremon_tv:1.0.0'
-//             // args '-p 3000:3000'
-//         }
-//     }
+//     agent any 
+//     // agent {
+//     //     docker {
+//     //         image 'myusername/mongonode:latest'
+//     //         args '-p 3000:3000'
+//     //     }
+//     // }
+
+//     tools {nodejs "Node-14.17.2"}
 
 //     stages {
 
@@ -99,8 +24,10 @@ pipeline {
 //             steps {
 //                 echo 'Running Backend Tests'
 //                 dir ('back') {
-//                     sh 'npm install'
-//                     sh 'npm run unittest'
+//                     nodejs('Node-14.17.2') {
+//                         sh 'npm install'
+//                         sh 'npm run unittest'
+//                     }
 //                 }
 //             }
 //         }
@@ -109,7 +36,7 @@ pipeline {
 //             steps {
 //                 echo 'Building Backend Dockerfile'
 //                 dir ('back') {
-//                     echo 'Nothing to do actually....'
+//                     sh 'docker build --no-cache -t wbarmis/sutoremon_tv:backend .'
 //                 }
 //             }
 //         }
@@ -117,8 +44,8 @@ pipeline {
 //         stage("Build Frontend Image") {
 //             steps {
 //                 echo 'Building Frontend Dockerfile'
-//                 dir ('back') {
-//                     echo 'Nothing to do actually....'
+//                 dir ('front') {
+//                     sh 'docker build --no-cache -t wbarmis/sutoremon_tv:frontend .'
 //                 }
 //             }
 //         }
@@ -126,19 +53,133 @@ pipeline {
 //         stage("Build player Image") {
 //             steps {
 //                 echo 'Building Player Dockerfile'
-//                 dir ('back') {
-//                     echo 'Nothing to do actually....'
+//                 dir ('stream') {
+//                     sh 'docker build --no-cache -t wbarmis/sutoremon_tv:stream .'
 //                 }
 //             }
 //         }
 
-//         stage("Deployment") {
+//         stage("Login To Docker Hub") {
 //             steps {
-//                 echo 'Deploy all images to Docker Registry'
-//                 dir ('back') {
-//                     echo 'Nothing to do actually....'
+//                 echo 'Login to Docker Registry'
+//                 withCredentials([string(credentialsId: 'DOCKER_HUB_PASSWORD', variable: 'PASSWORD')]) {
+//                     sh 'docker login -u wbarmis -p $PASSWORD'
 //                 }
+//             }
+//         }
+
+//         stage("Push To Docker Hub") {
+//             steps {
+//                 echo 'Push all images to Docker Registry'
+//                 sh 'docker push wbarmis/sutoremon_tv:frontend'
+//                 sh 'docker push wbarmis/sutoremon_tv:backend'
+//                 sh 'docker push wbarmis/sutoremon_tv:stream'
+//             }
+//         }
+
+//         stage("Deployment To Kubernetes") {
+//             steps {
+//                 echo 'Deploy to Kubernetes'
+//             }
+//         }
+
+//         stage("Clean-up") {
+//             steps {
+//                 echo 'Clean all environments...'
+//                 sh 'docker images'
+//                 sh 'docker system prune -a -f'
 //             }
 //         }
 //     }
 // }
+
+pipeline {
+
+    agent {
+        docker {
+            image 'wbarmis/sutoremon_tv:1.0.0'
+            args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
+            reuseNode true
+        }
+    }
+
+    stages {
+
+        stage("Backend Tests & Build Image") {
+            when {
+                expression {
+                    BRANCH_NAME == 'develop' || BRANCH_NAME == 'master' || BRANCH_NAME == 'feature/jenkins'
+                }
+            }
+            environment {
+                BACK_ENV_FILE = credentials('BACK_ENV_FILE')	
+            }
+            steps {
+                echo 'Running Backend Tests & Building Dockerfile'
+                dir ('back') {
+                    sh 'docker build --no-cache -t wbarmis/sutoremon_tv:backend .'
+
+                }
+            }
+        }
+
+        // stage("Build Backend Image") {
+        //     steps {
+        //         echo 'Building Backend Dockerfile'
+        //         dir ('back') {
+        //             sh 'docker build --no-cache -t wbarmis/sutoremon_tv:backend .'
+        //         }
+        //     }
+        // }
+
+        stage("Build Frontend Image") {
+            steps {
+                echo 'Building Frontend Dockerfile'
+                dir ('front') {
+                    sh 'docker build --no-cache -t wbarmis/sutoremon_tv:frontend .'
+                }
+            }
+        }
+
+        stage("Build player Image") {
+            steps {
+                echo 'Building Player Dockerfile'
+                dir ('stream') {
+                    sh 'docker build --no-cache -t wbarmis/sutoremon_tv:stream .'
+                }
+            }
+        }
+
+        stage("Login To Docker Hub") {
+            steps {
+                echo 'Login to Docker Registry'
+                withCredentials([string(credentialsId: 'DOCKER_HUB_PASSWORD', variable: 'PASSWORD')]) {
+                    sh 'docker login -u wbarmis -p $PASSWORD'
+                }
+            }
+        }
+
+        stage("Push To Docker Hub") {
+            steps {
+                echo 'Push all images to Docker Registry'
+                sh 'docker push wbarmis/sutoremon_tv:frontend'
+                sh 'docker push wbarmis/sutoremon_tv:backend'
+                sh 'docker push wbarmis/sutoremon_tv:stream'
+            }
+        }
+
+        stage("Deployment To Kubernetes") {
+            steps {
+                echo 'Deploy to Kubernetes'
+            }
+        }
+
+        stage("Clean-up") {
+            steps {
+                echo 'Clean all environments...'
+                sh 'docker images'
+                sh 'docker system prune -a -f'
+            }
+        }
+    }
+}

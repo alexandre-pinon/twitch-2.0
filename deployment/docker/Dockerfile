@@ -1,18 +1,14 @@
-FROM debian:buster-slim
+FROM node:14.17.2-buster-slim
 
 LABEL maintainer="Sutoremondesu"
 LABEL description="Docker image use for pipeline"
 
 ENV DEBIAN_FRONTEND=noninteractive
+ENV LANG=C.UTF-8
 
-
-SHELL ["/bin/bash", "-c"]
 
 # Set timezone to Paris by default
 RUN ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
-# Use unicode
-RUN locale-gen C.UTF-8 || true
-ENV LANG=C.UTF-8
 
 # Install Docker 
 RUN apt-get update \
@@ -26,8 +22,7 @@ RUN apt-get update \
         sudo \
         systemd \
         openssh-server \
-        openssh-client \
-        mlocate 
+        openssh-client
 
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
@@ -41,18 +36,18 @@ RUN apt-get update \
     docker-ce-cli \
     containerd.io 
 
+RUN whoami
+
+
 RUN sudo usermod -aG docker root
 
 RUN sudo systemctl enable docker.service
 
-RUN mkdir ~/.docker
+RUN npm install npm@latest -g
+RUN npm install npm@latest -g
 
-RUN chmod -R 777 ~/.docker
+RUN npm --version
 
-RUN ls -hla ~/.
-
-RUN ls -hla ~/.docker
-
-# RUN sudo systemctl disable containerd.service
+RUN npm install pm2 -g
 
 RUN sudo apt-get update 

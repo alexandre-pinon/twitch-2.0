@@ -1,0 +1,22 @@
+node_modules/
+npm-debug.log
+package-lock.json
+*.iml
+*.ipr
+*.iws
+classpath.txt
+version.properties
+.project
+.classpath
+lib/*
+# build/*
+generated-files/*
+generated-sources/*
+generated-code/*
+*.swp
+*.swo
+*.bak
+samples/*
+.idea/
+.lib/
+.DS_Store
