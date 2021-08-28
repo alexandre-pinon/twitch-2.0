@@ -34,7 +34,7 @@
   shell: |
     sudo gpasswd -a $USER docker
     sudo chmod 777 /var/run/docker.sock
-- name: DOCKER | Pull Jenkins image
+- name: DOCKER | Pull Jenkins images
   shell: |
     docker run -p 8080:8080 -p 50000:50000 -d -v jenkins_home:/var/jenkins_home jenkins/jenkins:lts
 
