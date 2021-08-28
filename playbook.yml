@@ -1,16 +1,4 @@
 ---
-- name: Vagrant
-  task:
-    - name: Vagrant up
-      shell: |
-        cd ~/epitech/e-commerce/branch/T-WEB-600-PAR-6-1-ecommerce-alexandre.pinon
-        vagrant up
-      delegate_to: 127.0.0.1
-- name: Add ssh list
-  task:
-    - name: Ssh keygen
-      command: sh-keygen -R 192.168.50.50
-      delegate_to: 127.0.0.1
 - name: Installation du serveur
   hosts: web
   remote_user: root

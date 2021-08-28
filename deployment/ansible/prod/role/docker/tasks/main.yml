@@ -1,0 +1,40 @@
+---
+# tasks file for docker
+- name: DOCKER | Install - Dependencies
+  apt:
+    update_cache: yes
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+    state: present
+# - name: DOCKER | Install - Curl GPG
+#   shell: | 
+#     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+#   state: present
+# - name: DOCKER | Install - Add Source List
+#   shell: |
+#     echo \
+#     "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+#     $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+# - name: DOCKER | Install - Update 
+#   apt:
+#     update_cache: yes
+# - name: DOCKER | Install - Docker
+#   apt:
+#     update_cache: yes
+#     name:
+#       - docker-ce
+#       - docker-ce-cli
+#       - containerd.io
+#     state: present
+- name: "DOCKER | add {{ user }} to Docker group"
+  shell: |
+    sudo gpasswd -a $USER docker
+    sudo chmod 777 /var/run/docker.sock
+- name: DOCKER | Pull Jenkins image
+  shell: |
+    docker run -p 8080:8080 -p 50000:50000 -d -v jenkins_home:/var/jenkins_home jenkins/jenkins:lts
+

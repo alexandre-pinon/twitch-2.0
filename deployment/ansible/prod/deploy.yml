@@ -1,0 +1,15 @@
+---
+- name: Installation du serveur
+  hosts: production
+  remote_user: "{{ user }}"
+  tasks:
+  - name: SHELL | Create directory
+    file:
+      path: "/home/{{ user }}/yep"
+      state: directory
+      owner: "{{ user }}"
+      group: "{{ user }}"
+      mode: 0775
+      recurse: yes
+  - include_role:
+      name: role/docker

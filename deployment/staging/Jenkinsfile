@@ -1,31 +1,77 @@
 pipeline {
 
     agent any 
+    // agent {
+    //     docker {
+    //         image 'myusername/mongonode:latest'
+    //         args '-p 3000:3000'
+    //     }
+    // }
+
+    tools {nodejs "Node-14.17.2"}
 
     stages {
 
-        stage("Test") {
+        stage("Backend Tests") {
+            when {
+                expression {
+                    BRANCH_NAME == 'develop' || BRANCH_NAME == 'master' || BRANCH_NAME == 'feature/infrastructure'
+                }
+            }
+            environment {
+                BACK_ENV_FILE = credentials('BACK_ENV_FILE')	
+            }
             steps {
-                echo 'Running Test...'
+                echo 'Running Backend Tests'
+                dir ('back') {
+                    nodejs('Node-14.17.2') {
+                        sh 'npm install'
+                        sh 'npm run unittest'
+                    }
+                }
             }
         }
 
-        stage("Build") {
+        stage("Frontend Tests") {
             steps {
-                echo 'Building apps...'
+                echo 'Running Frontend Tests'
+                dir ('back') {}
+                echo 'Nothing to do actually....'
             }
         }
 
-        stage("Deploy") {
+        stage("Build Backend Image") {
             steps {
-                echo 'Deploy docker images...'
+                echo 'Building Backend Dockerfile'
+                dir ('back') {}
             }
         }
 
-        stage("Clean-up") {
+        stage("Build Frontend Image") {
             steps {
-                echo 'Clean all environments...'
+                echo 'Building Frontend Dockerfile'
+                dir ('back') {}
             }
         }
+
+        stage("Build player Image") {
+            steps {
+                echo 'Building Player Dockerfile'
+                dir ('back') {}
+            }
+        }
+
+        stage("Deployment") {
+            steps {
+                echo 'Deploy all images to Docker Registry'
+                dir ('back') {}
+            }
+        }
+
+        // stage("Clean-up") {
+        //     steps {
+        //         echo 'Clean all environments...'
+        //     }
+        // }
     }
 }
