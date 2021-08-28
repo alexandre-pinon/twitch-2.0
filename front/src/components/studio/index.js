@@ -49,24 +49,8 @@ var id = locToString.substring(locToString.length - 1, locToString.length)
 var url = '' + id // affichage des profil par id
 
 class CardUser extends Component {
-  state = {
-    user: {},
-  }
-
-  componentDidMount() {
-    /* console.log(url) */
-    fetch('https://jsonplaceholder.typicode.com/users/1')
-      .then((response) => {
-        return response.json()
-      })
-      .then((result) => {
-        this.setState({ user: result })
-        console.log(result)
-      })
-  }
-
   render() {
-    const {streamer} = this.props
+    const { streamer } = this.props
     return (
       <div className="row test">
         <Link
@@ -88,9 +72,7 @@ class CardUser extends Component {
         </Link>
         <div className="NameStreamer">
           <h2>{streamer ? streamer.username : 'loading...'}</h2>
-          <p>
-          {streamer ? streamer.description : 'loading...'}
-          </p>
+          <p>{streamer ? streamer.description : 'loading...'}</p>
           <table id="table">
             <thead>
               <th>Followers</th>
@@ -101,17 +83,17 @@ class CardUser extends Component {
               <tr>
                 <td>
                   <Link className="noLinkStyle" to="/followers">
-                  {streamer ? streamer.followers.length : 'loading...'}
+                    {streamer ? streamer.followers.length : 'loading...'}
                   </Link>
                 </td>
                 <td>
                   <Link className="noLinkStyle" to="/subscribers">
-                  {streamer ? streamer.subscribers.length : 'loading...'}
+                    {streamer ? streamer.subscribers.length : 'loading...'}
                   </Link>
                 </td>
                 <td>
                   <Link className="noLinkStyle" to="/followings">
-                  {streamer ? streamer.followings.length : 'loading...'}
+                    {streamer ? streamer.followings.length : 'loading...'}
                   </Link>
                 </td>
               </tr>
@@ -207,7 +189,6 @@ const Studio = ({ match, socket }) => {
       )
       setStreamer(response.data.user)
       setStreamChat(response.data.user.streamChat)
-      console.log(response)
     } catch (error) {
       console.log(error)
     }
@@ -288,7 +269,7 @@ const Studio = ({ match, socket }) => {
           </div>
         </div>
         <br />
-        <CardUser streamer={streamer}/>
+        <CardUser streamer={streamer} />
       </div>
       <div aria-haspopup="false" className="containFullMode containVideo">
         {playertoobar}
