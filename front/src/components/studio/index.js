@@ -66,6 +66,7 @@ class CardUser extends Component {
   }
 
   render() {
+    const {streamer} = this.props
     return (
       <div className="row test">
         <Link
@@ -77,7 +78,7 @@ class CardUser extends Component {
           }}
         >
           <Avatar
-            alt={this.state.user.name}
+            alt={streamer ? streamer.username : 'loading...'}
             src="/static/images/avatar/1.jpg"
             style={{
               width: '200px',
@@ -86,28 +87,31 @@ class CardUser extends Component {
           />
         </Link>
         <div className="NameStreamer">
-          <h2>{this.state.user.name}</h2>
+          <h2>{streamer ? streamer.username : 'loading...'}</h2>
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-            nulla pariatur.
+          {streamer ? streamer.description : 'loading...'}
           </p>
           <table id="table">
             <thead>
               <th>Followers</th>
+              <th>Subscribers</th>
               <th>Followings</th>
             </thead>
             <tbody>
               <tr>
                 <td>
                   <Link className="noLinkStyle" to="/followers">
-                    1212891
+                  {streamer ? streamer.followers.length : 'loading...'}
+                  </Link>
+                </td>
+                <td>
+                  <Link className="noLinkStyle" to="/subscribers">
+                  {streamer ? streamer.subscribers.length : 'loading...'}
                   </Link>
                 </td>
                 <td>
                   <Link className="noLinkStyle" to="/followings">
-                    1212891
+                  {streamer ? streamer.followings.length : 'loading...'}
                   </Link>
                 </td>
               </tr>
@@ -258,12 +262,16 @@ const Studio = ({ match, socket }) => {
         <div className="row row--With--Shadow">
           <div className="col-sm-9">
             {playertoobar}
-            <ReactFlvPlayer
-              url="https://www.youtube.com/watch?v=GF04QkRU4es"
-              height="auto"
-              width="100%"
-              isMuted={false}
-            />
+            {streamer && streamer.streamKey ? (
+              <ReactFlvPlayer
+                url={`${process.env.REACT_APP_BACK_ORIGIN}:${process.env.REACT_APP_STREAM_PORT}/live/${streamer.streamKey}.flv`}
+                height="auto"
+                width="100%"
+                isMuted={false}
+              />
+            ) : (
+              <div>Loading...</div>
+            )}
           </div>
           <div id="testCt" className="col-sm-3">
             <header className="titleChat">Chat du stream</header>
@@ -280,11 +288,11 @@ const Studio = ({ match, socket }) => {
           </div>
         </div>
         <br />
-        <CardUser />
+        <CardUser streamer={streamer}/>
       </div>
       <div aria-haspopup="false" className="containFullMode containVideo">
         {playertoobar}
-        <ReactFlvPlayer url="https://www.youtube.com/watch?v=GF04QkRU4es" height="auto" width="100%" isMuted={false} />
+        {/* <ReactFlvPlayer url="https://www.youtube.com/watch?v=GF04QkRU4es" height="auto" width="100%" isMuted={false} /> */}
         <div className="containFullChat">
           <Chat />
         </div>

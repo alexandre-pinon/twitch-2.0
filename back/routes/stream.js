@@ -9,9 +9,9 @@ streamRouter.get('/get', catchAsync(StreamController.getAllLiveStreams))
 streamRouter.get('/get/:streamId', catchAsync(StreamController.getOneStream))
 streamRouter.get('/get/key/:streamKey', catchAsync(StreamController.getOneStream))
 
-streamRouter.post('/insert', catchAsync(auth), catchAsync(StreamController.insertStream))
+streamRouter.post('/insert', catchAsync(StreamController.insertStream))
 
-streamRouter.delete('/remove/:streamId', catchAsync(auth), catchAsync(StreamController.removeStream))
-streamRouter.delete('/remove/key/:streamKey', catchAsync(auth), catchAsync(StreamController.removeStream))
+streamRouter.delete('/remove/:streamId', catchAsync(StreamController.removeStream))
+streamRouter.delete('/remove/key/:streamKey', catchAsync(StreamController.removeStream))
 
 export default streamRouter

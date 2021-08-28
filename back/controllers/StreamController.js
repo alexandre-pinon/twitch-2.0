@@ -45,12 +45,13 @@ export const insertStream = async (request, response) => {
 export const removeStream = async (request, response) => {
   const { streamId, streamKey } = request.params
   const stream = await getStreamByIdOrKey(streamId, streamKey)
-  const chatroom = await Chatroom.findById(stream.chatroom)
+  await stream.deleteOne()
+  // const chatroom = await Chatroom.findById(stream.chatroom)
 
-  for (const messageId of chatroom.messages) {
-    await Message.findByIdAndDelete(messageId)
-  }
-  await Promise.all([chatroom.deleteOne(), stream.deleteOne()])
+  // for (const messageId of chatroom.messages) {
+  //   await Message.findByIdAndDelete(messageId)
+  // }
+  // await Promise.all([chatroom.deleteOne(), stream.deleteOne()])
 
   response.json({
     message: `Stream ${stream._id} deleted!`,
