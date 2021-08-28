@@ -46,6 +46,10 @@ const userSchema = new mongoose.Schema({
     type: [mongoose.Schema.Types.ObjectId],
     ref: 'User',
   },
+  is_subsribed: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 export default mongoose.model('User', userSchema)
