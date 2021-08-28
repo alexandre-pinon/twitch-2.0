@@ -15,7 +15,7 @@ pipeline {
         stage("Backend Tests") {
             when {
                 expression {
-                    BRANCH_NAME == 'develop' || BRANCH_NAME == 'master' || BRANCH_NAME == 'feature/infrastructure'
+                    BRANCH_NAME == 'develop' || BRANCH_NAME == 'master' || BRANCH_NAME == 'feature/jenkins'
                 }
             }
             environment {
@@ -32,39 +32,39 @@ pipeline {
             }
         }
 
-        stage("Frontend Tests") {
-            steps {
-                echo 'Running Frontend Tests'
-                dir ('back') {}
-                echo 'Nothing to do actually....'
-            }
-        }
-
         stage("Build Backend Image") {
             steps {
                 echo 'Building Backend Dockerfile'
-                dir ('back') {}
+                dir ('back') {
+                    echo 'Nothing to do actually....'
+                }
             }
         }
 
         stage("Build Frontend Image") {
             steps {
                 echo 'Building Frontend Dockerfile'
-                dir ('back') {}
+                dir ('back') {
+                    echo 'Nothing to do actually....'
+                }
             }
         }
 
         stage("Build player Image") {
             steps {
                 echo 'Building Player Dockerfile'
-                dir ('back') {}
+                dir ('back') {
+                    echo 'Nothing to do actually....'
+                }
             }
         }
 
         stage("Deployment") {
             steps {
                 echo 'Deploy all images to Docker Registry'
-                dir ('back') {}
+                dir ('back') {
+                    echo 'Nothing to do actually....'
+                }
             }
         }
 
@@ -75,3 +75,70 @@ pipeline {
         // }
     }
 }
+
+// pipeline {
+
+//     agent {
+//         docker {
+//             image 'wbarmis/sutoremon_tv:1.0.0'
+//             // args '-p 3000:3000'
+//         }
+//     }
+
+//     stages {
+
+//         stage("Backend Tests") {
+//             when {
+//                 expression {
+//                     BRANCH_NAME == 'develop' || BRANCH_NAME == 'master' || BRANCH_NAME == 'feature/jenkins'
+//                 }
+//             }
+//             environment {
+//                 BACK_ENV_FILE = credentials('BACK_ENV_FILE')	
+//             }
+//             steps {
+//                 echo 'Running Backend Tests'
+//                 dir ('back') {
+//                     sh 'npm install'
+//                     sh 'npm run unittest'
+//                 }
+//             }
+//         }
+
+//         stage("Build Backend Image") {
+//             steps {
+//                 echo 'Building Backend Dockerfile'
+//                 dir ('back') {
+//                     echo 'Nothing to do actually....'
+//                 }
+//             }
+//         }
+
+//         stage("Build Frontend Image") {
+//             steps {
+//                 echo 'Building Frontend Dockerfile'
+//                 dir ('back') {
+//                     echo 'Nothing to do actually....'
+//                 }
+//             }
+//         }
+
+//         stage("Build player Image") {
+//             steps {
+//                 echo 'Building Player Dockerfile'
+//                 dir ('back') {
+//                     echo 'Nothing to do actually....'
+//                 }
+//             }
+//         }
+
+//         stage("Deployment") {
+//             steps {
+//                 echo 'Deploy all images to Docker Registry'
+//                 dir ('back') {
+//                     echo 'Nothing to do actually....'
+//                 }
+//             }
+//         }
+//     }
+// }
