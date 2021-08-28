@@ -25,8 +25,9 @@ export const insertStream = async (request, response) => {
   const { live, streamKey, type, tags, gameTitle, title, description } = request.body
   const streamer = await User.findOne({ streamKey })
   if (!streamer) throw new AppError(`No user found for streamKey ${streamKey}`, StatusCodes.NOT_FOUND)
+  const chatroom = streamer.streamChat
+  if (!chatroom) throw new AppError(`No chat found for this user`, StatusCodes.NOT_FOUND)
 
-  const chatroom = await new Chatroom({ users: [streamer] }).save()
   const stream = await new Stream({
     streamer,
     chatroom,
@@ -44,12 +45,13 @@ export const insertStream = async (request, response) => {
 export const removeStream = async (request, response) => {
   const { streamId, streamKey } = request.params
   const stream = await getStreamByIdOrKey(streamId, streamKey)
-  const chatroom = await Chatroom.findById(stream.chatroom)
+  await stream.deleteOne()
+  // const chatroom = await Chatroom.findById(stream.chatroom)
 
-  for (const messageId of chatroom.messages) {
-    await Message.findByIdAndDelete(messageId)
-  }
-  await Promise.all([chatroom.deleteOne(), stream.deleteOne()])
+  // for (const messageId of chatroom.messages) {
+  //   await Message.findByIdAndDelete(messageId)
+  // }
+  // await Promise.all([chatroom.deleteOne(), stream.deleteOne()])
 
   response.json({
     message: `Stream ${stream._id} deleted!`,
