@@ -14,11 +14,13 @@ import Settings from './components/settings'
 import SettingsProfil from './components/settings/profil'
 import Background from './components/settings/background'
 import FaAuth from "./components/settings/fa";
+import axios from 'axios'
 
 const authRoutes = { login: '/login', register: '/register' }
 
 const App = () => {
   const [token, setToken] = useState(null)
+  const [loggedUser, setLoggedUser] = useState(null)
   const socket = useSocket(token)
   const history = useHistory()
   const location = useLocation()
@@ -32,14 +34,29 @@ const App = () => {
     }
   }
 
+  const getLoggedInUser = async () => {
+    try {
+      const url = `${process.env.REACT_APP_BACK_ORIGIN}:${process.env.REACT_APP_BACK_PORT}/user/get`
+      const config = { headers: { Authorization: `Bearer ${token}` } }
+      const response = await axios.get(url, config)
+      setLoggedUser(response.data.user)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   useEffect(() => {
     checkUserToken()
   }, [location])
 
+  useEffect(() => {
+    if (token) getLoggedInUser()
+  }, [token])
+
   return (
     <div className="App">
       <header>
-        <Example />
+        <Example loggedUser={loggedUser}/>
       </header>
       <Switch>
         <Route exact path="/">

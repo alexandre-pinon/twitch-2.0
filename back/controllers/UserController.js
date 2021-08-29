@@ -9,6 +9,17 @@ import User from '../models/User.js'
 import Chatroom from '../models/Chatroom.js'
 import AppError from '../errors/AppError.js'
 
+export const getById = async (request, response) => {
+  const { userId } = request.body
+
+  const user = await User.findById(userId)
+  if (!user) throw new AppError(`No user found for username ${username}`, StatusCodes.NOT_FOUND)
+
+  response.json({
+    user,
+  })
+}
+
 export const getByUsername = async (request, response) => {
   const { username } = request.params
 

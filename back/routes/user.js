@@ -6,6 +6,7 @@ import { catchAsync } from '../errors/ErrorHandler.js'
 
 const userRouter = express.Router()
 
+userRouter.get('/get', catchAsync(auth), catchAsync(UserController.getById))
 userRouter.get('/get/:username', catchAsync(auth), catchAsync(UserController.getByUsername))
 userRouter.get('/get/streamers/:nb', catchAsync(auth), catchAsync(UserController.getStreamers))
 

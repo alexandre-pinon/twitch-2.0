@@ -36,11 +36,12 @@ const useStyles = makeStyles({
   },
 })
 
-export default function TemporaryDrawer() {
+export default function TemporaryDrawer(props) {
   const classes = useStyles()
   const [state, setState] = React.useState({
     left: false,
   })
+  const { loggedUser } = props
 
   const toggleDrawer = (anchor, open) => (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -64,37 +65,48 @@ export default function TemporaryDrawer() {
       onClick={toggleDrawer(anchor, false)}
       onKeyDown={toggleDrawer(anchor, false)}
     >
-      <List>
-        {['Gotaga', 'Sardoche', 'Kameto', 'Julia Bayonneta'].map((text, index) => (
-          <ListItem className={classes.listItem} button key={text}>
-            <ListItemIcon>
-              <Avatar>{text.substr(0, 1)}</Avatar>
-            </ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        <ListItem className={classes.listItem} button key="">
-          <ListItemIcon>
-            <FontAwesomeIcon icon={faVideo} />
-          </ListItemIcon>
-          <ListItemText primary="Studio" />
-        </ListItem>
-        <ListItem className={classes.listItem} button key="">
-          <ListItemIcon>
-            <FontAwesomeIcon icon={faCog} />
-          </ListItemIcon>
-          <ListItemText primary="Réglages" />
-        </ListItem>
-        <ListItem className={classes.listItem} button key="" onClick={logout}>
-          <ListItemIcon>
-            <FontAwesomeIcon icon={faBars} />
-          </ListItemIcon>
-          <ListItemText primary="Déconnexion" />
-        </ListItem>
-      </List>
+      {loggedUser ? (
+        <div>
+          <List>
+            {loggedUser.followings.map((text, index) => (
+              <ListItem className={classes.listItem} button key={text}>
+                <ListItemIcon>
+                  <Avatar>{text.substr(0, 1)}</Avatar>
+                </ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItem>
+            ))}
+          </List>
+          <Divider />
+          <List>
+            <ListItem
+              className={classes.listItem}
+              button
+              key=""
+              onClick={() => (window.location = `/studio/${loggedUser.username}`)}
+            >
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faVideo} />
+              </ListItemIcon>
+              <ListItemText primary="Studio" />
+            </ListItem>
+            <ListItem className={classes.listItem} button key="" onClick={() => (window.location = '/settings')}>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faCog} />
+              </ListItemIcon>
+              <ListItemText primary="Réglages" />
+            </ListItem>
+            <ListItem className={classes.listItem} button key="" onClick={logout}>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faBars} />
+              </ListItemIcon>
+              <ListItemText primary="Déconnexion" />
+            </ListItem>
+          </List>
+        </div>
+      ) : (
+        <div>Loading...</div>
+      )}
     </div>
   )
 
@@ -106,7 +118,7 @@ export default function TemporaryDrawer() {
             <FontAwesomeIcon icon={faBars} />
           </Button>
           <div>
-            <img className={classes.logo} src={Logo} />
+            <img className={classes.logo} src={Logo} onClick={() => window.location = '/'}/>
           </div>
           <Drawer anchor={anchor} open={state[anchor]} onClose={toggleDrawer(anchor, false)}>
             {list(anchor)}
