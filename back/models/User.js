@@ -36,7 +36,6 @@ const userSchema = new mongoose.Schema({
   },
   streamKey: {
     type: String,
-    unique: true,
   },
   streamChat: {
     type: mongoose.Schema.Types.ObjectId,

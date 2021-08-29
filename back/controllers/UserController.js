@@ -32,25 +32,26 @@ export const getByUsername = async (request, response) => {
 }
 
 export const register = async (request, response) => {
-  const { username, email, password, description, avatar } = request.body
+  const { username, email, password, streamKey } = request.body
   const emailRegex = /@gmail.com|@yahoo.com|@hotmail.com|@live.com|outlook.fr/
 
   if (!username) throw new AppError('Username is required')
   if (!emailRegex.test(email)) throw new AppError('Email is not supported from your domain')
   if (password.length < 6) throw new AppError('Password must be atleast 6 characters long')
 
-  const userExists = await User.findOne({
-    email,
-  })
+  const userExistsEmail = User.findOne({email})
+  const userExistsUsername = User.findOne({username})
+  const userExists = await Promise.all([userExistsEmail, userExistsUsername])
 
-  if (userExists) throw new AppError('User with same email already exists', StatusCodes.CONFLICT)
+  if (userExists[0]) throw new AppError('User with same email already exists', StatusCodes.CONFLICT)
+  if (userExists[1]) throw new AppError('User with same username already exists', StatusCodes.CONFLICT)
 
+  console.log({ username, email, password, streamKey })
   await new User({
     username,
     email,
     password: sha256(password + process.env.SALT),
-    description,
-    avatar,
+    streamKey,
   }).save()
 
   response.status(StatusCodes.CREATED).json({

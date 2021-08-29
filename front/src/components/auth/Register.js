@@ -8,7 +8,7 @@ function Register(props) {
   const [password, setPassword] = useState('')
 
   // Axios Call for Register
-  function register(e) {
+  const register = async (e) => {
     e.preventDefault()
     const retrieveData = {
       username,
@@ -16,17 +16,12 @@ function Register(props) {
       password,
     }
 
-    axios
-      .post('http://localhost:8001/user/register', retrieveData)
-      .then((response) => {
-        console.log(response)
-        if (response.status == 200) {
-          props.history.push('/login')
-        }
-      })
-      .catch((e) => {
-        console.error(e)
-      })
+    try {
+      const response = await axios.post('http://localhost:8001/user/register', retrieveData)
+      props.history.push('/login')
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
