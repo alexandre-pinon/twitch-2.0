@@ -16,6 +16,12 @@ import Background from './components/settings/background'
 import FaAuth from "./components/settings/fa";
 import axios from 'axios'
 
+import Games from './components/twitchAPI/Games'
+import GameStreams from './components/twitchAPI/GameStreams'
+import Stream from './components/twitchAPI/Streams'
+import TwitchHeader from './components/twitchAPI/TwitchHeader'
+import "./styles.css";
+
 const authRoutes = { login: '/login', register: '/register' }
 
 const App = () => {
@@ -88,6 +94,14 @@ const App = () => {
         <Route exact path="/settings/faauth">
           <FaAuth />
         </Route>
+
+        <div className="App container-fluid">
+        <TwitchHeader />
+        <Route exact path="/twitch-api" component={Games} />
+        <Route exact path="/top-streams" component={Stream} />
+        <Route exact path="/game/:id" component={GameStreams} />
+        
+        </div>
       </Switch>
     </div>
   )
