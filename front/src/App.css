@@ -287,3 +287,53 @@ body {
   border: 1px solid rgba(0, 0, 0, 0.33);
   margin-bottom: 5px;
 }
+
+.flexDiv{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 5%;
+}
+
+.squareBits{
+  width: 50%;
+  height: auto;
+  padding: 5%;
+}
+
+.squareBits:hover{
+  cursor: pointer;
+  box-shadow: inset 0 1px 5px black;
+
+}
+
+#btnSubs {
+  width: 100%;
+  margin-bottom: 2vh;
+}
+
+.ApplePay{
+  background-color: black;
+}
+
+.Paypal{
+  background-color: rgb(64, 179, 255) ;
+}
+
+#diamond{
+ font-size: 5em;
+}
+
+#containDon {
+  box-shadow: inset 0 1px 5px black;
+  padding: 5%;
+}
+
+.QRCode{
+  width: 340px;
+  height: 340px;
+  background-color: orange;
+  margin-top: 5%;
+}
+
+
