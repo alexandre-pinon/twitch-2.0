@@ -15,7 +15,8 @@ userRouter.post('/register', catchAsync(UserController.register))
 userRouter.post('/registerStreamKey', catchAsync(auth), catchAsync(UserController.registerStreamKey))
 userRouter.post('/register2FA', catchAsync(auth), catchAsync(UserController.register2FA))
 userRouter.post('/activate2FA', catchAsync(auth), catchAsync(UserController.activate2FA))
-userRouter.post('/follow', catchAsync(auth), catchAsync(UserController.followUser))
-userRouter.post('/unfollow', catchAsync(auth), catchAsync(UserController.unfollowUser))
+userRouter.post('/follow', catchAsync(auth), catchAsync(UserController.follow))
+userRouter.post('/unfollow', catchAsync(auth), catchAsync(UserController.unfollow))
+userRouter.post('/subscribe', catchAsync(auth), catchAsync(UserController.subscribe))
 
 export default userRouter

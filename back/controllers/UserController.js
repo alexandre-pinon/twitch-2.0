@@ -59,8 +59,8 @@ export const register = async (request, response) => {
   if (!emailRegex.test(email)) throw new AppError('Email is not supported from your domain')
   if (password.length < 6) throw new AppError('Password must be atleast 6 characters long')
 
-  const userExistsEmail = User.findOne({email})
-  const userExistsUsername = User.findOne({username})
+  const userExistsEmail = User.findOne({ email })
+  const userExistsUsername = User.findOne({ username })
   const userExists = await Promise.all([userExistsEmail, userExistsUsername])
 
   if (userExists[0]) throw new AppError('User with same email already exists', StatusCodes.CONFLICT)
@@ -156,32 +156,76 @@ export const getOneUser = async (params) => {
   return await User.findOne(query)
 }
 
-export const followUser = async (request, response) => {
-    const followChan = await User.updateOne(
-        {username: request.body.username},
-        {$addToSet: {followings: request.body.channel}}
-    );
-    const getFollowed = await User.updateOne(
-        {username: request.body.channel},
-        {$addToSet: {followers: request.body.username}}
-    );
+export const addOrRemoveUser = async (streamerName, userId, action) => {
+  const userPromise = User.findById(userId)
+  const streamerPromise = User.findOne({ username: streamerName })
+  const [user, streamer] = await Promise.all([userPromise, streamerPromise])
 
-    response.json({
-        message: 'Followed successfully'
-    });
+  if (!user) throw new AppError(`No user found for id ${userId}`, StatusCodes.NOT_FOUND)
+  if (!streamer) throw new AppError(`No streamer found for username ${streamerName}`, StatusCodes.NOT_FOUND)
+
+  let updateUsers = false
+  switch (action) {
+    case 'FOLLOW':
+      if (!user.followings.includes(streamer._id) && !streamer.followers.includes(userId)) {
+        user.followings.push(streamer._id)
+        streamer.followers.push(userId)
+        updateUsers = true
+      }
+      break
+    case 'UNFOLLOW':
+      if (user.followings.includes(streamer._id) && streamer.followers.includes(userId)) {
+        user.followings.pull(streamer._id)
+        streamer.followers.pull(userId)
+        updateUsers = true
+      }
+      break
+    case 'SUBSCRIBE':
+      if (!user.subscribings.includes(streamer._id) && !streamer.subscribers.includes(userId)) {
+        user.subscribings.push(streamer._id)
+        streamer.subscribers.push(userId)
+        updateUsers = true
+      }
+      break
+    default:
+      throw new AppError(`Unknown action ${action}`)
+  }
+
+  if (updateUsers) {
+    await Promise.all([user.save(), streamer.save()])
+  }
+  return updateUsers
 }
 
-export const unfollowUser = async (request, response) => {
-    const unfollowChan = await User.updateOne(
-        {username: request.body.username},
-        {$pullAll: {followings: request.body.channel}}
-    );
-    const getUnfollowed = await User.updateOne(
-        {username: request.body.channel},
-        {$pullAll: {followers: request.body.username}}
-    );
+export const follow = async (request, response) => {
+  const { streamerName, userId } = request.body
+  const userWasUpdated = await addOrRemoveUser(streamerName, userId, 'FOLLOW')
 
-    response.json({
-        message: 'Unfollowed successfully'
-    });
+  response.json({
+    message: userWasUpdated
+      ? `You are now following ${streamerName}`
+      : `You were already following ${streamerName}`,
+  })
+}
+
+export const unfollow = async (request, response) => {
+  const { streamerName, userId } = request.body
+  const userWasUpdated = await addOrRemoveUser(streamerName, userId, 'UNFOLLOW')
+
+  response.json({
+    message: userWasUpdated
+      ? `You unfollowed ${streamerName}`
+      : `You were not following ${streamerName}`,
+  })
+}
+
+export const subscribe = async (request, response) => {
+  const { streamerName, userId } = request.body
+  const userWasUpdated = await addOrRemoveUser(streamerName, userId, 'SUBSCRIBE')
+
+  response.json({
+    message: userWasUpdated
+      ? `You are now subscribed to ${streamerName}`
+      : `You were already subscribed to ${streamerName}`,
+  })
 }
