@@ -36,12 +36,11 @@ const useStyles = makeStyles({
   },
 })
 
-export default function TemporaryDrawer(props) {
+export default function TemporaryDrawer({ loggedUser }) {
   const classes = useStyles()
   const [state, setState] = React.useState({
     left: false,
   })
-  const { loggedUser } = props
 
   const toggleDrawer = (anchor, open) => (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -68,12 +67,17 @@ export default function TemporaryDrawer(props) {
       {loggedUser ? (
         <div>
           <List>
-            {loggedUser.followings.map((text, index) => (
-              <ListItem className={classes.listItem} button key={text}>
+            {loggedUser.followings.map((user, index) => (
+              <ListItem
+                className={classes.listItem}
+                button
+                key={user._id}
+                onClick={() => (window.location = `/studio/${user.username}`)}
+              >
                 <ListItemIcon>
-                  <Avatar>{text.substr(0, 1)}</Avatar>
+                  <Avatar>{user.username.substr(0, 1)}</Avatar>
                 </ListItemIcon>
-                <ListItemText primary={text} />
+                <ListItemText primary={user.username} />
               </ListItem>
             ))}
           </List>
@@ -94,13 +98,13 @@ export default function TemporaryDrawer(props) {
               <ListItemIcon>
                 <FontAwesomeIcon icon={faCog} />
               </ListItemIcon>
-              <ListItemText primary="Réglages" />
+              <ListItemText primary="Settings" />
             </ListItem>
             <ListItem className={classes.listItem} button key="" onClick={logout}>
               <ListItemIcon>
                 <FontAwesomeIcon icon={faBars} />
               </ListItemIcon>
-              <ListItemText primary="Déconnexion" />
+              <ListItemText primary="Logout" />
             </ListItem>
           </List>
         </div>
@@ -118,7 +122,7 @@ export default function TemporaryDrawer(props) {
             <FontAwesomeIcon icon={faBars} />
           </Button>
           <div>
-            <img className={classes.logo} src={Logo} onClick={() => window.location = '/'}/>
+            <img className={classes.logo} src={Logo} onClick={() => (window.location = '/')} />
           </div>
           <Drawer anchor={anchor} open={state[anchor]} onClose={toggleDrawer(anchor, false)}>
             {list(anchor)}

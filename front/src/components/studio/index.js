@@ -49,8 +49,22 @@ var id = locToString.substring(locToString.length - 1, locToString.length)
 var url = '' + id // affichage des profil par id
 
 class CardUser extends Component {
+  async followOrUnfollow(action) {
+    try {
+      const url = `${process.env.REACT_APP_BACK_ORIGIN}:${process.env.REACT_APP_BACK_PORT}/user/${action}`
+      const data = { streamerName: this.props.streamer.username }
+      const token = sessionStorage.getItem('TOKEN')
+      const config = { headers: { Authorization: `Bearer ${token}` } }
+      const response = await axios.post(url, data, config)
+      alert(response.data.message)
+      window.location.reload()
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   render() {
-    const { streamer } = this.props
+    const { loggedUser, streamer } = this.props
     return (
       <div className="row test">
         <Link
@@ -101,9 +115,29 @@ class CardUser extends Component {
           </table>
         </div>
         <div className="buttonDiv">
-          <Button variant="contained" className="input-item marginTop" color="primary">
-            Suivre
-          </Button>
+          {loggedUser && streamer ? (
+            !loggedUser.followings.map((user) => user._id).includes(streamer._id) ? (
+              <Button
+                variant="contained"
+                className="input-item marginTop"
+                color="primary"
+                onClick={() => this.followOrUnfollow('follow')}
+              >
+                Follow
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                className="input-item marginTop"
+                color="primary"
+                onClick={() => this.followOrUnfollow('unfollow')}
+              >
+                Unfollow
+              </Button>
+            )
+          ) : (
+            <div>Loading...</div>
+          )}
         </div>
       </div>
     )
@@ -147,7 +181,7 @@ class FormsChat extends React.Component {
           <Form.Group>
             <Form.Control
               as="textarea"
-              placeholder="tape your message"
+              placeholder="type your message..."
               rows={2}
               id="message"
               name="message"
@@ -156,7 +190,7 @@ class FormsChat extends React.Component {
             />
           </Form.Group>
           <Button type="submit" variant="contained" className="input-item marginTop" color="primary">
-            Envoyer
+            Send
           </Button>
         </form>
       </div>
@@ -164,7 +198,7 @@ class FormsChat extends React.Component {
   }
 }
 
-const Studio = ({ match, socket }) => {
+const Studio = ({ match, socket, loggedUser }) => {
   const [streamer, setStreamer] = useState(null)
   const [streamChat, setStreamChat] = useState(null)
 
@@ -255,7 +289,7 @@ const Studio = ({ match, socket }) => {
             )}
           </div>
           <div id="testCt" className="col-sm-3">
-            <header className="titleChat">Chat du stream</header>
+            <header className="titleChat">Stream chat</header>
             <div className="containChat">
               <Chat socket={socket} streamChat={streamChat} />
             </div>
@@ -265,11 +299,11 @@ const Studio = ({ match, socket }) => {
         <br />
         <div className="row">
           <div className="col-12">
-            <h2>Nom du stream</h2>
+            <h2>Stream name</h2>
           </div>
         </div>
         <br />
-        <CardUser streamer={streamer} />
+        <CardUser streamer={streamer} loggedUser={loggedUser} />
       </div>
       <div aria-haspopup="false" className="containFullMode containVideo">
         {playertoobar}

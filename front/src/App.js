@@ -45,6 +45,7 @@ const App = () => {
       const url = `${process.env.REACT_APP_BACK_ORIGIN}:${process.env.REACT_APP_BACK_PORT}/user/get`
       const config = { headers: { Authorization: `Bearer ${token}` } }
       const response = await axios.get(url, config)
+      console.log(response.data)
       setLoggedUser(response.data.user)
     } catch (error) {
       console.log(error)
@@ -68,7 +69,7 @@ const App = () => {
         <Route exact path="/">
           <Home />
         </Route>
-        <Route path="/studio/:streamerName" render={() => <Studio socket={socket} />} />
+        <Route path="/studio/:streamerName" render={() => <Studio socket={socket} loggedUser={loggedUser}/>} />
         {/* START: Authentification Routes */}
         <Route path={authRoutes.login} component={Login} />
         <Route path={authRoutes.register} component={Register} />

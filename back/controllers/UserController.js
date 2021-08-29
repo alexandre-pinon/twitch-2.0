@@ -12,7 +12,7 @@ import AppError from '../errors/AppError.js'
 export const getById = async (request, response) => {
   const { userId } = request.body
 
-  const user = await User.findById(userId)
+  const user = await User.findById(userId).populate('followings', 'username')
   if (!user) throw new AppError(`No user found for username ${username}`, StatusCodes.NOT_FOUND)
 
   response.json({
@@ -202,9 +202,7 @@ export const follow = async (request, response) => {
   const userWasUpdated = await addOrRemoveUser(streamerName, userId, 'FOLLOW')
 
   response.json({
-    message: userWasUpdated
-      ? `You are now following ${streamerName}`
-      : `You were already following ${streamerName}`,
+    message: userWasUpdated ? `You are now following ${streamerName}` : `You were already following ${streamerName}`,
   })
 }
 
@@ -213,9 +211,7 @@ export const unfollow = async (request, response) => {
   const userWasUpdated = await addOrRemoveUser(streamerName, userId, 'UNFOLLOW')
 
   response.json({
-    message: userWasUpdated
-      ? `You unfollowed ${streamerName}`
-      : `You were not following ${streamerName}`,
+    message: userWasUpdated ? `You unfollowed ${streamerName}` : `You were not following ${streamerName}`,
   })
 }
 

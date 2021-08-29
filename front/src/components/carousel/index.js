@@ -20,11 +20,10 @@ import {
 } from '@material-ui/core'
 import axios from 'axios'
 
-function Banner(props) {
+function Banner({ streamer, length }) {
   let items = []
-  const { streamer } = props
 
-  const totalItems = props.length ? props.length : 1
+  const totalItems = length ? length : 1
   const mediaLength = totalItems
 
   for (let i = 0; i < mediaLength; i++) {
@@ -204,7 +203,7 @@ class BannerExample extends React.Component {
           // NextIcon='next'
         >
           {streamers.map((streamer, index) => {
-            return <Banner streamer={streamer} key={index}/>
+            return <Banner streamer={streamer} key={index} />
           })}
         </Carousel>
 
