@@ -13,6 +13,7 @@ import Profile from './components/profile'
 import Settings from './components/settings'
 import SettingsProfil from './components/settings/profil'
 import Background from './components/settings/background'
+import FaAuth from "./components/settings/fa";
 
 const authRoutes = { login: '/login', register: '/register' }
 
@@ -66,6 +67,9 @@ const App = () => {
         </Route>
         <Route exact path="/settings/background">
           <Background />
+        </Route>
+        <Route exact path="/settings/faauth">
+          <FaAuth />
         </Route>
       </Switch>
     </div>
