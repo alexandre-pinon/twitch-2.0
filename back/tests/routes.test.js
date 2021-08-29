@@ -161,7 +161,7 @@ describe('Testing stream routes', () => {
 
     res = await Promise.all([Stream.find({}), Chatroom.find({}), Message.find({})])
     expect(res[0]).toHaveLength(0)
-    expect(res[1]).toHaveLength(0)
-    expect(res[2]).toHaveLength(0)
+    expect(res[1]).toHaveLength(1)
+    expect(res[2]).toHaveLength(2)
   })
 })
