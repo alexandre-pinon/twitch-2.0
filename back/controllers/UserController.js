@@ -135,3 +135,33 @@ export const getOneUser = async (params) => {
   )
   return await User.findOne(query)
 }
+
+export const followUser = async (request, response) => {
+    const followChan = await User.updateOne(
+        {username: request.body.username},
+        {$addToSet: {followings: request.body.channel}}
+    );
+    const getFollowed = await User.updateOne(
+        {username: request.body.channel},
+        {$addToSet: {followers: request.body.username}}
+    );
+
+    response.json({
+        message: 'Followed successfully'
+    });
+}
+
+export const unfollowUser = async (request, response) => {
+    const unfollowChan = await User.updateOne(
+        {username: request.body.username},
+        {$pullAll: {followings: request.body.channel}}
+    );
+    const getUnfollowed = await User.updateOne(
+        {username: request.body.channel},
+        {$pullAll: {followers: request.body.username}}
+    );
+
+    response.json({
+        message: 'Unfollowed successfully'
+    });
+}
