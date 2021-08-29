@@ -31,6 +31,15 @@ export const getByUsername = async (request, response) => {
   })
 }
 
+export const getStreamers = async (request, response) => {
+  const { nb } = request.params
+
+  const streamers = await User.where('streamKey').ne(null).limit(parseInt(nb))
+  if (!streamers.length) throw new AppError('No streamers found', StatusCodes.NOT_FOUND)
+
+  response.json({ streamers })
+}
+
 export const register = async (request, response) => {
   const { username, email, password, streamKey } = request.body
   const emailRegex = /@gmail.com|@yahoo.com|@hotmail.com|@live.com|outlook.fr/
