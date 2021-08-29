@@ -9,6 +9,17 @@ import User from '../models/User.js'
 import Chatroom from '../models/Chatroom.js'
 import AppError from '../errors/AppError.js'
 
+export const getById = async (request, response) => {
+  const { userId } = request.body
+
+  const user = await User.findById(userId)
+  if (!user) throw new AppError(`No user found for username ${username}`, StatusCodes.NOT_FOUND)
+
+  response.json({
+    user,
+  })
+}
+
 export const getByUsername = async (request, response) => {
   const { username } = request.params
 
@@ -29,6 +40,15 @@ export const getByUsername = async (request, response) => {
   response.json({
     user,
   })
+}
+
+export const getStreamers = async (request, response) => {
+  const { nb } = request.params
+
+  const streamers = await User.where('streamKey').ne(null).limit(parseInt(nb))
+  if (!streamers.length) throw new AppError('No streamers found', StatusCodes.NOT_FOUND)
+
+  response.json({ streamers })
 }
 
 export const register = async (request, response) => {
