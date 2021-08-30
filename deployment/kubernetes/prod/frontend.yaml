@@ -21,12 +21,12 @@ spec:
         app: frontend-prod
     spec:
       restartPolicy: Always
-      imagePullPolicy: Always
       containers:
       - name: frontend-prod
         image: docker.io/wbarmis/sutoremon_tv:frontend
         ports:
         - containerPort: 3000
+        imagePullPolicy: Always
 ---
 apiVersion: v1 # Service
 kind: Service

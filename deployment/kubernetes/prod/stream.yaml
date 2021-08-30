@@ -16,13 +16,13 @@ spec:
         app: stream-prod
     spec:
       restartPolicy: Always
-      imagePullPolicy: Always
       containers:
       - name: stream-prod
         image: wbarmis/sutoremon_tv:stream
         ports:
         - containerPort: 8003
         - containerPort: 1935
+        imagePullPolicy: Always
 ---
 apiVersion: v1 # Service
 kind: Service
