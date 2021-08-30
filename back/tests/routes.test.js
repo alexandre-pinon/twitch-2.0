@@ -59,12 +59,9 @@ describe('Testing user auth', () => {
     expectResponseSuccess(response, `Successfully added hash for 2FA`)
 
     user = await User.findById(user._id)
-    const secret = base32.encode(user.hash2FA).toString()
 
     expect(user.hash2FA).toBeDefined()
-    expect(response.body.otpuri).toBe(
-      `otpauth://totp/${user.username}?secret=${secret}&issuer=${process.env.NODE_SERVERNAME}`
-    )
+    expect(response.body.hash2FA).toBe(user.hash2FA)
   })
 })
 
@@ -74,7 +71,7 @@ describe('Testing chatroom routes', () => {
     expect(chatroom).toHaveLength(0)
 
     let response = await request.post('/chatroom/create')
-    expectResponseError(response, 'Fordidden 😠', StatusCodes.FORBIDDEN)
+    expectResponseError(response, 'Forbidden 😠', StatusCodes.FORBIDDEN)
 
     chatroom = await Chatroom.find({})
     expect(chatroom).toHaveLength(0)

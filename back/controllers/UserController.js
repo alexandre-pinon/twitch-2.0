@@ -66,7 +66,6 @@ export const register = async (request, response) => {
   if (userExists[0]) throw new AppError('User with same email already exists', StatusCodes.CONFLICT)
   if (userExists[1]) throw new AppError('User with same username already exists', StatusCodes.CONFLICT)
 
-  console.log({ username, email, password, streamKey })
   await new User({
     username,
     email,
