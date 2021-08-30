@@ -354,7 +354,7 @@ body {
   left: 27%;
 }
 
-bccbccbody {
+body {
   background: linear-gradient(271deg, #a25ff0, #ffffff36, #3400f2ab);
   background-size: 600% 600%;
 
@@ -394,4 +394,43 @@ bccbccbody {
   0%{background-position:0% 50%}
   50%{background-position:100% 50%}
   100%{background-position:0% 50%}
+}
+
+
+.ChatPrivate{
+  position: fixed;
+  width: 20%;
+  height: auto;
+  z-index: 100;
+  position: fixed;
+  top: 45%;
+}
+
+.chatPrivate{
+  height: 50vh;
+  background-color: rgba(128, 128, 128, 0.535);
+  width: auto;
+  visibility: hidden;
+}
+
+.namePrivate{
+  background-color: #fff;
+  height: 5vh;
+}
+
+.namePrivate:hover{
+  cursor: pointer;
+}
+
+.headerPrivate{
+  background-color: #fff;
+}
+
+#closePrivate:hover{
+  cursor: pointer;
+}
+
+.namePrivate p {
+  width: 85%;
+  height: 100%;
 }

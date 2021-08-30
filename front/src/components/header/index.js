@@ -24,9 +24,9 @@ const useStyles = makeStyles({
     height: '7vh',
   },
   logo: {
-    width: '7vw',
+    width: '10vw',
     height: 'auto',
-    marginTop: '-4%',
+    marginTop: '-5%',
   },
   button: {
     marginLeft: '-90%',

@@ -15,6 +15,8 @@ import Settings from './components/settings'
 import SettingsProfil from './components/settings/profil'
 import Background from './components/settings/background'
 import FaAuth from './components/settings/fa'
+import ChatPrivate from './components/chatPrivate'
+
 import axios from 'axios'
 
 import Games from './components/twitchAPI/Games'
@@ -116,6 +118,7 @@ const App = () => {
           <Route exact path="/game/:id" component={GameStreams} />
         </div>
       </Switch>
+      <ChatPrivate/>
     </div>
   )
 }
