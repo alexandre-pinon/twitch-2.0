@@ -79,6 +79,10 @@ class FormsProfil extends React.Component {
     const { profilPicture, lastName, firstName, username, description } =
       this.state;
 
+      function Click(param) {
+        
+      }
+
     return (
       <form onSubmit={this.handleSubmit}>
         <div className="row">
@@ -161,6 +165,11 @@ class FormsProfil extends React.Component {
             </Button>
           </div>
         </div>
+        <center>
+          <btn onClick={Click} className='btn btn-secondary'>
+            Générer votre clé pour streamer 
+          </btn>
+        </center>
       </form>
     );
   }
