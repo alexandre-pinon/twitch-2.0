@@ -354,6 +354,17 @@ body {
   left: 27%;
 }
 
+bccbccbody {
+  background: linear-gradient(271deg, #a25ff0, #ffffff36, #3400f2ab);
+  background-size: 600% 600%;
+
+  -webkit-animation: AnimationName 30s ease infinite;
+  -moz-animation: AnimationName 30s ease infinite;
+  -o-animation: AnimationName 30s ease infinite;
+  animation: AnimationName 30s ease infinite;
+}
+
+
 .auth-form {
   background: linear-gradient(271deg, #a25ff0, #ffffff36, #886af3);
   background-size: 600% 600%;

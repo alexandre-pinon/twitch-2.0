@@ -25,25 +25,30 @@ function Register(props) {
   }
 
   return (
-    <div className="auth-form">
-      <h2>Register a new account</h2>
-      <form className="form" onSubmit={register}>
-        <label htmlFor="form-username">Username</label>
-        <input id="form-username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
-
-        <label htmlFor="form-email">Email</label>
-        <input id="form-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-
-        <label htmlFor="form-password">Password</label>
-        <input id="form-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-
-        <button className="btn-submit" type="submit">
-          Register
-        </button>
-      </form>
-      <p>
-        Already have an account? <Link to="/login">Login here.</Link>
-      </p>
+    <div className="backLogin">
+      <div className="auth-form">
+        <h2>Register a new account</h2>
+        <form className="form" onSubmit={register}>
+          <label hidden htmlFor="form-username">Username</label>
+          <input placeholder="Username" id="form-username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+          <br/>
+          <br/>
+          <label hidden htmlFor="form-email">Email</label>
+          <input placeholder="Email" id="form-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <br/>          
+          <br/>
+          <label hidden htmlFor="form-password">Password</label>
+          <input placeholder="Password" id="form-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <br/>
+          <br/>
+          <button className="btn btn-primary" type="submit">
+            Créer un compte
+          </button>
+        </form>
+        <p>
+          Already have an account? <Link to="/login">Login here.</Link>
+        </p>
+        </div>
     </div>
   )
 }
