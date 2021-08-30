@@ -14,12 +14,14 @@ export const checkUserAndTargetUserExists = async (userId, targetUsername) => {
   return { user, targetUser }
 }
 
-export const checkArgument = (argument, field) => {
+export const checkArgument = (argument, emptyUsername, notEmptyUsername, emptyMessage, notEmptyMessage) => {
   let [targetUsername, ...message] = argument.split(' ')
   message = message.join(' ').trim()
 
-  if (field === 'username' && !targetUsername) throw new AppError('Invalid syntax: no user provided')
-  if (field === 'message' && !message) throw new AppError('Message is empty')
+  if (emptyUsername && targetUsername) throw new AppError('Invalid syntax')
+  if (notEmptyUsername && !targetUsername) throw new AppError('Invalid syntax: no user provided')
+  if (emptyMessage && message) throw new AppError('Invalid syntax')
+  if (notEmptyMessage && !message) throw new AppError('Message is empty')
 
   return { targetUsername, message }
 }
