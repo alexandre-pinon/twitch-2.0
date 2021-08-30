@@ -66,7 +66,6 @@ export const register = async (request, response) => {
   if (userExists[0]) throw new AppError('User with same email already exists', StatusCodes.CONFLICT)
   if (userExists[1]) throw new AppError('User with same username already exists', StatusCodes.CONFLICT)
 
-  console.log({ username, email, password, streamKey })
   await new User({
     username,
     email,
@@ -102,16 +101,13 @@ export const register2FA = async (request, response) => {
   if (!user) throw new AppError('Invalid token')
   if (user.hash2FA) throw new AppError('Already registered 2FA')
 
-  let hash = crypto.randomBytes(16)
-  hash = hash.toString('hex')
-  user.hash2FA = hash
+  const hash = crypto.randomBytes(16).toString('hex')
+  const secret = base32.encode(hash).toString()
+  user.hash2FA = secret
   await user.save()
 
-  const secret = base32.encode(hash).toString()
-  const otpuri = `otpauth://totp/${user.username}?secret=${secret}&issuer=${process.env.NODE_SERVERNAME}`
-
   response.json({
-    otpuri,
+    hash2FA: secret,
     message: `Successfully added hash for 2FA`,
   })
 }
@@ -122,7 +118,7 @@ export const activate2FA = async (request, response) => {
   if (!user) throw new AppError('Invalid token')
   if (user.active2FA) throw new AppError('2FA is already active')
 
-  const validKey = notp.totp.verify(accessKey, user.hash2FA)
+  const validKey = notp.totp.verify(accessKey, base32.decode(user.hash2FA).toString())
   if (!validKey) throw new AppError('Invalid access key')
 
   user.active2FA = true
@@ -130,6 +126,22 @@ export const activate2FA = async (request, response) => {
 
   response.json({
     message: `Successfully activated 2FA`,
+  })
+}
+
+export const check2FA = async (request, response) => {
+  const { username, accessKey } = request.body
+  const user = await User.findOne({ username })
+  if (!user) throw new AppError('Invalid username')
+
+  const validKey = notp.totp.verify(accessKey, base32.decode(user.hash2FA).toString())
+  if (!validKey) throw new AppError('Invalid access key')
+
+  const token = await jwt.sign({ id: user._id }, process.env.SECRET)
+
+  response.json({
+    message: 'User logged in successfully',
+    token,
   })
 }
 
@@ -141,7 +153,12 @@ export const login = async (request, response) => {
   })
   if (!user) throw new AppError('Username and Password did not match')
 
-  const token = await jwt.sign({ id: user.id }, process.env.SECRET)
+  if (user.active2FA) {
+    response.json({ active2FA: user.active2FA })
+    return
+  }
+
+  const token = await jwt.sign({ id: user._id }, process.env.SECRET)
 
   response.json({
     message: 'User logged in successfully',

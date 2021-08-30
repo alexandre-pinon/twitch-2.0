@@ -93,7 +93,7 @@ const App = () => {
           <Background />
         </Route>
         <Route exact path="/settings/faauth">
-          <FaAuth />
+          <FaAuth loggedUser={loggedUser}/>
         </Route>
 
         <div className="App container-fluid">

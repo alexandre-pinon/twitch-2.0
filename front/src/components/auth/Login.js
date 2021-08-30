@@ -7,24 +7,40 @@ function Login(props) {
   const [password, setPassword] = useState('')
 
   // Axios Call for Login
-  function login(e) {
+  const login = async (e) => {
     e.preventDefault()
     const retrieveData = {
       username,
       password,
     }
 
-    axios
-      .post('http://localhost:8001/user/login', retrieveData)
-      .then((response) => {
-        const { message, token } = response.data
-        sessionStorage.setItem('TOKEN', token)
-        alert(message)
-        props.history.push('/')
-      })
-      .catch((e) => {
-        console.error(e)
-      })
+    try {
+      const response = await axios.post('http://localhost:8001/user/login', retrieveData)
+      let { message, token, active2FA } = response.data
+      if (active2FA) {
+        const res = await check2FA()
+        if (!res) return
+        message = res.data.message
+        token = res.data.token
+      }
+      sessionStorage.setItem('TOKEN', token)
+      alert(message)
+      props.history.push('/')
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const check2FA = async () => {
+    try {
+      const prompt = window.prompt('Veuillez entrez les 6 chiffres')
+      if (!prompt) return false
+      const url = `${process.env.REACT_APP_BACK_ORIGIN}:${process.env.REACT_APP_BACK_PORT}/user/check2FA`
+      const data = { username, accessKey: prompt }
+      return await axios.post(url, data)
+    } catch (error) {
+      if (error.response && error.response.data) alert(error.response.data.message)
+    }
   }
 
   return (
