@@ -16,6 +16,7 @@ spec:
         app: stream-staging
     spec:
       restartPolicy: Always
+      imagePullPolicy: Always
       containers:
       - name: stream-staging
         image: wbarmis/sutoremon_tv:stream

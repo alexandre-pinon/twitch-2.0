@@ -23,7 +23,6 @@ pipeline {
                 echo 'Running Backend Tests & Building Dockerfile'
                 dir ('back') {
                     sh 'docker build --no-cache -t wbarmis/sutoremon_tv:backend .'
-
                 }
             }
         }

@@ -16,6 +16,7 @@ spec:
         app: stream-prod
     spec:
       restartPolicy: Always
+      imagePullPolicy: Always
       containers:
       - name: stream-prod
         image: wbarmis/sutoremon_tv:stream

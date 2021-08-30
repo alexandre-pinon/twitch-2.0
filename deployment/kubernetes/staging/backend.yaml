@@ -16,6 +16,7 @@ spec:
         app: backend-staging
     spec:
       restartPolicy: Always
+      imagePullPolicy: Always
       containers:
       - name: backend-staging
         image: wbarmis/sutoremon_tv:backend

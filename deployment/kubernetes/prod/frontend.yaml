@@ -21,6 +21,7 @@ spec:
         app: frontend-prod
     spec:
       restartPolicy: Always
+      imagePullPolicy: Always
       containers:
       - name: frontend-prod
         image: docker.io/wbarmis/sutoremon_tv:frontend

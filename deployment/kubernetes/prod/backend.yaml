@@ -16,6 +16,7 @@ spec:
         app: backend-prod
     spec:
       restartPolicy: Always
+      imagePullPolicy: Always
       containers:
       - name: backend-prod
         image: wbarmis/sutoremon_tv:backend
