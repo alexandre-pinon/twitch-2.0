@@ -19,22 +19,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const ListFollowers = ({ match }) => {
+const ListSubscribers = ({ match }) => {
   const classes = useStyles()
 
-  const [followers, setFollowers] = useState([])
+  const [subscribers, setSubscribers] = useState([])
 
   useEffect(() => {
-    getStreamerFollowers(match.params.streamerName)
+    getStreamerSubscribers(match.params.streamerName)
   }, [match.params.streamerName])
 
-  const getStreamerFollowers = async (username) => {
+  const getStreamerSubscribers = async (username) => {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_BACK_ORIGIN}:${process.env.REACT_APP_BACK_PORT}/user/get/followsAndSubs/${username}`,
         { headers: { Authorization: `Bearer ${sessionStorage.getItem('TOKEN')}` } }
       )
-      setFollowers(response.data.user.followers)
+      setSubscribers(response.data.user.subscribers)
     } catch (error) {
       console.log(error)
     }
@@ -42,15 +42,15 @@ const ListFollowers = ({ match }) => {
 
   return (
     <div className="container">
-      <h2 className="titleHP">Followers</h2>
+      <h2 className="titleHP">Subscribers</h2>
       <div className="row">
-        {followers.map((follower) => (
+        {subscribers.map((subscriber) => (
           <List className={classes.root}>
             <ListItem className="messageChat" alignItems="flex-start">
               <ListItemAvatar>
-                <Avatar alt={follower.username} src="/static/images/avatar/1.jpg" />
+                <Avatar alt={subscriber.username} src="/static/images/avatar/1.jpg" />
               </ListItemAvatar>
-              <ListItemText primary={follower.username} />
+              <ListItemText primary={subscriber.username} />
             </ListItem>
           </List>
         ))}
@@ -59,4 +59,4 @@ const ListFollowers = ({ match }) => {
   )
 }
 
-export default withRouter(ListFollowers)
+export default withRouter(ListSubscribers)

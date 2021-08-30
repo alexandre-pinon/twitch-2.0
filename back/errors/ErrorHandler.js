@@ -24,12 +24,14 @@ export const catchAsyncSocket = (fn) => {
         socket.emit('server error', {
           status: error.status,
           error: error,
+          username: process.env.NODE_SERVERNAME,
           message: error.message,
           stack: error.stack,
         })
       } else if (process.env.NODE_ENV === 'PROD') {
         socket.emit('server error', {
           status: error.status,
+          username: process.env.NODE_SERVERNAME,
           message: error.message,
         })
       }

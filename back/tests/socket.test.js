@@ -408,7 +408,7 @@ describe('Testing commands', () => {
 
     await modPromise()
 
-    stringMessage = `${user2.username} was alredy a mod`
+    stringMessage = `${user2.username} is already a mod`
     const secondModPromise = async () => {
       const secondClientPromise = new Promise((resolve, reject) => {
         clientSocket.on('chat message', ({ username, message }) => {
@@ -473,7 +473,7 @@ describe('Testing commands', () => {
   it('Test command: mods', async () => {
     const [user1, user2] = await seedUser(2)
     const commandMessage = `/mods`
-    const stringMessage = `${user1.username} ${user2.username}`
+    const stringMessage = `Mods list : ${user1.username}, ${user2.username}`
     const chatroom = await seedChatroom([], [], [user1, user2])
     const chatroomId = chatroom._id.toString()
 
