@@ -37,5 +37,6 @@ bower_components
 psd
 thumb
 sketch
+.vagrant/
 
 # End 
