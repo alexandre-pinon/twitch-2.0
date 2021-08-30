@@ -58,7 +58,7 @@ pipeline {
         stage("Deployment To Kubernetes") {
             when {
                 expression {
-                    BRANCH_NAME == 'master' || BRANCH_NAME == 'main' || BRANCH_NAME == 'develop' 
+                    BRANCH_NAME == 'master' || BRANCH_NAME == 'main' 
                 }
             }
             steps {
