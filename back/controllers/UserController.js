@@ -129,6 +129,22 @@ export const activate2FA = async (request, response) => {
   })
 }
 
+export const check2FA = async (request, response) => {
+  const { username, accessKey } = request.body
+  const user = await User.findOne({ username })
+  if (!user) throw new AppError('Invalid username')
+
+  const validKey = notp.totp.verify(accessKey, base32.decode(user.hash2FA).toString())
+  if (!validKey) throw new AppError('Invalid access key')
+
+  const token = await jwt.sign({ id: user._id }, process.env.SECRET)
+
+  response.json({
+    message: 'User logged in successfully',
+    token,
+  })
+}
+
 export const login = async (request, response) => {
   const { username, password } = request.body
   const user = await User.findOne({
@@ -137,7 +153,12 @@ export const login = async (request, response) => {
   })
   if (!user) throw new AppError('Username and Password did not match')
 
-  const token = await jwt.sign({ id: user.id }, process.env.SECRET)
+  if (user.active2FA) {
+    response.json({ active2FA: user.active2FA })
+    return
+  }
+
+  const token = await jwt.sign({ id: user._id }, process.env.SECRET)
 
   response.json({
     message: 'User logged in successfully',
