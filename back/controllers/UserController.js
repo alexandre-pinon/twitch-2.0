@@ -242,3 +242,16 @@ export const subscribe = async (request, response) => {
       : `You were already subscribed to ${streamerName}`,
   })
 }
+
+export const userHasSubscribed = async (request, response) => {
+  const user = await User.findById(request.body.userId)
+  if (!user) throw new AppError('Invalid token')
+  if (user.is_subscribed) throw new AppError('User is already subscribed')
+
+  user.is_subscribed = true
+  await user.save()
+
+  response.json({
+    message: "This user is now subscribed"
+  })
+}

@@ -26,6 +26,7 @@
     "notp": "^2.0.3",
     "socket.io": "^4.1.2",
     "socket.io-client": "^4.1.2",
+    "stripe": "^8.171.0",
     "supertest": "^6.1.3",
     "thirty-two": "^1.0.2"
   },

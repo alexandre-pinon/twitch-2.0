@@ -22,6 +22,11 @@ import Stream from './components/twitchAPI/Streams'
 import TwitchHeader from './components/twitchAPI/TwitchHeader'
 import "./styles.css";
 
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import Checkout from './Checkout'
+
+const stripePromise = loadStripe("pk_test_51JTNiMImTwtbqWJ6M7C6BxnpYdpZBvlgJBBsrwaEeOE0cErTbb53jX0YW8P4c76Nkx5kmd1rbX6HvDuSC9EX8bb700K8MDACch");
 const authRoutes = { login: '/login', register: '/register' }
 
 const App = () => {
@@ -94,6 +99,12 @@ const App = () => {
         </Route>
         <Route exact path="/settings/faauth">
           <FaAuth loggedUser={loggedUser}/>
+        </Route>
+
+        <Route exact path="/payment">
+          <Elements stripe={stripePromise}>
+            <Checkout />
+          </Elements>
         </Route>
 
         <div className="App container-fluid">

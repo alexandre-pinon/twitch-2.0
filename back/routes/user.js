@@ -11,6 +11,7 @@ userRouter.get('/get/:username', catchAsync(auth), catchAsync(UserController.get
 userRouter.get('/get/streamers/:nb', catchAsync(auth), catchAsync(UserController.getStreamers))
 
 userRouter.post('/login', catchAsync(UserController.login))
+userRouter.post('/subscription', catchAsync(auth), catchAsync(UserController.userHasSubscribed))
 userRouter.post('/register', catchAsync(UserController.register))
 userRouter.post('/registerStreamKey', catchAsync(auth), catchAsync(UserController.registerStreamKey))
 userRouter.post('/register2FA', catchAsync(auth), catchAsync(UserController.register2FA))
