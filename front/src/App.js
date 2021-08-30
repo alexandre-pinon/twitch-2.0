@@ -9,18 +9,19 @@ import Login from './components/auth/Login'
 import Register from './components/auth/Register'
 import ListFollowers from './components/listFollowers'
 import ListFollowings from './components/listFollowing'
+import ListSubscribers from './components/listSubscribers'
 import Profile from './components/profile'
 import Settings from './components/settings'
 import SettingsProfil from './components/settings/profil'
 import Background from './components/settings/background'
-import FaAuth from "./components/settings/fa";
+import FaAuth from './components/settings/fa'
 import axios from 'axios'
 
 import Games from './components/twitchAPI/Games'
 import GameStreams from './components/twitchAPI/GameStreams'
 import Stream from './components/twitchAPI/Streams'
 import TwitchHeader from './components/twitchAPI/TwitchHeader'
-import "./styles.css";
+import './styles.css'
 
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -67,24 +68,25 @@ const App = () => {
 
   return (
     <div className="App">
-      <header>
-        <Example loggedUser={loggedUser}/>
-      </header>
+      {loggedUser ? (
+        <header>
+          <Example loggedUser={loggedUser} />
+        </header>
+      ) : (
+        <div></div>
+      )}
       <Switch>
         <Route exact path="/">
           <Home />
         </Route>
-        <Route path="/studio/:streamerName" render={() => <Studio socket={socket} loggedUser={loggedUser}/>} />
+        <Route path="/studio/:streamerName" render={() => <Studio socket={socket} loggedUser={loggedUser} />} />
         {/* START: Authentification Routes */}
         <Route path={authRoutes.login} component={Login} />
         <Route path={authRoutes.register} component={Register} />
         {/* END: Authentification Routes */}
-        <Route exact path="/followings">
-          <ListFollowings />
-        </Route>
-        <Route exact path="/followers">
-          <ListFollowers />
-        </Route>
+        <Route exact path="/followers/:streamerName" render={() => <ListFollowers />} />
+        <Route exact path="/subscribers/:streamerName" render={() => <ListSubscribers />} />
+        <Route exact path="/followings/:streamerName" render={() => <ListFollowings />} />
         <Route exact path="/profile">
           <Profile />
         </Route>
@@ -98,7 +100,7 @@ const App = () => {
           <Background />
         </Route>
         <Route exact path="/settings/faauth">
-          <FaAuth loggedUser={loggedUser}/>
+          <FaAuth loggedUser={loggedUser} />
         </Route>
 
         <Route exact path="/payment">
@@ -108,11 +110,10 @@ const App = () => {
         </Route>
 
         <div className="App container-fluid">
-        <TwitchHeader />
-        <Route exact path="/twitch-api" component={Games} />
-        <Route exact path="/top-streams" component={Stream} />
-        <Route exact path="/game/:id" component={GameStreams} />
-        
+          <TwitchHeader />
+          <Route exact path="/twitch-api" component={Games} />
+          <Route exact path="/top-streams" component={Stream} />
+          <Route exact path="/game/:id" component={GameStreams} />
         </div>
       </Switch>
     </div>

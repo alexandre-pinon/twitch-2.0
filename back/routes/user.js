@@ -8,6 +8,7 @@ const userRouter = express.Router()
 
 userRouter.get('/get', catchAsync(auth), catchAsync(UserController.getById))
 userRouter.get('/get/:username', catchAsync(auth), catchAsync(UserController.getByUsername))
+userRouter.get('/get/followsAndSubs/:username', catchAsync(auth), catchAsync(UserController.getUserFollowsAndSubs))
 userRouter.get('/get/streamers/:nb', catchAsync(auth), catchAsync(UserController.getStreamers))
 
 userRouter.post('/login', catchAsync(UserController.login))

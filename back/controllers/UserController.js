@@ -42,6 +42,29 @@ export const getByUsername = async (request, response) => {
   })
 }
 
+export const getUserFollowsAndSubs = async (request, response) => {
+  const { username } = request.params
+
+  const user = await User.findOne({ username }).populate([{
+    path: 'followers',
+    model: 'User',
+  }, {
+    path: 'subscribers',
+    model: 'User',
+  }, {
+    path: 'followings',
+    model: 'User',
+  }, {
+    path: 'subscribings',
+    model: 'User',
+  }])
+  if (!user) throw new AppError(`No user found for username ${username}`, StatusCodes.NOT_FOUND)
+
+  response.json({
+    user,
+  })
+}
+
 export const getStreamers = async (request, response) => {
   const { nb } = request.params
 
@@ -252,6 +275,6 @@ export const userHasSubscribed = async (request, response) => {
   await user.save()
 
   response.json({
-    message: "This user is now subscribed"
+    message: 'This user is now subscribed',
   })
 }

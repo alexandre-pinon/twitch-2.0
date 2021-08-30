@@ -62,7 +62,7 @@ class CardUser extends Component {
       console.log(error)
     }
   }
-  
+
   async subscribeOrSubscribed(action) {
     try {
       const url = `${process.env.REACT_APP_BACK_ORIGIN}:${process.env.REACT_APP_BACK_PORT}/user/${action}`
@@ -110,19 +110,31 @@ class CardUser extends Component {
             <tbody>
               <tr>
                 <td>
-                  <Link className="noLinkStyle" to="/followers">
-                    {streamer ? streamer.followers.length : 'loading...'}
-                  </Link>
+                  {streamer ? (
+                    <Link className="noLinkStyle" to={`/followers/${streamer.username}`}>
+                      {streamer.followers.length}
+                    </Link>
+                  ) : (
+                    'loading...'
+                  )}
                 </td>
                 <td>
-                  <Link className="noLinkStyle" to="/subscribers">
-                    {streamer ? streamer.subscribers.length : 'loading...'}
-                  </Link>
+                {streamer ? (
+                    <Link className="noLinkStyle" to={`/subscribers/${streamer.username}`}>
+                      {streamer.subscribers.length}
+                    </Link>
+                  ) : (
+                    'loading...'
+                  )}
                 </td>
                 <td>
-                  <Link className="noLinkStyle" to="/followings">
-                    {streamer ? streamer.followings.length : 'loading...'}
-                  </Link>
+                {streamer ? (
+                    <Link className="noLinkStyle" to={`/followings/${streamer.username}`}>
+                      {streamer.followings.length}
+                    </Link>
+                  ) : (
+                    'loading...'
+                  )}
                 </td>
               </tr>
             </tbody>
@@ -152,8 +164,7 @@ class CardUser extends Component {
           ) : (
             <div>Loading...</div>
           )}
-          <br>
-          </br>
+          <br></br>
           {loggedUser && streamer ? (
             !loggedUser.subscribers.map((user) => user._id).includes(streamer._id) ? (
               <Button
@@ -165,11 +176,7 @@ class CardUser extends Component {
                 Subscribe
               </Button>
             ) : (
-              <Button
-                variant="contained"
-                className="input-item marginTop"
-                color="primary"
-              >
+              <Button variant="contained" className="input-item marginTop" color="primary">
                 Subscribed
               </Button>
             )
@@ -177,7 +184,6 @@ class CardUser extends Component {
             <div>Loading...</div>
           )}
         </div>
-
       </div>
     )
   }
