@@ -12,7 +12,7 @@ import ListFollowings from './components/listFollowing'
 import ListSubscribers from './components/listSubscribers'
 import Profile from './components/profile'
 import Settings from './components/settings'
-import SettingsProfil from './components/settings/profil'
+import SettingsProfil from './components/settings/profile'
 import Background from './components/settings/background'
 import FaAuth from './components/settings/fa'
 import ChatPrivate from './components/chatPrivate'
@@ -95,8 +95,8 @@ const App = () => {
         <Route exact path="/settings">
           <Settings />
         </Route>
-        <Route exact path="/settings/profil">
-          <SettingsProfil />
+        <Route exact path="/settings/profile">
+          <SettingsProfil loggedUser={loggedUser} />
         </Route>
         <Route exact path="/settings/background">
           <Background />
