@@ -6,9 +6,20 @@ const FormsProfil = ({ loggedUser }) => {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [description, setDescription] = useState('')
-  const [streamKey, setStreamKey] = useState('')
 
-  const generateStreamKey = () => {}
+  const generateStreamKey = async (e) => {
+    e.preventDefault()
+    try {
+      const url = `${process.env.REACT_APP_BACK_ORIGIN}:${process.env.REACT_APP_BACK_PORT}/user/registerStreamKey`
+      const token = sessionStorage.getItem('TOKEN')
+      const config = { headers: { Authorization: `Bearer ${token}` } }
+      const response = await axios.post(url, {}, config)
+      alert(response.data.message)
+      window.location.reload()
+    } catch (error) {
+      console.log(error)
+    }
+  }
   const updateUser = async (e) => {
     e.preventDefault()
     try {
