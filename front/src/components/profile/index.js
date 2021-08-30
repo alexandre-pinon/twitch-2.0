@@ -7,7 +7,7 @@ import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,76 +29,149 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-function Profile() {
+const Profile = ({ match, loggedUser }) => {
   const classes = useStyles()
 
-  const [data, setData] = useState([])
+  const [streamer, setStreamer] = useState(null)
 
   useEffect(() => {
-    const fetchData = async () => {
-      const result = await axios.get('https://jsonplaceholder.typicode.com/user/1')
-      setData(result.data)
-      console.log(result.data)
+    getStreamerInfo(match.params.streamerName)
+  }, [match.params.streamerName])
+
+  const getStreamerInfo = async (username) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACK_ORIGIN}:${process.env.REACT_APP_BACK_PORT}/user/get/followsAndSubs/${username}`,
+        { headers: { Authorization: `Bearer ${sessionStorage.getItem('TOKEN')}` } }
+      )
+      setStreamer(response.data.user)
+    } catch (error) {
+      console.log(error)
     }
-    fetchData()
-  }, [])
+  }
+
+  const followOrUnfollow = async (action) => {
+    try {
+      const url = `${process.env.REACT_APP_BACK_ORIGIN}:${process.env.REACT_APP_BACK_PORT}/user/${action}`
+      const data = { streamerName: streamer.username }
+      const token = sessionStorage.getItem('TOKEN')
+      const config = { headers: { Authorization: `Bearer ${token}` } }
+      const response = await axios.post(url, data, config)
+      alert(response.data.message)
+      window.location.reload()
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <section style={{ position: 'relative' }}>
       <div className="videoProfile">
-        <ReactFlvPlayer url="https://www.youtube.com/watch?v=GF04QkRU4es" height="400px" width="100%" isMuted={false} />
+        {streamer && streamer.streamKey ? (
+          <ReactFlvPlayer
+            url={`${process.env.REACT_APP_BACK_ORIGIN}:${process.env.REACT_APP_STREAM_PORT}/live/${streamer.streamKey}.flv`}
+            height="400px"
+            width="100%"
+            isMuted={false}
+          />
+        ) : (
+          <div>Loading...</div>
+        )}
         <div className="containProfile">
           <div className="row test">
             <div className={classes.avatar}>
-              <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" className={classes.large} />
+              <Avatar
+                alt={streamer ? streamer.username : 'loading...'}
+                src="/static/images/avatar/1.jpg"
+                className={classes.large}
+              />
             </div>
             <div className="NameStreamer">
-              <h2 aria-haspopup="true">
-                Remy Sharp
-                <Link to="/settings">
-                  <FontAwesomeIcon id="buttonUsername" icon={faEdit} />
-                </Link>
-              </h2>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                fugiat nulla pariatur.
-              </p>
+              {loggedUser && streamer ? (
+                <h2 aria-haspopup="true">
+                  {streamer.username}
+                  {loggedUser._id === streamer._id ? (
+                    <Link to="/settings">
+                      <FontAwesomeIcon id="buttonUsername" icon={faEdit} />
+                    </Link>
+                  ) : (
+                    <div></div>
+                  )}
+                </h2>
+              ) : (
+                'loading...'
+              )}
+
+              <p>{streamer ? streamer.description : 'loading...'}</p>
               <table id="table">
                 <thead>
                   <th>Followers</th>
+                  <th>Subscribers</th>
                   <th>Followings</th>
                 </thead>
                 <tbody>
                   <tr>
                     <td>
-                      <Link className="noLinkStyle" to="/followers">
-                        1212891
-                      </Link>
+                      {streamer ? (
+                        <Link className="noLinkStyle" to={`/followers/${streamer.username}`}>
+                          {streamer.followers.length}
+                        </Link>
+                      ) : (
+                        'loading...'
+                      )}
                     </td>
                     <td>
-                      <Link className="noLinkStyle" to="/followings">
-                        1212891
-                      </Link>
+                      {streamer ? (
+                        <Link className="noLinkStyle" to={`/subscribers/${streamer.username}`}>
+                          {streamer.subscribers.length}
+                        </Link>
+                      ) : (
+                        'loading...'
+                      )}
+                    </td>
+                    <td>
+                      {streamer ? (
+                        <Link className="noLinkStyle" to={`/followings/${streamer.username}`}>
+                          {streamer.followings.length}
+                        </Link>
+                      ) : (
+                        'loading...'
+                      )}
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <div className="buttonDiv">
-              <Button variant="contained" className="input-item marginTop" color="primary">
-                Suivre
-              </Button>
-              <Button hidden variant="contained" className="input-item marginTop" color="secondary">
-                Plus suivre
-              </Button>
+              {loggedUser && streamer ? (
+                !loggedUser.followings.map((user) => user._id).includes(streamer._id) ? (
+                  <Button
+                    variant="contained"
+                    className="input-item marginTop"
+                    color="primary"
+                    onClick={() => followOrUnfollow('follow')}
+                  >
+                    Follow
+                  </Button>
+                ) : (
+                  <Button
+                    variant="contained"
+                    className="input-item marginTop"
+                    color="primary"
+                    onClick={() => followOrUnfollow('unfollow')}
+                  >
+                    Unfollow
+                  </Button>
+                )
+              ) : (
+                <div>Loading...</div>
+              )}
             </div>
           </div>
           <ClipCarousel />
           <div className="container" id="containDon">
             <div className="row">
-              <h2>Soutenez votre diffuseur Febreze préférée</h2>
+              <h2>{streamer ? `Soutenez ${streamer.username}` : 'loading...'}</h2>
               <div className="col-md-6">
                 Subscribe
                 <div>
@@ -299,4 +372,4 @@ function Profile() {
   )
 }
 
-export default Profile
+export default withRouter(Profile)

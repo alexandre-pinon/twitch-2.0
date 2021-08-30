@@ -82,7 +82,7 @@ class CardUser extends Component {
     return (
       <div className="row test">
         <Link
-          to="/profile"
+          to={`/profile/${streamer ? streamer.username : 'loading...'}`}
           style={{
             width: '250px',
             height: '250px',
@@ -119,7 +119,7 @@ class CardUser extends Component {
                   )}
                 </td>
                 <td>
-                {streamer ? (
+                  {streamer ? (
                     <Link className="noLinkStyle" to={`/subscribers/${streamer.username}`}>
                       {streamer.subscribers.length}
                     </Link>
@@ -128,7 +128,7 @@ class CardUser extends Component {
                   )}
                 </td>
                 <td>
-                {streamer ? (
+                  {streamer ? (
                     <Link className="noLinkStyle" to={`/followings/${streamer.username}`}>
                       {streamer.followings.length}
                     </Link>
@@ -165,8 +165,9 @@ class CardUser extends Component {
             <div>Loading...</div>
           )}
           <br></br>
+
           {loggedUser && streamer ? (
-            !loggedUser.subscribers.map((user) => user._id).includes(streamer._id) ? (
+            !loggedUser.subscribers.includes(streamer._id) ? (
               <Button
                 variant="contained"
                 className="input-item marginTop"
@@ -176,7 +177,7 @@ class CardUser extends Component {
                 Subscribe
               </Button>
             ) : (
-              <Button variant="contained" className="input-item marginTop" color="primary">
+              <Button variant="contained disabled" className="input-item marginTop" color="primary">
                 Subscribed
               </Button>
             )

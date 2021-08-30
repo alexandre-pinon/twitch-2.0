@@ -23,11 +23,13 @@ import Stream from './components/twitchAPI/Streams'
 import TwitchHeader from './components/twitchAPI/TwitchHeader'
 import './styles.css'
 
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from '@stripe/react-stripe-js'
+import { loadStripe } from '@stripe/stripe-js'
 import Checkout from './Checkout'
 
-const stripePromise = loadStripe("pk_test_51JTNiMImTwtbqWJ6M7C6BxnpYdpZBvlgJBBsrwaEeOE0cErTbb53jX0YW8P4c76Nkx5kmd1rbX6HvDuSC9EX8bb700K8MDACch");
+const stripePromise = loadStripe(
+  'pk_test_51JTNiMImTwtbqWJ6M7C6BxnpYdpZBvlgJBBsrwaEeOE0cErTbb53jX0YW8P4c76Nkx5kmd1rbX6HvDuSC9EX8bb700K8MDACch'
+)
 const authRoutes = { login: '/login', register: '/register' }
 
 const App = () => {
@@ -84,12 +86,10 @@ const App = () => {
         <Route path={authRoutes.login} component={Login} />
         <Route path={authRoutes.register} component={Register} />
         {/* END: Authentification Routes */}
-        <Route exact path="/followers/:streamerName" render={() => <ListFollowers />} />
-        <Route exact path="/subscribers/:streamerName" render={() => <ListSubscribers />} />
-        <Route exact path="/followings/:streamerName" render={() => <ListFollowings />} />
-        <Route exact path="/profile">
-          <Profile />
-        </Route>
+        <Route exact path="/followers/:streamerName" component={ListFollowers} />
+        <Route exact path="/subscribers/:streamerName" component={ListSubscribers} />
+        <Route exact path="/followings/:streamerName" component={ListFollowings} />
+        <Route exact path="/profile/:streamerName" render={() => <Profile loggedUser={loggedUser} />} />
         <Route exact path="/settings">
           <Settings />
         </Route>
