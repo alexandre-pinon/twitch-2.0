@@ -1,0 +1,37 @@
+apiVersion: apps/v1 # Deployment
+kind: Deployment
+metadata:
+  name: backend-deployment-staging
+  namespace: yep-staging
+  labels:
+    app: backend-staging
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-staging
+  template:
+    metadata:
+      labels:
+        app: backend-staging
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: backend-staging
+        image: wbarmis/sutoremon_tv:backend
+        ports:
+        - containerPort: 8001
+---
+apiVersion: v1 # Service
+kind: Service
+metadata:
+  name: backend-service-staging
+  namespace: yep-staging
+spec:
+  type: ClusterIP
+  selector:
+    app: backend-staging
+  ports:
+    - protocol: TCP
+      port: 8001
+      targetPort: 8001

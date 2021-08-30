@@ -8,11 +8,11 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 SHELL ["/bin/bash", "-c"]
 
+
+ENV LANG=C.UTF-8
+
 # Set timezone to Paris by default
 RUN ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
-# Use unicode
-RUN locale-gen C.UTF-8 || true
-ENV LANG=C.UTF-8
 
 # Install Docker 
 RUN apt-get update \
@@ -26,8 +26,7 @@ RUN apt-get update \
         sudo \
         systemd \
         openssh-server \
-        openssh-client \
-        mlocate 
+        openssh-client
 
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
@@ -45,34 +44,12 @@ RUN sudo usermod -aG docker root
 
 RUN sudo systemctl enable docker.service
 
-RUN mkdir ~/.docker
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$(  -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+RUN  chmod +x ./kubectl
+RUN  sudo mv ./kubectl /usr/local/bin/kubectl
+RUN  kubectl version --client
 
-RUN chmod -R 777 ~/.docker
-
-RUN ls -hla ~/.
-
-RUN ls -hla ~/.docker
-
-# Install kubectl
-# RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
-# RUN chmod +x ./kubectl
-# RUN sudo mv ./kubectl /usr/local/bin/kubectl
-# RUN kubectl version --client
-
-# Install Gcloud 
-# Downloading gcloud package
-RUN curl https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz > /tmp/google-cloud-sdk.tar.gz
-
-# Installing the package
-RUN mkdir -p /usr/local/gcloud \
-  && tar -C /usr/local/gcloud -xvf /tmp/google-cloud-sdk.tar.gz \
-  && /usr/local/gcloud/google-cloud-sdk/install.sh
-
-# Adding the package path to local
-ENV PATH $PATH:/usr/local/gcloud/google-cloud-sdk/bin
-
-RUN sudo apt-get install -y \
-     python3-distutils \
-     python3-venv
-
-RUN sudo apt-get update 
+RUN curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+RUN sudo install minikube-linux-amd64 /usr/local/bin/minikube
+RUN sudo apt-get install -y conntrack
+RUN minikube start --driver=none

@@ -21,3 +21,5 @@
       mode: 0664
   - include_role:
       name: role/docker
+  - include_role:
+      name: role/kubernetes
