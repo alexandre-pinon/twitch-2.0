@@ -22,4 +22,6 @@ userRouter.post('/follow', catchAsync(auth), catchAsync(UserController.follow))
 userRouter.post('/unfollow', catchAsync(auth), catchAsync(UserController.unfollow))
 userRouter.post('/subscribe', catchAsync(auth), catchAsync(UserController.subscribe))
 
+userRouter.put('/update', catchAsync(auth), catchAsync(UserController.update))
+
 export default userRouter

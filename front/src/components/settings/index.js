@@ -25,7 +25,7 @@ function Settings() {
       <h2 className="titleHP">Paramètres</h2>
       <div className="row">
         <List className={classes.root}>
-          <Link className="noLinkStyle" to="/settings/profil">
+          <Link className="noLinkStyle" to="/settings/profile">
             <ListItem className="messageChat" id="listItemParams" alignItems="flex-start">
               <ListItemAvatar>
                 <Avatar alt="Mon profil" src="/static/images/avatar/1.jpg" />

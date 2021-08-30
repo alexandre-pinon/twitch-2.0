@@ -45,19 +45,24 @@ export const getByUsername = async (request, response) => {
 export const getUserFollowsAndSubs = async (request, response) => {
   const { username } = request.params
 
-  const user = await User.findOne({ username }).populate([{
-    path: 'followers',
-    model: 'User',
-  }, {
-    path: 'subscribers',
-    model: 'User',
-  }, {
-    path: 'followings',
-    model: 'User',
-  }, {
-    path: 'subscribings',
-    model: 'User',
-  }])
+  const user = await User.findOne({ username }).populate([
+    {
+      path: 'followers',
+      model: 'User',
+    },
+    {
+      path: 'subscribers',
+      model: 'User',
+    },
+    {
+      path: 'followings',
+      model: 'User',
+    },
+    {
+      path: 'subscribings',
+      model: 'User',
+    },
+  ])
   if (!user) throw new AppError(`No user found for username ${username}`, StatusCodes.NOT_FOUND)
 
   response.json({
@@ -276,5 +281,22 @@ export const userHasSubscribed = async (request, response) => {
 
   response.json({
     message: 'This user is now subscribed',
+  })
+}
+
+export const update = async (request, response) => {
+  const { userId, username, email, description } = request.body
+
+  const user = await User.findById(userId)
+  if (!user) throw new AppError('Invalid token')
+
+  user.username = username || user.username
+  user.email = email || user.email
+  user.description = description || user.description
+
+  await user.save()
+
+  response.json({
+    message: 'User updated successfully',
   })
 }
