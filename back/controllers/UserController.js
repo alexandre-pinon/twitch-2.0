@@ -102,16 +102,13 @@ export const register2FA = async (request, response) => {
   if (!user) throw new AppError('Invalid token')
   if (user.hash2FA) throw new AppError('Already registered 2FA')
 
-  let hash = crypto.randomBytes(16)
-  hash = hash.toString('hex')
-  user.hash2FA = hash
+  const hash = crypto.randomBytes(16).toString('hex')
+  const secret = base32.encode(hash).toString()
+  user.hash2FA = secret
   await user.save()
 
-  const secret = base32.encode(hash).toString()
-  const otpuri = `otpauth://totp/${user.username}?secret=${secret}&issuer=${process.env.NODE_SERVERNAME}`
-
   response.json({
-    otpuri,
+    hash2FA: secret,
     message: `Successfully added hash for 2FA`,
   })
 }
@@ -122,7 +119,7 @@ export const activate2FA = async (request, response) => {
   if (!user) throw new AppError('Invalid token')
   if (user.active2FA) throw new AppError('2FA is already active')
 
-  const validKey = notp.totp.verify(accessKey, user.hash2FA)
+  const validKey = notp.totp.verify(accessKey, base32.decode(user.hash2FA).toString())
   if (!validKey) throw new AppError('Invalid access key')
 
   user.active2FA = true
