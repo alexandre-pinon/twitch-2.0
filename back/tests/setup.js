@@ -88,7 +88,7 @@ const leaveAllRooms = (socket) => {
 const setupSocket = async (io, serverSocket, clientSocket) => {
   return new Promise((resolve, reject) => {
     const server = app.listen()
-    const frontOrigin = `${process.env.FRONT_ORIGIN}:${server.address().port}`
+    const frontOrigin = `${process.env.FRONT_TEST_ORIGIN}:${server.address().port}`
     io = new Server(server, {
       cors: {
         origin: frontOrigin,
