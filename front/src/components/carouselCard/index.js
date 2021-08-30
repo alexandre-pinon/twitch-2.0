@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { Link } from "react-router-dom";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import CardActions from "@material-ui/core/CardActions";
@@ -8,6 +9,9 @@ import CardMedia from "@material-ui/core/CardMedia";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import axios from "axios";
+
+import api from "../../api";
+import { fetchAccessToken } from '../../constants';
 
 const useStyles = makeStyles({
   root: {
@@ -22,43 +26,56 @@ function CarouselCard() {
   const classes = useStyles();
 
   const [data, setData] = useState([]);
+  const [games, setGames] = useState([]);
 
   useEffect(() => {
+    fetchAccessToken();
+
     const fetchData = async () => {
-      const result = await axios.get(
-        "https://jsonplaceholder.typicode.com/users"
-      );
-      setData(result.data);
-      console.log(result.data);
+    const result = await api.get("https://api.twitch.tv/helix/games/top");
+    let dataArray = result.data.data;
+    let finalArray = dataArray.map(game => {
+    let newURL = game.box_art_url
+        .replace("{width}", "300")
+        .replace("{height}", "300");
+    game.box_art_url = newURL;
+    return game;
+    });
+    console.log(finalArray);
+    setGames(finalArray);
     };
     fetchData();
   }, []);
 
+
   return (
     <section>
-      <h2 className="titleHP">Recommendations de profil</h2>
+      <h2 className="titleHP">Recent Popular Twitch TV Games</h2>
       <div className="containProfilCarousel">
         <div className="overflow-X">
-          {data.map((item) => (
+          {games.map((game) => (
             <div className="card">
               <Card className={classes.root}>
                 <CardActionArea>
                   <CardMedia
                     className={classes.media}
-                    image="http://via.placeholder.com/640x640"
-                    title="Contemplative Reptile"
+                    image={game.box_art_url}
+                    title={game.name}
                   />
                   <CardContent>
-                    <Typography>{item.name}</Typography>
-                    <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      component="p"
+                    <button className="btn btn-dark">
+                    <Link
+                      className="link"
+                      to={{
+                      pathname: "game/" + game.name,
+                      state: {
+                          gameID: game.id
+                      }
+                      }}
                     >
-                      Lizards are a widespread group of squamate reptiles, with
-                      over 6,000 species, ranging across all continents except
-                      Antarctica
-                    </Typography>
+                    <Typography>{game.name}</Typography>
+                    </Link>
+                    </button>
                   </CardContent>
                 </CardActionArea>
               </Card>

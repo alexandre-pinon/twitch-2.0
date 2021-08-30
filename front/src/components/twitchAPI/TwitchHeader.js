@@ -4,8 +4,9 @@ import { Navbar, Container } from 'react-bootstrap';
 
 function TwitcHeader() {
   return (
+    <section>
     <Navbar className="navbar justify-content-center" expand="lg" 
-      bg="primary" variant="dark">
+      bg="dark" variant="dark">
       <Container>
         <li className="nav-item nav-link">
           <Link className="nav1" to="/twitch-api">Top Games</Link>
@@ -15,6 +16,7 @@ function TwitcHeader() {
         </li>
       </Container>
     </Navbar>
+    </section>
   );
 }
 

@@ -218,6 +218,18 @@ class FormsChat extends React.Component {
     );
   };
 
+  closeMenu = e => {
+    console.log(this.emojiPicker);
+    if (this.emojiPicker !== null && !this.emojiPicker.contains(e.target)) {
+      this.setState(
+        {
+          showEmojis: false
+        },
+        () => document.removeEventListener("click", this.closeMenu)
+      );
+    }
+  };
+
   handleChange(e) {
     this.setState({
       [e.target.name]: e.target.value,
@@ -247,8 +259,8 @@ class FormsChat extends React.Component {
   render() {
     const { message } = this.state
     return (
-      <div className="input-group">
-        <form onSubmit={this.handleSubmit} style={{ width: '100%' }}>
+      <div style={styles.container} className="input-group">
+        <form style={styles.form} onSubmit={this.handleSubmit} style={{ width: '100%' }}>
           <Form.Group>
             <Form.Control
               as="textarea"
@@ -264,10 +276,19 @@ class FormsChat extends React.Component {
             Send
           </Button>
         </form>
-        <Picker
-          onSelect={this.addEmoji}
-          emojiTooltip={true}
-        />
+        {this.state.showEmojis ? (
+          <p style={styles.emojiPicker} ref={el => (this.emojiPicker = el)}>
+            <Picker
+              onSelect={this.addEmoji}
+              emojiTooltip={true}
+              title="sutoremote"
+            />
+          </p>
+        ) : (
+          <p style={styles.getEmojiButton} onClick={this.showEmojis}>
+            {String.fromCodePoint(0x1f60a)}
+          </p>
+        )}
       </div>
     )
   }
@@ -360,7 +381,7 @@ const Studio = ({ match, socket, loggedUser }) => {
             {playertoobar}
             {streamer && streamer.streamKey ? (
               <ReactFlvPlayer
-                url={`${process.env.REACT_APP_STREAM_ORIGIN}:${process.env.REACT_APP_STREAM_PORT}/live/${streamer.streamKey}.flv`}
+                url={`${process.env.REACT_APP_BACK_ORIGIN}:${process.env.REACT_APP_STREAM_PORT}/live/${streamer.streamKey}.flv`}
                 height="auto"
                 width="100%"
                 isMuted={false}
@@ -398,3 +419,34 @@ const Studio = ({ match, socket, loggedUser }) => {
 }
 
 export default withRouter(Studio)
+
+const styles = {
+  container: {
+    padding: 20,
+    borderTop: "1px #4C758F solid",
+    marginBottom: 20
+  },
+  form: {
+    display: "flex"
+  },
+  input: {
+    color: "inherit",
+    background: "none",
+    outline: "none",
+    border: "none",
+    flex: 1,
+    fontSize: 16
+  },
+  getEmojiButton: {
+    cssFloat: "left",
+    border: "none",
+    margin: 0,
+    cursor: "pointer"
+  },
+  emojiPicker: {
+    position: "relative",
+    right: 0,
+    cssFloat: "right",
+    marginLeft: "0px"
+  }
+};

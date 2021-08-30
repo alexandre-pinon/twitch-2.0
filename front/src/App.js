@@ -111,12 +111,18 @@ const App = () => {
           </Elements>
         </Route>
 
+        <Route exact path="/twitch-api" component={Games} />
+        <Route exact path="/top-streams" component={Stream} />
+        <Route exact path="/game/:id" component={GameStreams} />
+
+        {/*
         <div className="App container-fluid">
           <TwitchHeader />
           <Route exact path="/twitch-api" component={Games} />
           <Route exact path="/top-streams" component={Stream} />
           <Route exact path="/game/:id" component={GameStreams} />
         </div>
+        */}
       </Switch>
       <ChatPrivate/>
     </div>
