@@ -30,8 +30,12 @@ const Chat = ({ socket, streamChat }) => {
       socket.on('chat message', (message) => {
         setMessages((messages) => [...messages, message])
       })
+      socket.on('server error', (message) => {
+        setMessages((messages) => [...messages, message])
+      })
       return () => {
         socket.off('chat message')
+        socket.off('server error')
       }
     }
   }, [socket])

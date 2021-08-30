@@ -9,7 +9,7 @@ export const mods = async (socket, io, chatroomId, argument) => {
   const chatroom = await ChatroomController.getOneChatroom({ _id: chatroomId }, 'mods')
 
   const modUsernames = chatroom.mods.map((mod) => mod.username)
-  const message = modUsernames.join(' ')
+  const message = modUsernames.length ? 'Mods list : ' + modUsernames.join(', ') : 'There are no mods on this stream'
 
   io.to(chatroomId).emit('chat message', {
     username: process.env.NODE_SERVERNAME,
@@ -18,7 +18,7 @@ export const mods = async (socket, io, chatroomId, argument) => {
 }
 
 export const mod = async (socket, io, chatroomId, argument) => {
-  const { targetUsername, message } = checkArgument(argument, false)
+  const { targetUsername, message } = checkArgument(argument, 'username')
   const { user, targetUser } = await checkUserAndTargetUserExists(socket.userId, targetUsername)
 
   const chatroomWasUpdated = await ChatroomController.addOrRemoveUser(chatroomId, targetUser._id, 'MOD')
@@ -27,12 +27,12 @@ export const mod = async (socket, io, chatroomId, argument) => {
     username: process.env.NODE_SERVERNAME,
     message: chatroomWasUpdated
       ? `${targetUsername} was granted mod permissions by ${user.username}`
-      : `${targetUsername} was alredy a mod`,
+      : `${targetUsername} is already a mod`,
   })
 }
 
 export const unmod = async (socket, io, chatroomId, argument) => {
-  const { targetUsername, message } = checkArgument(argument, false)
+  const { targetUsername, message } = checkArgument(argument, 'username')
   const { user, targetUser } = await checkUserAndTargetUserExists(socket.userId, targetUsername)
 
   const chatroomWasUpdated = await ChatroomController.addOrRemoveUser(chatroomId, targetUser._id, 'UNMOD')
@@ -46,7 +46,7 @@ export const unmod = async (socket, io, chatroomId, argument) => {
 }
 
 export const ban = async (socket, io, chatroomId, argument) => {
-  const { targetUsername, message } = checkArgument(argument, false)
+  const { targetUsername, message } = checkArgument(argument, 'username')
   const { user, targetUser } = await checkUserAndTargetUserExists(socket.userId, targetUsername)
 
   for (let [socketId, socket] of io.sockets.sockets) {
@@ -65,7 +65,7 @@ export const ban = async (socket, io, chatroomId, argument) => {
 }
 
 export const unban = async (socket, io, chatroomId, argument) => {
-  const { targetUsername, message } = checkArgument(argument, false)
+  const { targetUsername, message } = checkArgument(argument, 'username')
   const { user, targetUser } = await checkUserAndTargetUserExists(socket.userId, targetUsername)
 
   for (let [socketId, socket] of io.sockets.sockets) {
@@ -84,7 +84,7 @@ export const unban = async (socket, io, chatroomId, argument) => {
 }
 
 export const whisper = async (socket, io, argument) => {
-  const { targetUsername, message } = checkArgument(argument, true)
+  const { targetUsername, message } = checkArgument(argument, 'message')
   const { user, targetUser } = await checkUserAndTargetUserExists(socket.userId, targetUsername)
 
   let chatroom = await ChatroomController.getOneChatroom({

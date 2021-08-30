@@ -1,3 +1,4 @@
+import { StatusCodes } from 'http-status-codes'
 import * as UserController from '../controllers/UserController.js'
 import AppError from '../errors/AppError.js'
 
@@ -13,12 +14,12 @@ export const checkUserAndTargetUserExists = async (userId, targetUsername) => {
   return { user, targetUser }
 }
 
-export const checkArgument = (argument, checkIfMessageIsEmpty) => {
+export const checkArgument = (argument, field) => {
   let [targetUsername, ...message] = argument.split(' ')
   message = message.join(' ').trim()
 
-  if (checkIfMessageIsEmpty && !message) throw new AppError('Message is empty')
-  if (!checkIfMessageIsEmpty && message) throw new AppError('Invalid syntax')
+  if (field === 'username' && !targetUsername) throw new AppError('Invalid syntax: no user provided')
+  if (field === 'message' && !message) throw new AppError('Message is empty')
 
   return { targetUsername, message }
 }
