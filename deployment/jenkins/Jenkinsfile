@@ -75,9 +75,9 @@ pipeline {
                     sh'kubectl apply -f backend.yaml'
                     sh'kubectl apply -f stream.yaml'
                     sh '''
-                        kubectl set image deployment frontend-deployment-prod frontend-prod=wbarmis/sutoremon_tv:frontend
-                        kubectl set image deployment backend-deployment-prod backend-prod=wbarmis/sutoremon_tv:backend
-                        kubectl set image deployment stream-deployment-prod stream-prod=wbarmis/sutoremon_tv:stream
+                        kubectl set image deployment frontend-deployment-prod frontend-prod=wbarmis/sutoremon_tv:frontend --record
+                        kubectl set image deployment backend-deployment-prod backend-prod=wbarmis/sutoremon_tv:backend --record
+                        kubectl set image deployment stream-deployment-prod stream-prod=wbarmis/sutoremon_tv:stream --record
                     '''
                 }
             }
