@@ -11,5 +11,13 @@
       group: "{{ user }}"
       mode: 0775
       recurse: yes
+  - name: SHELL | Copy Dockerfile
+    become: true
+    copy:
+      src: ~/workspace/epitech/2020-2021/projects/yep/deployment/production/jenkins/Dockerfile
+      dest: "/home/{{ user }}/yep"
+      owner: "{{ user }}"
+      group: "{{ user }}"
+      mode: 0664
   - include_role:
       name: role/docker

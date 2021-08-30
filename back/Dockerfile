@@ -26,5 +26,6 @@ RUN npm ci --only=production
 # application expose port
 EXPOSE 8001
 
+HEALTHCHECK --interval=1m --timeout=30s --retries=3 CMD curl --fail http://localhost:3000 || exit 1
 # command to run on container start
 CMD ["node", "server.js"]

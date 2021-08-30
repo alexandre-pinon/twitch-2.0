@@ -24,5 +24,6 @@ COPY . .
 EXPOSE 1935
 EXPOSE 8003
 
+HEALTHCHECK --interval=1m --timeout=30s --retries=3 CMD curl --fail http://localhost:3000 || exit 1
 # command to run on container start
 CMD [ "node", "app.js" ]

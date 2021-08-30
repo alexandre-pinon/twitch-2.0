@@ -29,8 +29,4 @@ EXPOSE 5000
 
 HEALTHCHECK --interval=1m --timeout=30s --retries=3 CMD curl --fail http://localhost:3000 || exit 1
 # command to run on container start
-# RUN npm install --save --save-exact react-scripts@4.0.3
-# RUN npm run build
-# serve -s build
 CMD [ "npm", "start" ]
-# CMD [ "serve", "-s", "build" ]
