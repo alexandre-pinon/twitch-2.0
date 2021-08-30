@@ -6,7 +6,7 @@ metadata:
   labels:
     app: backend-staging
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: backend-staging
@@ -16,12 +16,12 @@ spec:
         app: backend-staging
     spec:
       restartPolicy: Always
-      imagePullPolicy: Always
       containers:
       - name: backend-staging
         image: wbarmis/sutoremon_tv:backend
         ports:
         - containerPort: 8001
+        imagePullPolicy: Always
 ---
 apiVersion: v1 # Service
 kind: Service
@@ -29,7 +29,7 @@ metadata:
   name: backend-service-staging
   namespace: yep-staging
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
     app: backend-staging
   ports:

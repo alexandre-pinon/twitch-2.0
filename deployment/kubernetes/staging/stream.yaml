@@ -6,7 +6,7 @@ metadata:
   labels:
     app: stream-staging
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: stream-staging
@@ -16,13 +16,13 @@ spec:
         app: stream-staging
     spec:
       restartPolicy: Always
-      imagePullPolicy: Always
       containers:
       - name: stream-staging
         image: wbarmis/sutoremon_tv:stream
         ports:
         - containerPort: 8003
         - containerPort: 1935
+        imagePullPolicy: Always
 ---
 apiVersion: v1 # Service
 kind: Service
@@ -30,7 +30,7 @@ metadata:
   name: stream-service-front-staging
   namespace: yep-staging
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
     app: stream-staging
   ports:
@@ -49,5 +49,5 @@ spec:
     app: stream-staging
   ports:
     - protocol: TCP
-      port: 1936
+      port: 1935
       targetPort: 1935

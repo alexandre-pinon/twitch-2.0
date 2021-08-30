@@ -11,14 +11,6 @@ pipeline {
     stages {
 
         stage("Backend Tests & Build Image") {
-            when {
-                expression {
-                    BRANCH_NAME == 'develop' || BRANCH_NAME == 'master' || BRANCH_NAME == 'feature/jenkins'
-                }
-            }
-            environment {
-                BACK_ENV_FILE = credentials('BACK_ENV_FILE')	
-            }
             steps {
                 echo 'Running Backend Tests & Building Dockerfile'
                 dir ('back') {
@@ -64,6 +56,11 @@ pipeline {
         }
 
         stage("Deployment To Kubernetes") {
+            when {
+                expression {
+                    BRANCH_NAME == 'master' || BRANCH_NAME == 'main'
+                }
+            }
             steps {
                 echo 'Deploy to Kubernetes'
                 // gcloud container clusters create yep-cluster --num-nodes=1 --zone=europe-west1-b
