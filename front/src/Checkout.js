@@ -17,7 +17,7 @@ function Checkout() {
 
     function payment() {
         axios
-            .post('http://localhost:8001/user/subscription', bahamutDragon,
+            .post(`${process.env.REACT_APP_BACK_ORIGIN}:${process.env.REACT_APP_BACK_PORT}/user/subscription`, bahamutDragon,
             { headers: { Authorization: `Bearer ${sessionStorage.getItem('TOKEN')}` } })
             .then((response) => {
                 if (response.status == 200) {
@@ -33,7 +33,7 @@ function Checkout() {
 
     const pay = async () => {
     try {
-        const response = await fetch("http://localhost:8001/pay", {
+        const response = await fetch(`${process.env.REACT_APP_BACK_ORIGIN}:${process.env.REACT_APP_BACK_PORT}/pay`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

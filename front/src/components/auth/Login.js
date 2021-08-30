@@ -16,7 +16,10 @@ function Login(props) {
     }
 
     try {
-      const response = await axios.post('http://localhost:8001/user/login', retrieveData)
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACK_ORIGIN}:${process.env.REACT_APP_BACK_PORT}/user/login`,
+        retrieveData
+      )
       let { message, token, active2FA } = response.data
       if (active2FA) {
         const res = await check2FA()
@@ -51,23 +54,41 @@ function Login(props) {
         <span></span>
         <span></span>
         <span></span>
-      <Typography><h2>Log in</h2></Typography>
-      <form className="form" onSubmit={login}>
-        <InputLabel hidden htmlFor="form-username">username</InputLabel>
-        <Input placeholder="Username" id="form-username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
-          <br/>
-          <br/>
-        <InputLabel hidden htmlFor="form-password">Password</InputLabel>
-        <Input placeholder="Password" id="form-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          <br/>
-          <br/>
-        <Button className="btn btn-primary" type="submit">
-          Se connecter
-        </Button>
-      </form>
-      <Typography>
-        Don't have an account yet? <Link to="/register">Register here.</Link>
-      </Typography>
+        <Typography>
+          <h2>Log in</h2>
+        </Typography>
+        <form className="form" onSubmit={login}>
+          <InputLabel hidden htmlFor="form-username">
+            username
+          </InputLabel>
+          <Input
+            placeholder="Username"
+            id="form-username"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <br />
+          <br />
+          <InputLabel hidden htmlFor="form-password">
+            Password
+          </InputLabel>
+          <Input
+            placeholder="Password"
+            id="form-password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <br />
+          <br />
+          <Button className="btn btn-primary" type="submit">
+            Se connecter
+          </Button>
+        </form>
+        <Typography>
+          Don't have an account yet? <Link to="/register">Register here.</Link>
+        </Typography>
       </div>
     </div>
   )

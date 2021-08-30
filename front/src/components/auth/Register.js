@@ -17,7 +17,10 @@ function Register(props) {
     }
 
     try {
-      const response = await axios.post('http://localhost:8001/user/register', retrieveData)
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACK_ORIGIN}:${process.env.REACT_APP_BACK_PORT}/user/register`,
+        retrieveData
+      )
       props.history.push('/login')
     } catch (error) {
       console.log(error)
@@ -29,18 +32,42 @@ function Register(props) {
       <div className="auth-form">
         <h2>Register a new account</h2>
         <form className="form" onSubmit={register}>
-          <label hidden htmlFor="form-username">Username</label>
-          <input placeholder="Username" id="form-username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
-          <br/>
-          <br/>
-          <label hidden htmlFor="form-email">Email</label>
-          <input placeholder="Email" id="form-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-          <br/>          
-          <br/>
-          <label hidden htmlFor="form-password">Password</label>
-          <input placeholder="Password" id="form-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          <br/>
-          <br/>
+          <label hidden htmlFor="form-username">
+            Username
+          </label>
+          <input
+            placeholder="Username"
+            id="form-username"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <br />
+          <br />
+          <label hidden htmlFor="form-email">
+            Email
+          </label>
+          <input
+            placeholder="Email"
+            id="form-email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <br />
+          <br />
+          <label hidden htmlFor="form-password">
+            Password
+          </label>
+          <input
+            placeholder="Password"
+            id="form-password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <br />
+          <br />
           <button className="btn btn-primary" type="submit">
             Créer un compte
           </button>
@@ -48,7 +75,7 @@ function Register(props) {
         <p>
           Already have an account? <Link to="/login">Login here.</Link>
         </p>
-        </div>
+      </div>
     </div>
   )
 }

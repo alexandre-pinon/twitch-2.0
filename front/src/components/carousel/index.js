@@ -31,7 +31,7 @@ function Banner({ streamer, length }) {
       <Grid item xs={12 / totalItems} key={streamer.username}>
         <CardMedia className="Media" title={streamer.username}>
           <ReactFlvPlayer
-            url={`${process.env.REACT_APP_BACK_ORIGIN}:${process.env.REACT_APP_STREAM_PORT}/live/${streamer.streamKey}.flv`}
+            url={`${process.env.REACT_APP_STREAM_ORIGIN}:${process.env.REACT_APP_STREAM_PORT}/live/${streamer.streamKey}.flv`}
             height="auto"
             width="100%"
             isMuted={false}

@@ -360,7 +360,7 @@ const Studio = ({ match, socket, loggedUser }) => {
             {playertoobar}
             {streamer && streamer.streamKey ? (
               <ReactFlvPlayer
-                url={`${process.env.REACT_APP_BACK_ORIGIN}:${process.env.REACT_APP_STREAM_PORT}/live/${streamer.streamKey}.flv`}
+                url={`${process.env.REACT_APP_STREAM_ORIGIN}:${process.env.REACT_APP_STREAM_PORT}/live/${streamer.streamKey}.flv`}
                 height="auto"
                 width="100%"
                 isMuted={false}

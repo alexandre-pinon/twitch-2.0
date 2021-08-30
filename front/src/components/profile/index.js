@@ -69,7 +69,7 @@ const Profile = ({ match, loggedUser }) => {
       <div className="videoProfile">
         {streamer && streamer.streamKey ? (
           <ReactFlvPlayer
-            url={`${process.env.REACT_APP_BACK_ORIGIN}:${process.env.REACT_APP_STREAM_PORT}/live/${streamer.streamKey}.flv`}
+            url={`${process.env.REACT_APP_STREAM_ORIGIN}:${process.env.REACT_APP_STREAM_PORT}/live/${streamer.streamKey}.flv`}
             height="400px"
             width="100%"
             isMuted={false}
