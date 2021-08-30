@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: yep-staging
+---
+apiVersion: apps/v1 # Deployment
+kind: Deployment
+metadata:
+  name: frontend-deployment-staging
+  namespace: yep-staging
+  labels:
+    app: frontend-staging
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend-staging
+  template:
+    metadata:
+      labels:
+        app: frontend-staging
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: frontend-staging
+        image: wbarmis/sutoremon_tv:frontend
+        ports:
+        - containerPort: 3000
+        - containerPort: 8003
+---
+apiVersion: v1 # Service
+kind: Service
+metadata:
+  name: frontend-service-staging
+  namespace: yep-staging
+spec:
+  type: LoadBalancer
+  selector:
+    app: frontend-staging
+  ports:
+    - protocol: TCP
+      port: 3001
+      targetPort: 3000

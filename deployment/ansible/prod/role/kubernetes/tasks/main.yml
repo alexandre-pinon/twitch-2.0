@@ -1,0 +1,12 @@
+---
+# tasks file for kubernetes
+- name: KUBERNETES | Build Kubernetes image
+  shell: |
+    docker build --no-cache -t wbarmis/sutoremon_tv:jenkins .
+  args:
+    chdir: "/home/{{ user }}/yep/"
+- name: KUBERNETES | Run Kubernetes image
+  shell: |
+    docker run -p 8080:8080 -p 50000:50000 -d -v jenkins_home:/var/jenkins_home -u jenkins -v /var/run/docker.sock:/var/run/docker.sock  wbarmis/sutoremon_tv:jenkins
+  args:
+    chdir: "/home/{{ user }}/yep/"

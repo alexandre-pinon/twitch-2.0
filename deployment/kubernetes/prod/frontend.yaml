@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: yep-prod
+---
+apiVersion: apps/v1 # Deployment
+kind: Deployment
+metadata:
+  name: frontend-deployment-prod
+  namespace: yep-prod
+  labels:
+    app: frontend-prod
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend-prod
+  template:
+    metadata:
+      labels:
+        app: frontend-prod
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: frontend-prod
+        image: docker.io/wbarmis/sutoremon_tv:frontend
+        ports:
+        - containerPort: 3000
+---
+apiVersion: v1 # Service
+kind: Service
+metadata:
+  name: frontend-service-prod
+  namespace: yep-prod
+spec:
+  type: LoadBalancer
+  selector:
+    app: frontend-prod
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
