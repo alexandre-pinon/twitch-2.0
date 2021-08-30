@@ -21,15 +21,16 @@ const useStyles = makeStyles({
     width: 'auto',
   },
   menu: {
-    height: '4vh',
+    height: '7vh',
   },
   logo: {
-    width: '4vw',
+    width: '7vw',
     height: 'auto',
-    marginTop: '-39px',
+    marginTop: '-4%',
   },
   button: {
     marginLeft: '-90%',
+    marginTop: '15px',
   },
   listItem: {
     borderRadius: '50px',
@@ -115,15 +116,15 @@ export default function TemporaryDrawer({ loggedUser }) {
   )
 
   return (
-    <div className={classes.menu}>
+    <div id="menu" className={classes.menu}>
       {['left'].map((anchor) => (
         <React.Fragment key={anchor}>
           <Button className={classes.button} onClick={toggleDrawer(anchor, true)}>
             <FontAwesomeIcon icon={faBars} />
           </Button>
-          <div>
-            <img className={classes.logo} src={Logo} onClick={() => (window.location = '/')} />
-          </div>
+            <center>
+             <img className={classes.logo} src={Logo} onClick={() => (window.location = '/')} />
+            </center>
           <Drawer anchor={anchor} open={state[anchor]} onClose={toggleDrawer(anchor, false)}>
             {list(anchor)}
           </Drawer>

@@ -44,22 +44,30 @@ function Login(props) {
   }
 
   return (
-    <div className="auth-form">
+    <div className="backLogin">
+      <div className="auth-form">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
       <h2>Log in</h2>
       <form className="form" onSubmit={login}>
-        <label htmlFor="form-username">username</label>
-        <input id="form-username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
-
-        <label htmlFor="form-password">Password</label>
-        <input id="form-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-
-        <button className="btn-submit" type="submit">
-          Log in
+        <label hidden htmlFor="form-username">username</label>
+        <input placeholder="Username" id="form-username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+          <br/>
+          <br/>
+        <label hidden htmlFor="form-password">Password</label>
+        <input placeholder="Password" id="form-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <br/>
+          <br/>
+        <button className="btn btn-primary" type="submit">
+          Se connecter
         </button>
       </form>
       <p>
         Don't have an account yet? <Link to="/register">Register here.</Link>
       </p>
+      </div>
     </div>
   )
 }
