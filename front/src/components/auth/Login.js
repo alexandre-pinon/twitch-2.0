@@ -1,6 +1,7 @@
 import axios from 'axios'
 import React, { useContext, useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
+import { Button, Input, InputLabel, Typography } from '@material-ui/core'
 
 function Login(props) {
   const [username, setUsername] = useState('')
@@ -50,23 +51,23 @@ function Login(props) {
         <span></span>
         <span></span>
         <span></span>
-      <h2>Log in</h2>
+      <Typography><h2>Log in</h2></Typography>
       <form className="form" onSubmit={login}>
-        <label hidden htmlFor="form-username">username</label>
-        <input placeholder="Username" id="form-username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+        <InputLabel hidden htmlFor="form-username">username</InputLabel>
+        <Input placeholder="Username" id="form-username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
           <br/>
           <br/>
-        <label hidden htmlFor="form-password">Password</label>
-        <input placeholder="Password" id="form-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <InputLabel hidden htmlFor="form-password">Password</InputLabel>
+        <Input placeholder="Password" id="form-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
           <br/>
           <br/>
-        <button className="btn btn-primary" type="submit">
+        <Button className="btn btn-primary" type="submit">
           Se connecter
-        </button>
+        </Button>
       </form>
-      <p>
+      <Typography>
         Don't have an account yet? <Link to="/register">Register here.</Link>
-      </p>
+      </Typography>
       </div>
     </div>
   )
