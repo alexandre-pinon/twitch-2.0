@@ -62,6 +62,20 @@ class CardUser extends Component {
       console.log(error)
     }
   }
+  
+  async subscribeOrSubscribed(action) {
+    try {
+      const url = `${process.env.REACT_APP_BACK_ORIGIN}:${process.env.REACT_APP_BACK_PORT}/user/${action}`
+      const data = { streamerName: this.props.streamer.username }
+      const token = sessionStorage.getItem('TOKEN')
+      const config = { headers: { Authorization: `Bearer ${token}` } }
+      const response = await axios.post(url, data, config)
+      alert(response.data.message)
+      window.location.reload()
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   render() {
     const { loggedUser, streamer } = this.props
@@ -138,7 +152,32 @@ class CardUser extends Component {
           ) : (
             <div>Loading...</div>
           )}
+          <br>
+          </br>
+          {loggedUser && streamer ? (
+            !loggedUser.subscribers.map((user) => user._id).includes(streamer._id) ? (
+              <Button
+                variant="contained"
+                className="input-item marginTop"
+                color="primary"
+                onClick={() => this.subscribeOrSubscribed('subscribe')}
+              >
+                Subscribe
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                className="input-item marginTop"
+                color="primary"
+              >
+                Subscribed
+              </Button>
+            )
+          ) : (
+            <div>Loading...</div>
+          )}
         </div>
+
       </div>
     )
   }
