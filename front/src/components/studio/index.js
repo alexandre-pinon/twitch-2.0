@@ -13,6 +13,14 @@ import ListItemText from '@material-ui/core/ListItemText'
 import { Form } from 'react-bootstrap'
 import { Link, withRouter } from 'react-router-dom'
 
+import 'emoji-mart/css/emoji-mart.css'
+import { Picker } from 'emoji-mart'
+import { 
+  FacebookShareButton, 
+  FacebookShareCount,
+  FacebookIcon 
+} from 'react-share'
+
 const useStyles = makeStyles((theme) => ({
   root: {
     '& .MuiTextField-root': {
@@ -195,10 +203,20 @@ class FormsChat extends React.Component {
     super(props)
     this.state = {
       message: '',
+      showEmojis: false,
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
   }
+
+  showEmojis = e => {
+    this.setState(
+      {
+        showEmojis: true
+      },
+      () => document.addEventListener("click", this.closeMenu)
+    );
+  };
 
   handleChange(e) {
     this.setState({
@@ -218,6 +236,13 @@ class FormsChat extends React.Component {
       console.log('Error : NO SOCKET!')
     }
   }
+
+  addEmoji = e => {
+    let emoji = e.native;
+    this.setState({
+      message: this.state.message + emoji
+    });
+  };
 
   render() {
     const { message } = this.state
@@ -239,6 +264,10 @@ class FormsChat extends React.Component {
             Send
           </Button>
         </form>
+        <Picker
+          onSelect={this.addEmoji}
+          emojiTooltip={true}
+        />
       </div>
     )
   }
@@ -312,6 +341,12 @@ const Studio = ({ match, socket, loggedUser }) => {
           <ListItem button>
             <ListItemText inset primary="paramètres du stream" />
           </ListItem>
+          <FacebookShareButton  
+            url={"https://www.twitch.tv"}
+            quote={"Sutoremote - The Twitch Killer"}
+            hashtag="#sutoremote">
+              <FacebookIcon round size={32} />
+          </FacebookShareButton>
         </List>
       </div>
     </div>
