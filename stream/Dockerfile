@@ -19,6 +19,7 @@ RUN npm ci --only=production
 
 # copy the dependencies file to the working directory
 COPY . .
+#jesuiscrever
 
 # application expose port
 EXPOSE 1935

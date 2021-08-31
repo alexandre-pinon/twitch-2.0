@@ -58,7 +58,7 @@ pipeline {
         stage("Deployment To Kubernetes") {
             when {
                 expression {
-                    BRANCH_NAME == 'master' || BRANCH_NAME == 'main' 
+                    BRANCH_NAME == 'master' || BRANCH_NAME == 'main' || BRANCH_NAME == 'develop'
                 }
             }
             steps {
@@ -71,14 +71,14 @@ pipeline {
                     gcloud container clusters get-credentials yep-cluster --zone=europe-west1-b
                 '''
                 dir ('deployment/kubernetes/prod') {
+                    sh '''
+                        kubectl delete deployment --all
+                        kubectl delete service --all
+                        kubectl delete pod --all
+                    '''
                     sh'kubectl apply -f frontend.yaml'
                     sh'kubectl apply -f backend.yaml'
                     sh'kubectl apply -f stream.yaml'
-                    sh '''
-                        kubectl set image deployment frontend-deployment-prod frontend-prod=wbarmis/sutoremon_tv:frontend --record
-                        kubectl set image deployment backend-deployment-prod backend-prod=wbarmis/sutoremon_tv:backend --record
-                        kubectl set image deployment stream-deployment-prod stream-prod=wbarmis/sutoremon_tv:stream --record
-                    '''
                 }
             }
         }
