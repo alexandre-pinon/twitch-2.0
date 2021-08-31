@@ -14,7 +14,7 @@ pipeline {
             steps {
                 echo 'Running Backend Tests & Building Dockerfile'
                 dir ('back') {
-                    sh 'docker build --no-cache -t wbarmis/sutoremon_tv:backend .'
+                    sh 'docker build --no-cache -t wbarmis/sutoremon_tv:backend1 .'
                 }
             }
         }
@@ -23,7 +23,7 @@ pipeline {
             steps {
                 echo 'Building Frontend Dockerfile'
                 dir ('front') {
-                    sh 'docker build --no-cache -t wbarmis/sutoremon_tv:frontend .'
+                    sh 'docker build --no-cache -t wbarmis/sutoremon_tv:frontend1 .'
                 }
             }
         }
@@ -32,7 +32,7 @@ pipeline {
             steps {
                 echo 'Building Player Dockerfile'
                 dir ('stream') {
-                    sh 'docker build --no-cache -t wbarmis/sutoremon_tv:stream .'
+                    sh 'docker build --no-cache -t wbarmis/sutoremon_tv:stream1 .'
                 }
             }
         }
@@ -49,9 +49,9 @@ pipeline {
         stage("Push To Docker Hub") {
             steps {
                 echo 'Push all images to Docker Registry'
-                sh 'docker push wbarmis/sutoremon_tv:frontend'
-                sh 'docker push wbarmis/sutoremon_tv:backend'
-                sh 'docker push wbarmis/sutoremon_tv:stream'
+                sh 'docker push wbarmis/sutoremon_tv:frontend1'
+                sh 'docker push wbarmis/sutoremon_tv:backend1'
+                sh 'docker push wbarmis/sutoremon_tv:stream1'
             }
         }
 
@@ -63,22 +63,24 @@ pipeline {
             }
             steps {
                 echo 'Deploy to Kubernetes'
-                // gcloud container clusters create yep-cluster --num-nodes=1 --zone=europe-west1-b
+                // gcloud container clusters create yep-cluster-1 --num-nodes=1 --region=europe-west1
                 sh '''
                     gcloud auth activate-service-account --key-file=./end-year-project-2525-b08debf0e3d6.json --project=end-year-project-2525
                     gcloud auth configure-docker --quiet
                     gcloud components install kubectl
-                    gcloud container clusters get-credentials yep-cluster --zone=europe-west1-b
+                    gcloud config set project end-year-project-2525
+                    gcloud container clusters get-credentials yep-cluster-1 --region=europe-west1
                 '''
                 dir ('deployment/kubernetes/prod') {
-                    sh '''
-                        kubectl delete deployment --all
-                        kubectl delete service --all
-                        kubectl delete pod --all
-                    '''
+                    // sh '''
+                    //     kubectl delete deployment --all
+                    //     kubectl delete service --all
+                    //     kubectl delete pod --all
+                    // '''
                     sh'kubectl apply -f frontend.yaml'
                     sh'kubectl apply -f backend.yaml'
                     sh'kubectl apply -f stream.yaml'
+                    sh'kubectl apply -f test.yaml'
                 }
             }
         }
