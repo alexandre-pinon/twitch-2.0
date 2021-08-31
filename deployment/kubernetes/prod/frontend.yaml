@@ -39,7 +39,7 @@ metadata:
   name: frontend-service-prod
   namespace: yep-prod
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
     app: frontend-prod
   ports:
