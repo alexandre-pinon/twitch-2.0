@@ -35,7 +35,7 @@ metadata:
   name: stream-service-front-prod
   namespace: yep-prod
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
     app: stream-prod
   ports:
@@ -49,7 +49,7 @@ metadata:
   name: stream-service-stream-prod
   namespace: yep-prod
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
     app: stream-prod
   ports:
