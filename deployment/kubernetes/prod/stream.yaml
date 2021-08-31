@@ -23,7 +23,7 @@ spec:
       restartPolicy: Always
       containers:
       - name: stream-prod
-        image: docker.io/wbarmis/sutoremon_tv:stream1
+        image: docker.io/wbarmis/sutoremon_tv:stream2
         ports:
         - containerPort: 8003
         - containerPort: 1935

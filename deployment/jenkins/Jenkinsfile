@@ -14,7 +14,7 @@ pipeline {
             steps {
                 echo 'Running Backend Tests & Building Dockerfile'
                 dir ('back') {
-                    sh 'docker build --no-cache -t wbarmis/sutoremon_tv:backend1 .'
+                    sh 'docker build --no-cache -t wbarmis/sutoremon_tv:backend2 .'
                 }
             }
         }
@@ -23,7 +23,7 @@ pipeline {
             steps {
                 echo 'Building Frontend Dockerfile'
                 dir ('front') {
-                    sh 'docker build --no-cache -t wbarmis/sutoremon_tv:frontend1 .'
+                    sh 'docker build --no-cache -t wbarmis/sutoremon_tv:frontend2 .'
                 }
             }
         }
@@ -32,7 +32,7 @@ pipeline {
             steps {
                 echo 'Building Player Dockerfile'
                 dir ('stream') {
-                    sh 'docker build --no-cache -t wbarmis/sutoremon_tv:stream1 .'
+                    sh 'docker build --no-cache -t wbarmis/sutoremon_tv:stream2 .'
                 }
             }
         }
@@ -49,9 +49,9 @@ pipeline {
         stage("Push To Docker Hub") {
             steps {
                 echo 'Push all images to Docker Registry'
-                sh 'docker push wbarmis/sutoremon_tv:frontend1'
-                sh 'docker push wbarmis/sutoremon_tv:backend1'
-                sh 'docker push wbarmis/sutoremon_tv:stream1'
+                sh 'docker push wbarmis/sutoremon_tv:frontend2'
+                sh 'docker push wbarmis/sutoremon_tv:backend2'
+                sh 'docker push wbarmis/sutoremon_tv:stream2'
             }
         }
 

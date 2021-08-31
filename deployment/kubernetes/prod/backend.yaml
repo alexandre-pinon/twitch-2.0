@@ -23,7 +23,7 @@ spec:
       restartPolicy: Always
       containers:
       - name: backend-prod
-        image: docker.io/wbarmis/sutoremon_tv:backend1
+        image: docker.io/wbarmis/sutoremon_tv:backend2
         ports:
         - containerPort: 8001
         imagePullPolicy: Always
