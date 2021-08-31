@@ -228,6 +228,7 @@ export const addOrRemoveUser = async (streamerName, userId, action) => {
     case 'SUBSCRIBE':
       if (!user.subscribings.includes(streamer._id) && !streamer.subscribers.includes(userId)) {
         user.subscribings.push(streamer._id)
+        user.is_subscribed = true
         streamer.subscribers.push(userId)
         updateUsers = true
       }
