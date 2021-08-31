@@ -34,7 +34,7 @@ metadata:
   name: backend-service-prod
   namespace: yep-prod
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: backend-prod
   ports:
