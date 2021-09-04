@@ -6,7 +6,7 @@ metadata:
   labels:
     app: backend-prod
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: backend-prod
@@ -23,7 +23,7 @@ spec:
       restartPolicy: Always
       containers:
       - name: backend-prod
-        image: docker.io/wbarmis/sutoremon_tv:backend
+        image: docker.io/wbarmis/sutoremon_tv:backend2
         ports:
         - containerPort: 8001
         imagePullPolicy: Always

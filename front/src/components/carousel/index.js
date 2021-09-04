@@ -19,6 +19,7 @@ import {
     Slider, */
 } from '@material-ui/core'
 import axios from 'axios'
+import { Link } from 'react-router-dom'
 
 function Banner({ streamer, length }) {
   let items = []
@@ -30,15 +31,17 @@ function Banner({ streamer, length }) {
     const media = (
       <Grid item xs={12 / totalItems} key={streamer.username}>
         <CardMedia className="Media" title={streamer.username}>
-          <ReactFlvPlayer
-            url={`${process.env.REACT_APP_STREAM_ORIGIN}:${process.env.REACT_APP_STREAM_PORT}/live/${streamer.streamKey}.flv`}
-            height="auto"
-            width="100%"
-            isMuted={false}
-          />
-          <Typography hidden className="MediaCaption">
-            {streamer.username}
-          </Typography>
+          <Link to={`/studio/${streamer.username}`}>
+            <ReactFlvPlayer
+              url={`${process.env.REACT_APP_STREAM_ORIGIN}:${process.env.REACT_APP_STREAM_PORT}/live/${streamer.streamKey}.flv`}
+              height="auto"
+              width="100%"
+              isMuted={false}
+            />
+            <Typography hidden className="MediaCaption">
+              {streamer.username}
+            </Typography>
+          </Link>
         </CardMedia>
       </Grid>
     )

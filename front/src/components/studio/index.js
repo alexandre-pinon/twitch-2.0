@@ -15,11 +15,7 @@ import { Link, withRouter } from 'react-router-dom'
 
 import 'emoji-mart/css/emoji-mart.css'
 import { Picker } from 'emoji-mart'
-import { 
-  FacebookShareButton, 
-  FacebookShareCount,
-  FacebookIcon 
-} from 'react-share'
+import { FacebookShareButton, FacebookShareCount, FacebookIcon } from 'react-share'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -58,20 +54,6 @@ var url = '' + id // affichage des profil par id
 
 class CardUser extends Component {
   async followOrUnfollow(action) {
-    try {
-      const url = `${process.env.REACT_APP_BACK_ORIGIN}:${process.env.REACT_APP_BACK_PORT}/user/${action}`
-      const data = { streamerName: this.props.streamer.username }
-      const token = sessionStorage.getItem('TOKEN')
-      const config = { headers: { Authorization: `Bearer ${token}` } }
-      const response = await axios.post(url, data, config)
-      alert(response.data.message)
-      window.location.reload()
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  async subscribeOrSubscribed(action) {
     try {
       const url = `${process.env.REACT_APP_BACK_ORIGIN}:${process.env.REACT_APP_BACK_PORT}/user/${action}`
       const data = { streamerName: this.props.streamer.username }
@@ -173,25 +155,6 @@ class CardUser extends Component {
             <div>Loading...</div>
           )}
           <br></br>
-
-          {loggedUser && streamer ? (
-            !loggedUser.subscribers.includes(streamer._id) ? (
-              <Button
-                variant="contained"
-                className="input-item marginTop"
-                color="primary"
-                onClick={() => this.subscribeOrSubscribed('subscribe')}
-              >
-                Subscribe
-              </Button>
-            ) : (
-              <Button variant="contained disabled" className="input-item marginTop" color="primary">
-                Subscribed
-              </Button>
-            )
-          ) : (
-            <div>Loading...</div>
-          )}
         </div>
       </div>
     )
@@ -209,26 +172,26 @@ class FormsChat extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this)
   }
 
-  showEmojis = e => {
+  showEmojis = (e) => {
     this.setState(
       {
-        showEmojis: true
+        showEmojis: true,
       },
-      () => document.addEventListener("click", this.closeMenu)
-    );
-  };
+      () => document.addEventListener('click', this.closeMenu)
+    )
+  }
 
-  closeMenu = e => {
-    console.log(this.emojiPicker);
+  closeMenu = (e) => {
+    console.log(this.emojiPicker)
     if (this.emojiPicker !== null && !this.emojiPicker.contains(e.target)) {
       this.setState(
         {
-          showEmojis: false
+          showEmojis: false,
         },
-        () => document.removeEventListener("click", this.closeMenu)
-      );
+        () => document.removeEventListener('click', this.closeMenu)
+      )
     }
-  };
+  }
 
   handleChange(e) {
     this.setState({
@@ -249,15 +212,16 @@ class FormsChat extends React.Component {
     }
   }
 
-  addEmoji = e => {
-    let emoji = e.native;
+  addEmoji = (e) => {
+    let emoji = e.native
     this.setState({
-      message: this.state.message + emoji
-    });
-  };
+      message: this.state.message + emoji,
+    })
+  }
 
   render() {
-    const { message } = this.state
+    const { showEmojis, message } = this.state
+    const { streamer, loggedUser } = this.props
     return (
       <div style={styles.container} className="input-group">
         <form style={styles.form} onSubmit={this.handleSubmit} style={{ width: '100%' }}>
@@ -276,18 +240,18 @@ class FormsChat extends React.Component {
             Send
           </Button>
         </form>
-        {this.state.showEmojis ? (
-          <p style={styles.emojiPicker} ref={el => (this.emojiPicker = el)}>
-            <Picker
-              onSelect={this.addEmoji}
-              emojiTooltip={true}
-              title="sutoremote"
-            />
-          </p>
+        {loggedUser && streamer && streamer.subscribers.includes(loggedUser._id) ? (
+          showEmojis ? (
+            <p style={styles.emojiPicker} ref={(el) => (this.emojiPicker = el)}>
+              <Picker onSelect={this.addEmoji} emojiTooltip={true} title="sutoremote" />
+            </p>
+          ) : (
+            <p style={styles.getEmojiButton} onClick={this.showEmojis}>
+              {String.fromCodePoint(0x1f60a)}
+            </p>
+          )
         ) : (
-          <p style={styles.getEmojiButton} onClick={this.showEmojis}>
-            {String.fromCodePoint(0x1f60a)}
-          </p>
+          <div></div>
         )}
       </div>
     )
@@ -362,11 +326,12 @@ const Studio = ({ match, socket, loggedUser }) => {
           <ListItem button>
             <ListItemText inset primary="paramètres du stream" />
           </ListItem>
-          <FacebookShareButton  
-            url={"https://www.twitch.tv"}
-            quote={"Sutoremote - The Twitch Killer"}
-            hashtag="#sutoremote">
-              <FacebookIcon round size={32} />
+          <FacebookShareButton
+            url={'https://www.twitch.tv'}
+            quote={'Sutoremote - The Twitch Killer'}
+            hashtag="#sutoremote"
+          >
+            <FacebookIcon round size={32} />
           </FacebookShareButton>
         </List>
       </div>
@@ -395,7 +360,7 @@ const Studio = ({ match, socket, loggedUser }) => {
             <div className="containChat">
               <Chat socket={socket} streamChat={streamChat} />
             </div>
-            <FormsChat socket={socket} streamChat={streamChat} />
+            <FormsChat socket={socket} streamChat={streamChat} streamer={streamer} loggedUser={loggedUser} />
           </div>
         </div>
         <br />
@@ -423,30 +388,30 @@ export default withRouter(Studio)
 const styles = {
   container: {
     padding: 20,
-    borderTop: "1px #4C758F solid",
-    marginBottom: 20
+    borderTop: '1px #4C758F solid',
+    marginBottom: 20,
   },
   form: {
-    display: "flex"
+    display: 'flex',
   },
   input: {
-    color: "inherit",
-    background: "none",
-    outline: "none",
-    border: "none",
+    color: 'inherit',
+    background: 'none',
+    outline: 'none',
+    border: 'none',
     flex: 1,
-    fontSize: 16
+    fontSize: 16,
   },
   getEmojiButton: {
-    cssFloat: "left",
-    border: "none",
+    cssFloat: 'left',
+    border: 'none',
     margin: 0,
-    cursor: "pointer"
+    cursor: 'pointer',
   },
   emojiPicker: {
-    position: "relative",
+    position: 'relative',
     right: 0,
-    cssFloat: "right",
-    marginLeft: "0px"
-  }
-};
+    cssFloat: 'right',
+    marginLeft: '0px',
+  },
+}

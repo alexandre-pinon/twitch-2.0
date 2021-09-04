@@ -105,11 +105,15 @@ const App = () => {
           <FaAuth loggedUser={loggedUser} />
         </Route>
 
-        <Route exact path="/payment">
-          <Elements stripe={stripePromise}>
-            <Checkout />
-          </Elements>
-        </Route>
+        <Route
+          exact
+          path="/payment/:streamerName"
+          render={() => (
+            <Elements stripe={stripePromise}>
+              <Checkout />
+            </Elements>
+          )}
+        />
 
         <Route exact path="/twitch-api" component={Games} />
         <Route exact path="/top-streams" component={Stream} />
@@ -124,7 +128,7 @@ const App = () => {
         </div>
         */}
       </Switch>
-      <ChatPrivate/>
+      {/* <ChatPrivate /> */}
     </div>
   )
 }

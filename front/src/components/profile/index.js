@@ -177,7 +177,7 @@ const Profile = ({ match, loggedUser }) => {
                 <div>
                   <center>
                     <br />
-                    <Link to="/payment">
+                    <Link to={`/payment/${streamer ? streamer.username : ''}`}>
                       <btn id="btnSubs" className="btn btn-primary Paypal">
                         Payer avec Stripe{' '}
                         <svg
